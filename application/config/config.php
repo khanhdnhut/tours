@@ -74,7 +74,7 @@ define('VIEW_PATH', APP. 'view/');
  * 
  */
 
-define('PUBLIC_URL', URL. 'public/');
+define('PUBLIC_URL', URL. '/public/');
 define('PUBLIC_CSS', PUBLIC_URL. 'css/');
 define('PUBLIC_IMG', PUBLIC_URL. 'img/');
 define('PUBLIC_JS', PUBLIC_URL. 'js/');

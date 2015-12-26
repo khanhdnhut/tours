@@ -12,9 +12,9 @@ require APP . 'lib/helper.php';
 
 define('LANGUAGE', 'en');
 
-if (ENVIRONMENT == 'en') {
+if (LANGUAGE == 'en') {
     require APP . 'config/language_en.php';
-} elseif (ENVIRONMENT == 'vn') {
+} elseif (LANGUAGE == 'vn') {
     require APP . 'config/language_vn.php';
 }
 
