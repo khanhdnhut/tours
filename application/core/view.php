@@ -28,27 +28,37 @@ class View {
                 true) {
             require VIEW_PATH . $filename . '.php';
         } else {
-//            header.php
-//            ja-header.php
-//            ja-mainnav.php
-//            ja-slideshow.php
-//            ja-container.php
-//            ja-navhelper.php
-//            ja-botsl-1.php
-//            footer.php
-            require VIEW_TEMPLATES_PATH . 'header.php';
-            require VIEW_TEMPLATES_PATH . 'ja-header.php';
-            require VIEW_TEMPLATES_PATH . 'ja-mainnav.php';
+            require VIEW_TEMPLATES_PATH . 'home/header.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-header.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-mainnav.php';
             if ($filename == 'home/index') {
-                require VIEW_TEMPLATES_PATH . 'ja-slideshow.php';
+                require VIEW_TEMPLATES_PATH . 'home/ja-slideshow.php';
             }            
-            require VIEW_TEMPLATES_PATH . 'ja-container.php';
-                        
-//            require VIEW_PATH . $filename . '.php';
-            
-            require VIEW_TEMPLATES_PATH . 'ja-navhelper.php';
-            require VIEW_TEMPLATES_PATH . 'ja-botsl-1.php';
-            require VIEW_TEMPLATES_PATH . 'footer.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-container.php';            
+            require VIEW_TEMPLATES_PATH . 'home/ja-navhelper.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-botsl-1.php';
+            require VIEW_TEMPLATES_PATH . 'home/footer.php';
+        }
+    }
+    
+    
+    public function renderAdmin($filename,
+            $render_without_header_and_footer =
+    FALSE) {
+        // page without header and footer, for whatever reason
+        if ($render_without_header_and_footer == true) {
+            require VIEW_PATH . $filename . '.php';
+        } else {
+            require VIEW_TEMPLATES_PATH . 'home/header.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-header.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-mainnav.php';
+            if ($filename == 'home/index') {
+                require VIEW_TEMPLATES_PATH . 'home/ja-slideshow.php';
+            }            
+            require VIEW_TEMPLATES_PATH . 'home/ja-container.php';            
+            require VIEW_TEMPLATES_PATH . 'home/ja-navhelper.php';
+            require VIEW_TEMPLATES_PATH . 'home/ja-botsl-1.php';
+            require VIEW_TEMPLATES_PATH . 'home/footer.php';
         }
     }
 
