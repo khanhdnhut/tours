@@ -36,14 +36,19 @@ class View {
 //            ja-navhelper.php
 //            ja-botsl-1.php
 //            footer.php
-            require VIEW_PATH . '_templates/header.php';
-            require VIEW_PATH . '_templates/ja-header.php';
-            require VIEW_PATH . '_templates/ja-mainnav.php';
-            require VIEW_PATH . '_templates/ja-slideshow.php';
-            require VIEW_PATH . $filename . '.php';
-            require VIEW_PATH . '_templates/ja-navhelper.php';
-            require VIEW_PATH . '_templates/ja-botsl-1.php';
-            require VIEW_PATH . '_templates/footer.php';
+            require VIEW_TEMPLATES_PATH . 'header.php';
+            require VIEW_TEMPLATES_PATH . 'ja-header.php';
+            require VIEW_TEMPLATES_PATH . 'ja-mainnav.php';
+            if ($filename == 'home/index') {
+                require VIEW_TEMPLATES_PATH . 'ja-slideshow.php';
+            }            
+            require VIEW_TEMPLATES_PATH . 'ja-container.php';
+                        
+//            require VIEW_PATH . $filename . '.php';
+            
+            require VIEW_TEMPLATES_PATH . 'ja-navhelper.php';
+            require VIEW_TEMPLATES_PATH . 'ja-botsl-1.php';
+            require VIEW_TEMPLATES_PATH . 'footer.php';
         }
     }
 
@@ -53,7 +58,7 @@ class View {
     public function renderFeedbackMessages() {
         // Echo out the feedback messages (errors and success messages etc..)
         // They are in $_SESSION['feedback_positive'] and $_SESSION['feedback_negative']
-        require VIEW_PATH . '_templates/feedback.php';
+        require VIEW_TEMPLATES_PATH . 'feedback.php';
 
         // Delete these messages
         Session::set('feedback_positive',

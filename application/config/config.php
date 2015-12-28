@@ -68,6 +68,14 @@ define('LIB_PATH', APP. 'lib/');
 define('MODEL_PATH', APP. 'model/');
 define('VIEW_PATH', APP. 'view/');
 
+/*
+ * Configuration for: Application folders Path
+ * 
+ */
+
+define('VIEW_TEMPLATES_PATH', VIEW_PATH. '_templates/');
+define('VIEW_MODULE_PATH', VIEW_PATH. 'module/');
+
 
 /*
  * Configuration for: Public URL

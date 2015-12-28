@@ -1,4 +1,14 @@
-<div class="container">
-    <h2>You are in the View: application/view/home/index.php (everything in the box comes from this file)</h2>
-    <p>In a real application this could be the homepage.</p>
+<div style="width:74.4%" class="column" id="ja-current-content">
+    <div class="ja-content-main clearfix" id="ja-content-main">
+        <?php 
+            require VIEW_PATH . 'tour/promotionTourPackages.php'; 
+        ?>
+    </div>
 </div>
+
+<?php
+    $module = array("findTours", "topBudgetTours", "howToBook", "travelNews");
+    require VIEW_TEMPLATES_PATH . 'loadModule.php';  
+?>
+
+
