@@ -44,7 +44,7 @@ define('URL_PUBLIC_FOLDER', 'public');
 define('URL_PROTOCOL', 'http://');
 define('URL_DOMAIN', $_SERVER['HTTP_HOST']);
 define('URL_SUB_FOLDER', str_replace(URL_PUBLIC_FOLDER, '', dirname($_SERVER['SCRIPT_NAME'])));
-define('URL', URL_PROTOCOL . URL_DOMAIN . URL_SUB_FOLDER);
+define('URL', URL_PROTOCOL . URL_DOMAIN . URL_SUB_FOLDER . '/');
 
 /**
  * Configuration for: Database
@@ -66,6 +66,7 @@ define('CONTROLLER_PATH', APP. 'controller/');
 define('CORE_PATH', APP. 'core/');
 define('LIB_PATH', APP. 'lib/');
 define('MODEL_PATH', APP. 'model/');
+define('BO_PATH', APP. 'bo/');
 define('VIEW_PATH', APP. 'view/');
 
 /*
@@ -82,7 +83,7 @@ define('VIEW_MODULE_PATH', VIEW_PATH. 'module/');
  * 
  */
 
-define('PUBLIC_URL', URL. '/public/');
+define('PUBLIC_URL', URL. 'public/');
 define('PUBLIC_CSS', PUBLIC_URL. 'css/');
 define('PUBLIC_IMG', PUBLIC_URL. 'img/');
 define('PUBLIC_JS', PUBLIC_URL. 'js/');

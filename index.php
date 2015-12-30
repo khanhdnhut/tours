@@ -8,6 +8,8 @@ define('APP', 'application' . DIRECTORY_SEPARATOR);
 require APP . 'config/config.php';
 
 require APP . 'lib/helper.php';
+
+require APP . 'config/const.php';
 // Load language file
 
 define('LANGUAGE', 'en');

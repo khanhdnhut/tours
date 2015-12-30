@@ -2,19 +2,19 @@
 
 // Get the feedback
 // They are arrays, to make multiple positive/negative messages possible
-$feedback_positive = Session::get('feedback_positive');
-$feedback_negative = Session::get('feedback_negative');
+$fb_success = Session::get('fb_success');
+$fb_error = Session::get('fb_error');
 
 // Echo out positive messages
-if (isset($feedback_positive)) {
-    foreach ($feedback_positive as $feedback) {
+if (isset($fb_success)) {
+    foreach ($fb_success as $feedback) {
         echo '<div class="alert alert-success">' . $feedback . '</div>';
     }
 }
 
 // Echo out negative messages
-if (isset($feedback_negative)) {
-    foreach ($feedback_negative as $feedback) {
+if (isset($fb_error)) {
+    foreach ($fb_error as $feedback) {
         echo '<div class="alert alert-warning">' . $feedback . '</div>';
     }
 }

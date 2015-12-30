@@ -12,7 +12,7 @@
  * @author khanh_000
  */
 class Auth {
-    public static function handleLogin () {
+    public static function handleLogin () {        
         // Initialize the session
         Session::init();
         
@@ -20,8 +20,10 @@ class Auth {
         // and redirect user to login page
         if (!isset($_SESSION['user_logged_in'])) {
             Session::destroy();
-            header('location: ' . URL . 'login');
+            header('location: ' . URL . 'user/login');
+            return FALSE;
         }
+        return TRUE;
     }
 }
 

@@ -71,9 +71,9 @@ class View {
         require VIEW_TEMPLATES_PATH . 'feedback.php';
 
         // Delete these messages
-        Session::set('feedback_positive',
+        Session::set('fb_success',
                 null);
-        Session::set('feedback_negative',
+        Session::set('fb_error',
                 null);
     }
 

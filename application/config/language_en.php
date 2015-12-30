@@ -1,5 +1,5 @@
 <?php
-
+define("WEBSITE_NAME", "S Vietnam Travel");
 /*
  * Language for: views/_templates/header.php
  */
@@ -31,4 +31,21 @@ define("JA_HEADER_PHONE_OFFICE", "(+84) 436-830-236");
 define("JA_HEADER_PHONE_OFFICE_DESCRIPTION", " (Mon-Fri: 8h - 17h30 GMT+7)");
 define("JA_HEADER_CUSTOMIZED_TOUR_TITLE", "ENQUIRE");
 define("JA_HEADER_CUSTOMIZED_TOUR_HREF", "/customized-tour.html");
-define("", "");
+
+/*
+ * Language for: views/admin/login.php
+ */
+define("USER_NAME", "Username");
+define("PASSWORD", "Password");
+define("REMEMBER_ME", "Remember Me");
+define("LOG_IN", "Log In");
+define("LOST_PASS", "Lost your password?");
+define("LOST_PASS_TITLE", "Password Lost and Found");
+define("BACK_TO", "Back to");
+define("BACK_TO_TITLE", "Back to");
+
+define("ERR_USERNAME_EMPTY", "Username field was empty.");
+define("ERR_PASSWORD_EMPTY", "Password field was empty.");
+define("ERR_LOGIN_FAILED", "Username or password is incorrect");
+define("ERR_USER_NOT_ACTIVE", "Your account is not activated yet. Please contact administrator to active your account.");
+define("ERR_USER_BLOCKED", "Your account blocked. Please contact administrator to unblock your account.");

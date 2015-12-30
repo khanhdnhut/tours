@@ -8,22 +8,22 @@
  * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
  *
  */
-class Admin extends Controller
-{
+class Admin extends Controller {
+
     /**
      * Construct this object by extending the basic Controller class
      */
     function __construct() {
         parent::__construct();
     }
+
     /**
      * PAGE: index
      * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
      */
-    public function index()
-    {
-        // load views
-        $this->view->renderAdmin('admin/index');
+    public function index() {
+        if(Auth::handleLogin()){
+            $this->view->renderAdmin('admin/index');
+        }
     }
-
 }
