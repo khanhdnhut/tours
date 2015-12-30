@@ -3,10 +3,10 @@
 	<head>
 		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 		<title><?php echo WEBSITE_NAME ?> › <?php echo LOG_IN ?></title>
-		<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/buttons.min.css?ver=4.4" id="buttons-css" rel="stylesheet">
+		<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/buttons.css?ver=4.4" id="buttons-css" rel="stylesheet">
 		<link media="all" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans%3A300italic%2C400italic%2C600italic%2C300%2C400%2C600&amp;subset=latin%2Clatin-ext&amp;ver=4.4" id="open-sans-css" rel="stylesheet">
-		<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/dashicons.min.css?ver=4.4" id="dashicons-css" rel="stylesheet">
-		<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>admin/login.min.css?ver=4.4" id="login-css" rel="stylesheet">
+		<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/dashicons.css?ver=4.4" id="dashicons-css" rel="stylesheet">
+		<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>admin/login.css?ver=4.4" id="login-css" rel="stylesheet">
 		<meta content="noindex,follow" name="robots">
 	</head>
 	<body class="login login-action-login wp-core-ui  locale-en-us">

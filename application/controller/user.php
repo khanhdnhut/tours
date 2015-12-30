@@ -29,9 +29,11 @@ class User extends Controller {
 
     public function login() {
         if (empty($_POST['log'])) {
-            if (Auth::handleLogin()) {
+            if (Auth::isLogged()) {
                 header('location: ' . URL . 'admin');
-            }            
+            } else {
+                $this->view->renderAdmin('user/login', TRUE);
+            }      
         } else {
             //Thực hiện đăng nhập
             // run the login() method in the login-model, put the result in $login_successful (true or false)

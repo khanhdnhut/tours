@@ -49,16 +49,11 @@ class View {
         if ($render_without_header_and_footer == true) {
             require VIEW_PATH . $filename . '.php';
         } else {
-            require VIEW_TEMPLATES_PATH . 'home/header.php';
-            require VIEW_TEMPLATES_PATH . 'home/ja-header.php';
-            require VIEW_TEMPLATES_PATH . 'home/ja-mainnav.php';
-            if ($filename == 'home/index') {
-                require VIEW_TEMPLATES_PATH . 'home/ja-slideshow.php';
-            }            
-            require VIEW_TEMPLATES_PATH . 'home/ja-container.php';            
-            require VIEW_TEMPLATES_PATH . 'home/ja-navhelper.php';
-            require VIEW_TEMPLATES_PATH . 'home/ja-botsl-1.php';
-            require VIEW_TEMPLATES_PATH . 'home/footer.php';
+            require VIEW_TEMPLATES_PATH . 'admin/header.php';
+            require VIEW_TEMPLATES_PATH . 'admin/menuwrap.php';
+            require VIEW_TEMPLATES_PATH . 'admin/adminbar.php';
+            require VIEW_TEMPLATES_PATH . 'admin/body.php';            
+            require VIEW_TEMPLATES_PATH . 'admin/footer.php';
         }
     }
 

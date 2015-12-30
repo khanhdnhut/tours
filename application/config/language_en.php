@@ -33,7 +33,7 @@ define("JA_HEADER_CUSTOMIZED_TOUR_TITLE", "ENQUIRE");
 define("JA_HEADER_CUSTOMIZED_TOUR_HREF", "/customized-tour.html");
 
 /*
- * Language for: views/admin/login.php
+ * Language for: views/user/login.php
  */
 define("USER_NAME", "Username");
 define("PASSWORD", "Password");
@@ -49,3 +49,30 @@ define("ERR_PASSWORD_EMPTY", "Password field was empty.");
 define("ERR_LOGIN_FAILED", "Username or password is incorrect");
 define("ERR_USER_NOT_ACTIVE", "Your account is not activated yet. Please contact administrator to active your account.");
 define("ERR_USER_BLOCKED", "Your account blocked. Please contact administrator to unblock your account.");
+
+/*
+ * Language for: views/admin/index.php
+ */
+define("DASHBOARD_TITLE", "Dashboard");
+define("DASHBOARD_HOME_TITLE", "Home");
+define("DASHBOARD_TOURS_TITLE", "Tours");
+define("DASHBOARD_ALL_TOURS_TITLE", "All Tours");
+define("DASHBOARD_TOURS_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_TOURS_CATEGORIES_TITLE", "Categories");
+define("DASHBOARD_TOURS_TAGS_TITLE", "Tags");
+define("DASHBOARD_MEDIA_TITLE", "Media");
+define("DASHBOARD_MEDIA_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_NEWS_TITLE", "News");
+define("DASHBOARD_NEWS_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_REQUESTS_TITLE", "Requests");
+define("DASHBOARD_USERS_TITLE", "Users");
+define("DASHBOARD_USERS_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_USERS_YOUR_PROFILE_TITLE", "Your Profile");
+define("DASHBOARD_ALL_USERS_TITLE", "All Users");
+define("DASHBOARD_SETTINGS_TITLE", "Settings");
+define("DASHBOARD_SETTINGS_WRITING_TITLE", "Writing");
+define("DASHBOARD_SETTINGS_READING_TITLE", "Reading");
+define("DASHBOARD_SETTINGS_DISCUSSION_TITLE", "Discussion");
+define("DASHBOARD_SETTINGS_MEDIA_TITLE", "Media");
+define("DASHBOARD_SETTINGS_PERMALINKS_TITLE", "Permalinks");
+define("DASHBOARD_COLLAPSE_MENU_TITLE", "Collapse menu");
