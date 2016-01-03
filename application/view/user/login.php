@@ -31,9 +31,9 @@
 					<input type="hidden" value="1" name="testcookie">
 				</p>
 			</form>
-			<p id="nav">
+<!--			<p id="nav">
 				<a title="<?php echo LOST_PASS_TITLE; ?>" href="<?php echo URL; ?>user/lostpassword"><?php echo LOST_PASS; ?></a>
-			</p>
+			</p>-->
 			<script type="text/javascript">
 				function wp_attempt_focus(){
 				setTimeout( function(){ try{

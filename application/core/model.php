@@ -40,11 +40,22 @@ class Model {
             }
         }
     }
+    
+    public function autoloadBO($name){
+        $boName = $name . 'BO';
+        if (!class_exists($boName, FALSE)){
+            $path = BO_PATH . strtolower($name) . '_bo.php';
+            // Check for model: Does such a model exist?
+            if (file_exists($path)) {
+                require BO_PATH . strtolower($name) . '_bo.php';            
+            }
+        }
+    }
         
-    public function loadBO ($name) {   
+    public function getBO ($name) {   
         $boName = $name . 'BO';
         if (class_exists($boName, FALSE)) {
-            return new $boName($this->db);
+            return new $boName();
         } else {
             $path = BO_PATH . strtolower($name) . '_bo.php';
             // Check for model: Does such a model exist?

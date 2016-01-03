@@ -63,6 +63,7 @@ define("DASHBOARD_TOURS_TAGS_TITLE", "Tags");
 define("DASHBOARD_MEDIA_TITLE", "Media");
 define("DASHBOARD_MEDIA_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_NEWS_TITLE", "News");
+define("DASHBOARD_ALL_NEWS_TITLE", "All News");
 define("DASHBOARD_NEWS_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_REQUESTS_TITLE", "Requests");
 define("DASHBOARD_USERS_TITLE", "Users");
@@ -76,3 +77,19 @@ define("DASHBOARD_SETTINGS_DISCUSSION_TITLE", "Discussion");
 define("DASHBOARD_SETTINGS_MEDIA_TITLE", "Media");
 define("DASHBOARD_SETTINGS_PERMALINKS_TITLE", "Permalinks");
 define("DASHBOARD_COLLAPSE_MENU_TITLE", "Collapse menu");
+
+define("ADMIN_BAR_VIEW_SITE_TITLE", "Visit Site");
+define("ADMIN_BAR_ADD_NEW_TITLE", "New");
+define("ADMIN_BAR_EDIT_MY_PROFILE_TITLE", "Edit My Profile");
+define("ADMIN_BAR_LOG_OUT_TITLE", "Log Out");
+define("ADMIN_FOOTER_THANKYOU_TITLE", "Thank you for creating with ");
+define("VERSION_TITLE", "Version 1.0");
+
+/*
+ * Language for: AUTH
+ */
+define("CAPABILITY_ADMINISTRATOR", "administrator");
+define("CAPABILITY_SUBSCRIBER", "subscriber");
+define("CAPABILITY_CONTRIBUTOR", "contributor");
+define("CAPABILITY_AUTHOR", "author");
+define("CAPABILITY_EDITOR", "editor");

@@ -48,5 +48,13 @@ class User extends Controller {
             }
         }
     }
+    
+    public function logout()
+    {
+        $this->model = $this->loadModel('User');
+        $this->model->logout();
+        // redirect user to base URL
+        header('location: ' . URL . "user/login");
+    }
 
 }

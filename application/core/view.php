@@ -152,6 +152,33 @@ class View {
         return false;
     }
 
+    public function autoloadBO($name){
+        $boName = $name . 'BO';
+        if (!class_exists($boName, FALSE)){
+            $path = BO_PATH . strtolower($name) . '_bo.php';
+            // Check for model: Does such a model exist?
+            if (file_exists($path)) {
+                require BO_PATH . strtolower($name) . '_bo.php';            
+            }
+        }
+    }
+        
+    public function getBO ($name) {   
+        $boName = $name . 'BO';
+        if (class_exists($boName, FALSE)) {
+            return new $boName();
+        } else {
+            $path = BO_PATH . strtolower($name) . '_bo.php';
+            // Check for model: Does such a model exist?
+            if (file_exists($path)) {
+                require BO_PATH . strtolower($name) . '_bo.php';            
+                // Return new model and pass the database connection to the model
+                return new $boName();
+            } else {
+                return null;
+            }
+        }
+    }
 }
 
 ?>

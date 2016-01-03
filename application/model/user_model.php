@@ -49,14 +49,17 @@ class UserModel extends Model {
         $result = $sth->fetch();
         if (hash('sha1', $_POST['pwd']) == $result->user_pass) {
             if ($result->user_status == USER_STATUS_ACTIVE) {
-                $userBO = $this->loadBO('user');
+                $userBO = $this->getBO('user');
                 $userBO->setUserInfo($result);
                 $userMetaInfoArray = $this->getMetaInfoUser($result->ID);
                 $userBO->setUserMetaInfo($userMetaInfoArray);
                 //write user info into session
                 Session::init();
-                Session::set('userInfo', $userBO);
+                Session::set('userInfo',  json_encode($userBO));
                 Session::set('user_logged_in', true);
+                if (isset($_POST['rememberme']) && $_POST['rememberme'] == 'forever') {
+                    $this->saveCookieLogin();                     
+                }               
                 return true;
             } elseif ($result->user_status == USER_STATUS_NOT_ACTIVE) {
                 $_SESSION["fb_error"][] = ERR_USER_NOT_ACTIVE;
@@ -87,5 +90,19 @@ class UserModel extends Model {
             $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
             return false;
         }        
+    }
+    
+    public function saveCookieLogin(){
+        
+    }
+    
+    public function detroyCookieLogin(){        
+        setcookie('rememberme', false, time() - (3600 * 3650), '/', COOKIE_DOMAIN);
+    }
+    
+    public function logout() {
+        $this->detroyCookieLogin();
+        // delete the session
+        Session::destroy();
     }
 }

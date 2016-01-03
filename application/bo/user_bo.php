@@ -77,6 +77,18 @@ class UserBO {
                     if (isset($userMeta->meta_key) && isset($userMeta->meta_value) && property_exists("UserBO" ,$userMeta->meta_key)) {
                         $meta_key = $userMeta->meta_key;
                         $this->$meta_key = $userMeta->meta_value;
+                        
+//                        if ($meta_key == 'session_tokens') {
+//                            $a = unserialize($userMeta->meta_value);
+////                            $c = $a['administrator'];
+////                            $d = $a['subscriber'];
+//                            $e = json_encode($a);
+//                            $f = json_decode($e);
+////                            $b = $a->administrator; //true
+////                            $c = $a->subscriber; //null
+//                            
+//                            
+//                        }
                     }
                 }
             }
