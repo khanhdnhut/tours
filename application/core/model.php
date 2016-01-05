@@ -9,7 +9,7 @@ class Model {
     
     /* @var null Database Connection */
     public $db = null;
-
+    
     /**
      * Constructor, expects a Database connection
      * @param Database $db The Database object

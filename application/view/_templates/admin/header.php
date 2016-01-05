@@ -91,12 +91,12 @@
         <!--[if lt IE 8]>
         <script type='text/javascript' src='<?php echo PUBLIC_JS; ?>includes/json2.min.js?ver=2015-05-03'></script>
         <![endif]-->
-        <link href="<?php echo URL; ?>admin/" rel="canonical" id="wp-admin-canonical" />
-        <script>
+        <!--<link href="<?php echo URL . CONTEXT_PATH_ADMIN; ?>" rel="canonical" id="wp-admin-canonical" />-->
+<!--        <script>
                     if (window.history.replaceState) {
             window.history.replaceState(null, null, document.getElementById('wp-admin-canonical').href + window.location.hash);
                     }
-        </script>
+        </script>-->
         <script type="text/javascript">
             var _wpColorScheme = {
             "icons": {

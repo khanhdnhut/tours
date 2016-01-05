@@ -1,5 +1,4 @@
 <?php
-
 /*
  * 
  * 
@@ -11,9 +10,11 @@
  * check if user is logged in, useful to show controllers/methods only to logged-in users.
  * @author khanh_000
  */
-class Auth {
+class Auth
+{
 
-    public static function handleLogin() {
+    public static function handleLogin()
+    {
         // Initialize the session
         Session::init();
 
@@ -27,7 +28,8 @@ class Auth {
         return TRUE;
     }
 
-    public static function isLogged() {
+    public static function isLogged()
+    {
         // Initialize the session
         Session::init();
 
@@ -40,47 +42,51 @@ class Auth {
         return TRUE;
     }
 
-    public static function getCapability() {
+    public static function getRole($capability_encode)
+    {
+        $capability = json_decode($capability_encode);
+        $capability_administrator = CAPABILITY_ADMINISTRATOR;
+        $capability_editor = CAPABILITY_EDITOR;
+        $capability_author = CAPABILITY_AUTHOR;
+        $capability_contributor = CAPABILITY_CONTRIBUTOR;
+        $capability_subscriber = CAPABILITY_SUBSCRIBER;
+
+        if (property_exists($capability, $capability_administrator) && $capability->$capability_administrator) {
+            
+            return CAPABILITY_ADMINISTRATOR;
+        } else if (property_exists($capability, $capability_editor) && $capability->$capability_editor) {
+            return CAPABILITY_EDITOR;
+        } else if (property_exists($capability, $capability_author) && $capability->$capability_author) {
+            return CAPABILITY_AUTHOR;
+        } else if (property_exists($capability, $capability_contributor) && $capability->$capability_contributor) {
+            return CAPABILITY_CONTRIBUTOR;
+        } else if (property_exists($capability, $capability_subscriber) && $capability->$capability_subscriber) {
+            return CAPABILITY_SUBSCRIBER;
+        }
+    }
+
+    public static function getCapability()
+    {
         // Initialize the session
         Session::init();
         // If user is still not logged in, then destroy session, handle user as "Not logged in"
         // and redirect user to login page
         if (isset($_SESSION['user_logged_in'])) {
             if (Session::get('userInfo') !=
-                    NULL) {
+                NULL) {
                 if (Session::get('capability') !=
-                        NULL) {
+                    NULL) {
                     return Session::get('capability');
                 } else {
                     $userBO = json_decode(Session::get('userInfo'));
-                    $capability = json_decode($userBO->wp_capabilities);
-                    $capability_administrator = CAPABILITY_ADMINISTRATOR;
-                    $capability_editor = CAPABILITY_EDITOR;
-                    $capability_author = CAPABILITY_AUTHOR;
-                    $capability_contributor = CAPABILITY_CONTRIBUTOR;
-                    $capability_subscriber = CAPABILITY_SUBSCRIBER;
-                    if ($capability->$capability_administrator) {
-                        Session::set("capability", CAPABILITY_ADMINISTRATOR);
-                        return CAPABILITY_ADMINISTRATOR;
-                    } else if ($capability->$capability_editor) {
-                        Session::set("capability", CAPABILITY_EDITOR);
-                        return CAPABILITY_EDITOR;
-                    } else if ($capability->$capability_author) {
-                        Session::set("capability", CAPABILITY_AUTHOR);
-                        return CAPABILITY_AUTHOR;
-                    } else if ($capability->$capability_contributor) {
-                        Session::set("capability", CAPABILITY_CONTRIBUTOR);
-                        return CAPABILITY_CONTRIBUTOR;
-                    } else if ($capability->$capability_subscriber) {
-                        Session::set("capability", CAPABILITY_SUBSCRIBER);
-                        return CAPABILITY_SUBSCRIBER;
-                    }
+                    $role = Auth::getRole($userBO->wp_capabilities);
+                    Session::set("capability", $role);
+                    return $role;
                 }
             }
         }
         return NULL;
     }
-
 }
 
 ?>

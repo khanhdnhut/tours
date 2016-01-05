@@ -52,7 +52,7 @@ class View {
             require VIEW_TEMPLATES_PATH . 'admin/header.php';
             require VIEW_TEMPLATES_PATH . 'admin/menuwrap.php';
             require VIEW_TEMPLATES_PATH . 'admin/adminbar.php';
-            require VIEW_TEMPLATES_PATH . 'admin/body.php';            
+            require VIEW_PATH . $filename . '.php';           
             require VIEW_TEMPLATES_PATH . 'admin/footer.php';
         }
     }

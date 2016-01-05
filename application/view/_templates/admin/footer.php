@@ -1,3 +1,8 @@
+<div class="clear"></div>
+</div>
+<div class="clear"></div>
+</div>
+<div class="clear"></div>
 <!-- wpbody -->
 <div class="clear"></div>
 </div>
@@ -12,7 +17,7 @@
     <div id="wp-auth-check-bg"></div>
     <div id="wp-auth-check">
         <div title="Close" tabindex="0" class="wp-auth-check-close"></div>
-        <div data-src="<?php echo URL; ?>user/login" id="wp-auth-check-form"></div>
+        <div data-src="<?php echo URL . CONTEXT_PATH_USER_LOGIN; ?>" id="wp-auth-check-form"></div>
     </div>
 </div>
 

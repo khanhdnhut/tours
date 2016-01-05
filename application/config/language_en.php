@@ -1,5 +1,7 @@
 <?php
 define("WEBSITE_NAME", "S Vietnam Travel");
+
+define("ERROR_TITLE", "ERROR");
 /*
  * Language for: views/_templates/header.php
  */
@@ -93,3 +95,78 @@ define("CAPABILITY_SUBSCRIBER", "subscriber");
 define("CAPABILITY_CONTRIBUTOR", "contributor");
 define("CAPABILITY_AUTHOR", "author");
 define("CAPABILITY_EDITOR", "editor");
+
+/*
+ * Language for: URL
+ */
+define("CONTEXT_PATH_ADMIN", "admin/");
+
+define("CONTEXT_PATH_USER_EDIT", "user/edit/");
+define("CONTEXT_PATH_USER_EDIT_INFO", "user/editInfo/");
+define("CONTEXT_PATH_USER_DELETE", "user/delete/");
+define("CONTEXT_PATH_USER_LOST_PASSWORD", "user/lostpassword/");
+define("CONTEXT_PATH_USER_ADD_NEW", "user/addNew/");
+define("CONTEXT_PATH_USER_PROFILE", "user/profile/");
+define("CONTEXT_PATH_USER_LOGIN", "user/login/");
+define("CONTEXT_PATH_USER_LOGOUT", "user/logout/");
+define("CONTEXT_PATH_USER_FILTER_ADMINISTRATOR", "user/filter/administrator/");
+define("CONTEXT_PATH_USER_FILTER_EDITOR", "user/filter/editor/");
+define("CONTEXT_PATH_USER_FILTER_AUTHOR", "user/filter/author/");
+define("CONTEXT_PATH_USER_FILTER_CONTRIBUTOR", "user/filter/contributor/");
+define("CONTEXT_PATH_USER_FILTER_SUBSCRIBER", "user/filter/subscriber/");
+
+define("CONTEXT_PATH_NEWS_ADD_NEW", "news/addNew/");
+define("CONTEXT_PATH_NEWS_EDIT", "news/edit/");
+
+define("CONTEXT_PATH_REQUEST_EDIT", "requests/edit/");
+
+define("CONTEXT_PATH_MEDIA_EDIT", "media/edit/");
+define("CONTEXT_PATH_MEDIA_UPLOAD", "media/upload/");
+define("CONTEXT_PATH_MEDIA_ADD_NEW", "media/addNew/");
+
+define("CONTEXT_PATH_TOUR_EDIT", "tour/edit/");
+define("CONTEXT_PATH_TOUR_ADD_NEW", "tour/addNew/");
+define("CONTEXT_PATH_TOUR_EDIT_CATEGORY", "tour/editCategory/");
+define("CONTEXT_PATH_TOUR_EDIT_TAG", "tour/editTag/");
+
+define("CONTEXT_PATH_OPTIONS_EDIT", "options/edit/");
+define("CONTEXT_PATH_OPTIONS_EDIT_GENERAL", "options/edit/general/");
+define("CONTEXT_PATH_OPTIONS_EDIT_WRITING", "options/edit/writing/");
+define("CONTEXT_PATH_OPTIONS_EDIT_READING", "options/edit/reading/");
+define("CONTEXT_PATH_OPTIONS_EDIT_DISCUSSION", "options/edit/discussion/");
+define("CONTEXT_PATH_OPTIONS_EDIT_MEDIA", "options/edit/media/");
+define("CONTEXT_PATH_OPTIONS_EDIT_PERMALINK", "options/edit/permalink/");
+
+/*
+ * Language for: view/user/edit.php
+ */
+define("FILTER_USERS_LIST_TITLE", "Filter users list");
+define("FILTER_USERS_LIST_ALL_TITLE", "All");
+define("ADMINISTRATOR_TITLE", "Administrator");
+define("EDITOR_TITLE", "Editor");
+define("AUTHOR_TITLE", "Author");
+define("CONTRIBUTOR_TITLE", "Contributor");
+define("SUBSCRIBER_TITLE", "Subscriber");
+define("SEARCH_USERS_TITLE", "Search Users");
+define("BULK_ACTIONS", "Bulk Actions");
+define("SELECT_BULK_ACTION_TITLE", "Select bulk action");
+define("SELECT_TITLE", "Select");
+define("DELETE_TITLE", "Delete");
+define("APPLY_TITLE", "Apply");
+define("CHANGE_ROLE_TO", "Change role to");
+define("USERS_LIST_NAVIGATION", "Users list navigation");
+define("ITEMS_TITLE", "items");
+define("CURRENT_PAGE_TITLE", "Current Page");
+define("OF_TITLE", "of");
+define("NEXT_PAGE_TITLE", "Next page");
+define("LAST_PAGE_TITLE", "Last page");
+define("USERS_LIST_TITLE", "Users list");
+define("SELECT_ALL_TITLE", "Select All");
+define("USERNAME_TITLE", "Username");
+define("NAME_TITLE", "Name");
+define("EMAIL_TITLE", "Email");
+define("ROLE_TITLE", "Role");
+define("POSTS_TITLE", "Tours");
+define("EDIT_TITLE", "Edit");
+define("SHOW_MORE_DETAILS_TITLE", "Show more details");
+define("CHANGE_TITLE", "Change");

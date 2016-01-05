@@ -147,6 +147,8 @@ define("TB_USERMETA_COL_UMETA_ID", "umeta_id");
 define("TB_USERMETA_COL_USER_ID", "user_id");
 define("TB_USERMETA_COL_META_KEY", "meta_key");
 define("TB_USERMETA_COL_META_VALUE", "meta_value");
+define("WP_CAPABILITIES", "wp_capabilities");
+define("USER_ID", "user_id");
 
 /*
  * CONSTANT for: USERS TABLE
