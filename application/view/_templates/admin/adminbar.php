@@ -122,6 +122,7 @@ if (Session::get('userInfo') !=
                         <button aria-expanded="false" aria-controls="screen-options-wrap" class="button show-settings" id="show-settings-link" type="button">Screen Options</button>
                     </div>
                 </div>
+                <div class="wrap">
                 <?php
             } else {
                 Auth::handleLogin();

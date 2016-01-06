@@ -112,9 +112,27 @@ class UserModel extends Model
         Session::destroy();
     }
 
-    public function getUserList($view)
+    public function prepareEditPage($view)
     {
-//        $view->a = 1;
+        $view->userList = $this->getUserList();
+        $view->count = array(
+            CAPABILITY_ADMINISTRATOR => 0, 
+            CAPABILITY_SUBSCRIBER => 0, 
+            CAPABILITY_CONTRIBUTOR => 0, 
+            CAPABILITY_AUTHOR => 0, 
+            CAPABILITY_EDITOR => 0, 
+            );
+        if ($view->userList != NULL && count($view->userList) > 0) {
+            foreach ($view->userList as $userInfo) {
+                $userInfo->wp_capabilities = Auth::getRole($userInfo->wp_capabilities);
+                $userInfo->wp_capabilities_title = ucfirst($userInfo->wp_capabilities);
+                $view->count[$userInfo->wp_capabilities] += 1;
+            }
+        }
+    }
+
+    public function getUserList()
+    {
         try {
             $sth = $this->db->prepare("
             SELECT u." . TB_USERS_COL_ID . " as '" . USER_ID . "', u." . TB_USERS_COL_USER_LOGIN . ", u." . TB_USERS_COL_DISPLAY_NAME . ", 
@@ -122,22 +140,18 @@ class UserModel extends Model
             FROM " . TABLE_USERS . " AS u, " . TABLE_USERMETA . " AS m 
             WHERE m." . TB_USERMETA_COL_USER_ID . " = u." . TB_USERS_COL_ID . " 
             AND m." . TB_USERMETA_COL_META_KEY . " = '" . WP_CAPABILITIES . "'
-            AND user_status != " . USER_STATUS_DELETED . ";");
+            AND user_status != " . USER_STATUS_DELETED . "
+            ORDER BY u." . TB_USERS_COL_USER_REGISTERED . " DESC;");
 
             $sth->execute();
             $count = $sth->rowCount();
             if ($count > 0) {
-                $view->userList = $sth->fetchAll();
-                foreach ($view->userList as $userInfo) {
-                    $userInfo->wp_capabilities = Auth::getRole($userInfo->wp_capabilities);
-                    $userInfo->wp_capabilities_title = ucfirst($userInfo->wp_capabilities);
-                }
+                return $sth->fetchAll();
             } else {
-                $view->userList = NULL;
+                return NULL;
             }
         } catch (Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-            $view->userList = NULL;
+            return NULL;
         }
     }
 }

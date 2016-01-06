@@ -1,237 +1,261 @@
-<div class="wrap">
-    <h1>
-        <?php echo DASHBOARD_USERS_TITLE; ?> <a class="page-title-action" href="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>"><?php echo DASHBOARD_USERS_ADD_NEW_TITLE; ?></a>
-    </h1>
+<h1>
+    <?php echo DASHBOARD_USERS_TITLE; ?> <a class="page-title-action" href="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>"><?php echo DASHBOARD_USERS_ADD_NEW_TITLE; ?></a>
+</h1>
 
-    <h2 class="screen-reader-text"><?php echo FILTER_USERS_LIST_TITLE; ?></h2>
-    <ul class="subsubsub">
-        <li class="all">
-            <a class="current" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                <?php echo FILTER_USERS_LIST_ALL_TITLE; ?> <span class="count">(6)</span></a> |</li>
-        <li class="administrator">
-            <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_ADMINISTRATOR; ?>">
-                <?php echo ADMINISTRATOR_TITLE; ?> <span class="count">(2)</span></a> |</li>
-        <li class="editor">
-            <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_EDITOR; ?>">
-                <?php echo EDITOR_TITLE; ?> <span class="count">(1)</span></a> |</li>
-        <li class="author">
-            <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_AUTHOR; ?>">
-                <?php echo AUTHOR_TITLE; ?> <span class="count">(1)</span></a> |</li>
-        <li class="contributor">
-            <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_CONTRIBUTOR; ?>">
-                <?php echo CONTRIBUTOR_TITLE; ?> <span class="count">(1)</span></a> |</li>
-        <li class="subscriber">
-            <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_SUBSCRIBER; ?>">
-                <?php echo SUBSCRIBER_TITLE; ?> <span class="count">(1)</span></a>
-        </li>
-    </ul>
-    <form method="get">
-        <p class="search-box">
-            <label for="user-search-input" class="screen-reader-text">
-                <?php echo SEARCH_USERS_TITLE; ?>:</label>
-            <input type="search" value="" name="s" id="user-search-input" />
-            <input type="submit" value="<?php echo SEARCH_USERS_TITLE; ?>" class="button" id="search-submit" />
-        </p>
+<h2 class="screen-reader-text"><?php echo FILTER_USERS_LIST_TITLE; ?></h2>
+<ul class="subsubsub">
+    <li class="all">
+        <a class="current" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+            <?php echo FILTER_USERS_LIST_ALL_TITLE; ?> <span class="count">(<?php echo count($this->userList); ?>)</span></a> |</li>
+    <li class="administrator">
+        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_ADMINISTRATOR; ?>">
+            <?php echo ADMINISTRATOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_ADMINISTRATOR]; ?>)</span></a> |</li>
+    <li class="editor">
+        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_EDITOR; ?>">
+            <?php echo EDITOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_EDITOR]; ?>)</span></a> |</li>
+    <li class="author">
+        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_AUTHOR; ?>">
+            <?php echo AUTHOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_AUTHOR]; ?>)</span></a> |</li>
+    <li class="contributor">
+        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_CONTRIBUTOR; ?>">
+            <?php echo CONTRIBUTOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_CONTRIBUTOR]; ?>)</span></a> |</li>
+    <li class="subscriber">
+        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_SUBSCRIBER; ?>">
+            <?php echo SUBSCRIBER_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_SUBSCRIBER]; ?>)</span></a>
+    </li>
+</ul>
+<form id="form-user-edit" method="post">
+    <input type="hidden" value="login" name="orderby"/>
+    <input type="hidden" value="desc" name="order"/>
+    <input type="hidden" value="1" name="page"/>
+    <p class="search-box">
+        <label for="user-search-input" class="screen-reader-text">
+            <?php echo SEARCH_USERS_TITLE; ?>:</label>
+        <input type="search" value="" name="s" id="user-search-input" />
+        <input type="submit" value="<?php echo SEARCH_USERS_TITLE; ?>" class="button" id="search-submit" />
+    </p>
 
-        <input type="hidden" value="f48d400ad0" name="_wpnonce" id="_wpnonce" />
-        <input type="hidden" value="<?php echo URL . CONTEXT_PATH_USER_EDIT ?>" name="_wp_http_referer" />
-        <div class="tablenav top">
-            <div class="alignleft actions bulkactions">
-                <label class="screen-reader-text" for="bulk-action-selector-top"><?php echo SELECT_BULK_ACTION_TITLE; ?></label>
-                <select id="bulk-action-selector-top" name="action">
-                    <option value="-1">
-                        <?php echo BULK_ACTIONS; ?>
-                    </option>
-                    <option value="delete">
-                        <?php echo DELETE_TITLE; ?>
-                    </option>
-                </select>
-                <input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button action" id="doaction">
-            </div>
-            <div class="alignleft actions">
-                <label for="new_role" class="screen-reader-text">
-                    <?php echo CHANGE_ROLE_TO; ?>…</label>
-                <select id="new_role" name="new_role">
-                    <option value="">
-                        <?php echo CHANGE_ROLE_TO; ?>…</option>
+    <div class="tablenav top">
+        <div class="alignleft actions bulkactions">
+            <label class="screen-reader-text" for="bulk-action-selector-top"><?php echo SELECT_BULK_ACTION_TITLE; ?></label>
+            <select id="bulk-action-selector-top" name="action">
+                <option value="-1">
+                    <?php echo BULK_ACTIONS; ?>
+                </option>
+                <option value="delete">
+                    <?php echo DELETE_TITLE; ?>
+                </option>
+            </select>
+            <input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button action" id="doaction">
+        </div>
+        <div class="alignleft actions">
+            <label for="new_role" class="screen-reader-text">
+                <?php echo CHANGE_ROLE_TO; ?>…</label>
+            <select id="new_role" name="new_role">
+                <option value="">
+                    <?php echo CHANGE_ROLE_TO; ?>…</option>
 
-                    <option value="subscriber">
-                        <?php echo SUBSCRIBER_TITLE; ?>
-                    </option>
-                    <option value="contributor">
-                        <?php echo CONTRIBUTOR_TITLE; ?>
-                    </option>
-                    <option value="author">
-                        <?php echo AUTHOR_TITLE; ?>
-                    </option>
-                    <option value="editor">
-                        <?php echo EDITOR_TITLE; ?>
-                    </option>
-                    <option value="administrator">
-                        <?php echo ADMINISTRATOR_TITLE; ?>
-                    </option>
-                </select>
-                <input type="submit" value="Change" class="button" id="changeit" name="changeit">
-            </div>
-            <h2 class="screen-reader-text"><?php echo USERS_LIST_NAVIGATION; ?></h2>
-            <div class="tablenav-pages"><span class="displaying-num">6 <?php echo ITEMS_TITLE; ?></span>
-                <span class="pagination-links">
-                    <span aria-hidden="true" class="tablenav-pages-navspan">«</span>
-                    <span aria-hidden="true" class="tablenav-pages-navspan">‹</span>
-                    <span class="paging-input">
-                        <label class="screen-reader-text" for="current-page-selector"><?php echo CURRENT_PAGE_TITLE; ?></label>
-                        <input type="text" aria-describedby="table-paging" size="1" value="1" name="paged" id="current-page-selector" class="current-page"/>
-                        <?php echo OF_TITLE; ?> <span class="total-pages">3</span>
-                    </span>
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "2" ?>" class="next-page">
-                        <span class="screen-reader-text"><?php echo NEXT_PAGE_TITLE; ?></span>
-                        <span aria-hidden="true">›</span>
-                    </a>
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "3" ?>" class="last-page">
-                        <span class="screen-reader-text"><?php echo LAST_PAGE_TITLE; ?></span>
-                        <span aria-hidden="true">»</span>
-                    </a>
+                <option value="subscriber">
+                    <?php echo SUBSCRIBER_TITLE; ?>
+                </option>
+                <option value="contributor">
+                    <?php echo CONTRIBUTOR_TITLE; ?>
+                </option>
+                <option value="author">
+                    <?php echo AUTHOR_TITLE; ?>
+                </option>
+                <option value="editor">
+                    <?php echo EDITOR_TITLE; ?>
+                </option>
+                <option value="administrator">
+                    <?php echo ADMINISTRATOR_TITLE; ?>
+                </option>
+            </select>
+            <input type="submit" value="Change" class="button" id="changeit" name="changeit">
+        </div>
+        <h2 class="screen-reader-text"><?php echo USERS_LIST_NAVIGATION; ?></h2>
+        <div class="tablenav-pages"><span class="displaying-num">6 <?php echo ITEMS_TITLE; ?></span>
+            <span class="pagination-links">
+                <span aria-hidden="true" class="tablenav-pages-navspan">«</span>
+                <span aria-hidden="true" class="tablenav-pages-navspan">‹</span>
+                <span class="paging-input">
+                    <label class="screen-reader-text" for="current-page-selector"><?php echo CURRENT_PAGE_TITLE; ?></label>
+                    <input type="text" aria-describedby="table-paging" size="1" value="1" name="paged" id="current-page-selector" class="current-page"/>
+                    <?php echo OF_TITLE; ?> <span class="total-pages">3</span>
                 </span>
-            </div>
-            <br class="clear">
+                <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "2" ?>" class="next-page">
+                    <span class="screen-reader-text"><?php echo NEXT_PAGE_TITLE; ?></span>
+                    <span aria-hidden="true">›</span>
+                </a>
+                <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "3" ?>" class="last-page">
+                    <span class="screen-reader-text"><?php echo LAST_PAGE_TITLE; ?></span>
+                    <span aria-hidden="true">»</span>
+                </a>
+            </span>
         </div>
-        <h2 class="screen-reader-text"><?php echo USERS_LIST_TITLE; ?></h2>
-        <table class="wp-list-table widefat fixed striped users">
-            <thead>
-                <tr>
-                    <td class="manage-column column-cb check-column" id="cb">
-                        <label for="cb-select-all-1" class="screen-reader-text"><?php echo SELECT_ALL_TITLE; ?></label>
-                        <input type="checkbox" id="cb-select-all-1">
-                    </td>
-                    <th class="manage-column column-username column-primary sortable desc" id="username" scope="col">
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                            <span><?php echo USERNAME_TITLE; ?></span>
-                            <span class="sorting-indicator"></span>
-                        </a>
-                    </th>
-                    <th class="manage-column column-name sortable desc" id="name" scope="col">
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                            <span><?php echo NAME_TITLE; ?></span>
-                            <span class="sorting-indicator"></span>
-                        </a>
-                    </th>
-                    <th class="manage-column column-email sortable desc" id="email" scope="col">
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                            <span><?php echo EMAIL_TITLE; ?></span>
-                            <span class="sorting-indicator"></span>
-                        </a>
-                    </th>
-                    <th class="manage-column column-role" id="role" scope="col"><?php echo ROLE_TITLE; ?></th>
-                    <th class="manage-column column-posts num" id="posts" scope="col"><?php echo POSTS_TITLE; ?></th>
-                </tr>
-            </thead>
+        <br class="clear">
+    </div>
+    <h2 class="screen-reader-text"><?php echo USERS_LIST_TITLE; ?></h2>
+    <table class="wp-list-table widefat fixed striped users">
+        <thead>
+            <tr>
+                <td class="manage-column column-cb check-column" id="cb">
+                    <label for="cb-select-all-1" class="screen-reader-text"><?php echo SELECT_ALL_TITLE; ?></label>
+                    <input type="checkbox" id="cb-select-all-1">
+                </td>
+                <th class="manage-column column-username column-primary sortable desc" id="username" scope="col">
+                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <span><?php echo USERNAME_TITLE; ?></span>
+                        <span class="sorting-indicator"></span>
+                    </a>
+                </th>
+                <th class="manage-column column-name sortable desc" id="name" scope="col">
+                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <span><?php echo NAME_TITLE; ?></span>
+                        <span class="sorting-indicator"></span>
+                    </a>
+                </th>
+                <th class="manage-column column-email sortable desc" id="email" scope="col">
+                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <span><?php echo EMAIL_TITLE; ?></span>
+                        <span class="sorting-indicator"></span>
+                    </a>
+                </th>
+                <th class="manage-column column-role" id="role" scope="col"><?php echo ROLE_TITLE; ?></th>
+                <th class="manage-column column-posts num" id="posts" scope="col"><?php echo POSTS_TITLE; ?></th>
+            </tr>
+        </thead>
 
-            <tbody data-wp-lists="list:user" id="the-list">
-                <?php
-                if ($this->userList != NULL) {
-                    foreach ($this->userList as $userInfo) {
-                        ?>
-                        <tr id="user-<?php echo $userInfo->user_id; ?>">
-                            <th class="check-column" scope="row">
-                                <label for="user_<?php echo $userInfo->user_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo $userInfo->user_login; ?></label>
-                                <input type="checkbox" value="<?php echo $userInfo->user_id; ?>" class="author" id="user_<?php echo $userInfo->user_id; ?>" name="users[]">
-                            </th>
-                            <td data-colname="Username" class="username column-username has-row-actions column-primary">
-                                <img width="32" height="32" class="avatar avatar-32 photo" srcset="<?php echo PUBLIC_IMG ?>icon/no_avatar.jpg" src="<?php echo PUBLIC_IMG ?>icon/no_avatar.jpg" alt=""> 
-                                <strong>
-                                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>"><?php echo $userInfo->user_login; ?></a>
-                                </strong>
-                                <br>
-                                <div class="row-actions">
-                                    <span class="edit">
-                                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>"><?php echo EDIT_TITLE; ?>
-                                        </a> | </span>
-                                    <span class="delete">
-                                        <a href="<?php echo URL . CONTEXT_PATH_USER_DELETE; ?>" class="submitdelete"><?php echo DELETE_TITLE; ?>
-                                        </a>
-                                    </span>
-                                </div>
-                                <button class="toggle-row" type="button">
-                                    <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
-                                </button>
-                            </td>
-                            <td data-colname="Name" class="name column-name"> </td>
-                            <td data-colname="Email" class="email column-email"><a href="mailto:<?php echo $userInfo->user_email; ?>"><?php echo $userInfo->user_email; ?></a></td>
-                            <td data-colname="Role" class="role column-role">
-                                <?php echo $userInfo->wp_capabilities_title; ?>
-                            </td>
-                            <td data-colname="Posts" class="posts column-posts num">0</td>
-                        </tr>      
-                        <?php
-                    }
+        <tbody data-wp-lists="list:user" id="the-list">
+            <?php
+            if ($this->userList != NULL) {
+                foreach ($this->userList as $userInfo) {
+
+                    ?>
+                    <tr id="user-<?php echo $userInfo->user_id; ?>">
+                        <th class="check-column" scope="row">
+                            <label for="user_<?php echo $userInfo->user_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo $userInfo->user_login; ?></label>
+                            <input type="checkbox" value="<?php echo $userInfo->user_id; ?>" class="author" id="user_<?php echo $userInfo->user_id; ?>" name="users[]">
+                        </th>
+                        <td data-colname="Username" class="username column-username has-row-actions column-primary">
+                            <img width="32" height="32" class="avatar avatar-32 photo" srcset="<?php echo PUBLIC_IMG ?>icon/no_avatar.jpg" src="<?php echo PUBLIC_IMG ?>icon/no_avatar.jpg" alt=""> 
+                            <strong>
+                                <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>"><?php echo $userInfo->user_login; ?></a>
+                            </strong>
+                            <br>
+                            <div class="row-actions">
+                                <span class="edit">
+                                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>"><?php echo EDIT_TITLE; ?>
+                                    </a> | </span>
+                                <span class="delete">
+                                    <a href="<?php echo URL . CONTEXT_PATH_USER_DELETE; ?>" class="submitdelete"><?php echo DELETE_TITLE; ?>
+                                    </a>
+                                </span>
+                            </div>
+                            <button class="toggle-row" type="button">
+                                <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
+                            </button>
+                        </td>
+                        <td data-colname="<?php echo NAME_TITLE; ?>" class="name column-name"><?php echo $userInfo->display_name; ?></td>
+                        <td data-colname="<?php echo EMAIL_TITLE; ?>" class="email column-email"><a href="mailto:<?php echo $userInfo->user_email; ?>"><?php echo $userInfo->user_email; ?></a></td>
+                        <td data-colname="<?php echo ROLE_TITLE; ?>" class="role column-role">
+                            <?php echo $userInfo->wp_capabilities_title; ?>
+                        </td>
+                        <td data-colname="<?php echo POSTS_TITLE; ?>" class="posts column-posts num">0</td>
+                    </tr>      
+                    <?php
                 }
+            }
 
-                ?>
-            </tbody>
+            ?>
+        </tbody>
 
-            <tfoot>
-                <tr>
-                    <td class="manage-column column-cb check-column">
-                        <label for="cb-select-all-2" class="screen-reader-text"><?php echo SELECT_ALL_TITLE; ?></label>
-                        <input type="checkbox" id="cb-select-all-2">
-                    </td>
-                    <th class="manage-column column-username column-primary sortable desc" scope="col">
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                            <span><?php echo USERNAME_TITLE; ?></span>
-                            <span class="sorting-indicator"></span>
-                        </a>
-                    </th>
-                    <th class="manage-column column-name sortable desc" scope="col">
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                            <span><?php echo NAME_TITLE; ?></span>
-                            <span class="sorting-indicator"></span>
-                        </a>
-                    </th>
-                    <th class="manage-column column-email sortable desc" scope="col">
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                            <span><?php echo EMAIL_TITLE; ?></span>
-                            <span class="sorting-indicator"></span>
-                        </a>
-                    </th>
-                    <th class="manage-column column-role" scope="col"><?php echo ROLE_TITLE; ?></th>
-                    <th class="manage-column column-posts num" scope="col"><?php echo POSTS_TITLE; ?></th>
-                </tr>
-            </tfoot>
+        <tfoot>
+            <tr>
+                <td class="manage-column column-cb check-column">
+                    <label for="cb-select-all-2" class="screen-reader-text"><?php echo SELECT_ALL_TITLE; ?></label>
+                    <input type="checkbox" id="cb-select-all-2">
+                </td>
+                <th class="manage-column column-username column-primary sortable desc" scope="col">
+                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <span><?php echo USERNAME_TITLE; ?></span>
+                        <span class="sorting-indicator"></span>
+                    </a>
+                </th>
+                <th class="manage-column column-name sortable desc" scope="col">
+                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <span><?php echo NAME_TITLE; ?></span>
+                        <span class="sorting-indicator"></span>
+                    </a>
+                </th>
+                <th class="manage-column column-email sortable desc" scope="col">
+                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <span><?php echo EMAIL_TITLE; ?></span>
+                        <span class="sorting-indicator"></span>
+                    </a>
+                </th>
+                <th class="manage-column column-role" scope="col"><?php echo ROLE_TITLE; ?></th>
+                <th class="manage-column column-posts num" scope="col"><?php echo POSTS_TITLE; ?></th>
+            </tr>
+        </tfoot>
 
-        </table>
-        <div class="tablenav bottom">
+    </table>
+    <div class="tablenav bottom">
 
-            <div class="alignleft actions bulkactions">
-                <label class="screen-reader-text" for="bulk-action-selector-bottom"><?php echo SELECT_BULK_ACTION_TITLE; ?></label>
-                <select id="bulk-action-selector-bottom" name="action2">
-                    <option value="-1"><?php echo BULK_ACTIONS; ?></option>
-                    <option value="delete"><?php echo DELETE_TITLE; ?></option>
-                </select>
-                <input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button action" id="doaction2">
-            </div>
-            <div class="alignleft actions">
-                <label for="new_role2" class="screen-reader-text"><?php echo CHANGE_ROLE_TO; ?>…</label>
-                <select id="new_role2" name="new_role2">
-                    <option value=""><?php echo CHANGE_ROLE_TO; ?>…</option>
-
-                    <option value="subscriber"><?php echo SUBSCRIBER_TITLE; ?></option>
-                    <option value="contributor"><?php echo CONTRIBUTOR_TITLE; ?></option>
-                    <option value="author"><?php echo AUTHOR_TITLE; ?></option>
-                    <option value="editor"><?php echo EDITOR_TITLE; ?></option>
-                    <option value="administrator"><?php echo ADMINISTRATOR_TITLE; ?></option>
-                </select>
-                <input type="submit" value="<?php echo CHANGE_TITLE; ?>" class="button" id="changeit" name="changeit">
-            </div>
-            <div class="tablenav-pages"><span class="displaying-num">6 <?php echo ITEMS_TITLE; ?></span>
-                <span class="pagination-links"><span aria-hidden="true" class="tablenav-pages-navspan">«</span>
-                    <span aria-hidden="true" class="tablenav-pages-navspan">‹</span>
-                    <span class="screen-reader-text">Current Page</span><span class="paging-input" id="table-paging">1 of <span class="total-pages">3</span></span>
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "2" ?>" class="next-page"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "3" ?>" class="last-page"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a></span>
-            </div>
-            <br class="clear">
+        <div class="alignleft actions bulkactions">
+            <label class="screen-reader-text" for="bulk-action-selector-bottom"><?php echo SELECT_BULK_ACTION_TITLE; ?></label>
+            <select id="bulk-action-selector-bottom" name="action2">
+                <option value="-1"><?php echo BULK_ACTIONS; ?></option>
+                <option value="delete"><?php echo DELETE_TITLE; ?></option>
+            </select>
+            <input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button action" id="doaction2">
         </div>
-    </form>
+        <div class="alignleft actions">
+            <label for="new_role2" class="screen-reader-text"><?php echo CHANGE_ROLE_TO; ?>…</label>
+            <select id="new_role2" name="new_role2">
+                <option value=""><?php echo CHANGE_ROLE_TO; ?>…</option>
 
-    <br class="clear">
-</div>
+                <option value="subscriber"><?php echo SUBSCRIBER_TITLE; ?></option>
+                <option value="contributor"><?php echo CONTRIBUTOR_TITLE; ?></option>
+                <option value="author"><?php echo AUTHOR_TITLE; ?></option>
+                <option value="editor"><?php echo EDITOR_TITLE; ?></option>
+                <option value="administrator"><?php echo ADMINISTRATOR_TITLE; ?></option>
+            </select>
+            <input type="submit" value="<?php echo CHANGE_TITLE; ?>" class="button" id="changeit" name="changeit">
+        </div>
+        <div class="tablenav-pages"><span class="displaying-num">6 <?php echo ITEMS_TITLE; ?></span>
+            <span class="pagination-links"><span aria-hidden="true" class="tablenav-pages-navspan">«</span>
+                <span aria-hidden="true" class="tablenav-pages-navspan">‹</span>
+                <span class="screen-reader-text">Current Page</span><span class="paging-input" id="table-paging">1 of <span class="total-pages">3</span></span>
+                <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "2" ?>" class="next-page"><span class="screen-reader-text">Next page</span><span aria-hidden="true">›</span></a>
+                <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "3" ?>" class="last-page"><span class="screen-reader-text">Last page</span><span aria-hidden="true">»</span></a></span>
+        </div>
+        <br class="clear">
+    </div>
+</form>
+<script>
+    jQuery("#form-user-edit").submit(function (e) {
+        var postData = jQuery(this).serializeArray();
+//        var formURL = jQuery(this).attr("action");
+        jQuery.ajax({
+            url: "",
+            type: "POST",
+            data: postData,
+            success: function (data, textStatus, jqXHR)
+            {
+                jQuery(".wrap").html(data);
+                //data: return data from server
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                //if fails      
+            }
+        });
+        e.preventDefault(); //STOP default action
+        e.unbind(); //unbind. to stop multiple form submit.
+    });
+
+
+
+</script>
+<br class="clear">

@@ -55,22 +55,27 @@ class User extends Controller
         }
     }
 
-    public function edit()
-    {
-        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {            
-            $this->model = $this->loadModel('User');
-            $this->model->getUserList($this->view);
-            $this->view->renderAdmin('user/edit');
-        } else {
-            header('location: ' . URL . CONTEXT_PATH_ADMIN);
-        }
-    }
-
     public function logout()
     {
         $this->model = $this->loadModel('User');
         $this->model->logout();
         // redirect user to base URL
         header('location: ' . URL . CONTEXT_PATH_USER_LOGIN);
+    }
+
+    public function edit()
+    {
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
+            $this->model = $this->loadModel('User');
+            $this->model->prepareEditPage($this->view);
+
+            if (isset($_POST['orderby']) && isset($_POST['order'])) {
+                $this->view->renderAdmin('user/edit', TRUE);
+            } else {
+                $this->view->renderAdmin('user/edit');
+            }
+        } else {
+            header('location: ' . URL . CONTEXT_PATH_ADMIN);
+        }
     }
 }
