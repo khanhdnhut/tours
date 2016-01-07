@@ -8,7 +8,7 @@
  * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
  *
  */
-class Home extends Controller
+class HomeCtrl extends Controller
 {
     /**
      * Construct this object by extending the basic Controller class
@@ -23,7 +23,7 @@ class Home extends Controller
     public function index()
     {
         // load views
-        $this->view->render('home/index');
+        $this->view->render(RENDER_VIEW_HOME_INDEX);
     }
 
 }

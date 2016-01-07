@@ -1,6 +1,7 @@
 <?php
 
-class Application {
+class Application
+{
 
     /** @var null The controller */
     private $controllerName = null;
@@ -16,25 +17,29 @@ class Application {
      * "Start" the application:
      * Analyze the URL elements and calls the according controller/method or the fallback
      */
-    public function __construct() {
+    public function __construct()
+    {
         // create array with URL parts in $url
         $this->splitUrl();
 
         // check for controller: no controller given ? then load start-page
         if (!$this->controllerName) {
-            require CONTROLLER_PATH . 'home.php';
-            $page = new Home();
+            require CONTROLLER_PATH . 'home_ctrl.php';
+            $page = new HomeCtrl();
             $page->index();
-        } elseif (!file_exists(CONTROLLER_PATH . $this->controllerName . '.php')) {
-            require CONTROLLER_PATH . 'error.php';
-            $page = new Error();
+        } elseif (!file_exists(CONTROLLER_PATH . $this->controllerName . '_ctrl.php')) {
+            require CONTROLLER_PATH . 'error_ctrl.php';
+            $page = new ErrorCtrl();
             $page->notFound();
         } else {
             // here we did check for controller: does such a controller exist ?
             // if so, then load this file and create this controller
-            // example: if controller would be "car", then this line would translate into: $this->car = new car();
-            require CONTROLLER_PATH . $this->controllerName . '.php';
-            $this->controller = new $this->controllerName();
+            // example: if controller would be "car", then this line would translate into: $this->car = new car();            
+            
+            $controllerFile = $this->controllerName . '_ctrl.php';
+            $controllerName = $this->controllerName . 'Ctrl';
+            require CONTROLLER_PATH . $controllerFile;
+            $this->controller = new $controllerName();
 
             // check for method: does such a method exist in the controller ?
             if (!method_exists($this->controller, $this->actionName)) {
@@ -42,8 +47,8 @@ class Application {
                     // no action defined: call the default index() method of a selected controller
                     $this->controller->index();
                 } else {
-                    require CONTROLLER_PATH . 'error.php';
-                    $page = new Error();
+                    require CONTROLLER_PATH . 'error_ctrl.php';
+                    $page = new ErrorCtrl();
                     $page->notFound();
                 }
             } else {
@@ -51,8 +56,8 @@ class Application {
                 $numberOfRequiredParameters = $reflectionMethod->getNumberOfRequiredParameters();
 
                 if (sizeof($this->params) < $numberOfRequiredParameters) {
-                    require CONTROLLER_PATH . 'error.php';
-                    $page = new Error();
+                    require CONTROLLER_PATH . 'error_ctrl.php';
+                    $page = new ErrorCtrl();
                     $page->notFound();
                 } else {
                     if (!empty($this->params)) {
@@ -70,7 +75,8 @@ class Application {
     /**
      * Get and split the URL
      */
-    private function splitUrl() {
+    private function splitUrl()
+    {
         if (isset($_GET['url'])) {
 
             // split URL
@@ -96,5 +102,4 @@ class Application {
 //            echo 'Parameters: ' . print_r($this->url_params, true) . '<br>';
         }
     }
-
 }

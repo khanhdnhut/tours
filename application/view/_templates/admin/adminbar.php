@@ -55,7 +55,7 @@ if (Session::get('userInfo') !=
                                                 CAPABILITY_EDITOR,
                                                 CAPABILITY_ADMINISTRATOR))) {
                                         ?>                                     
-                                        <li id="wp-admin-bar-new-media"><a href="<?php echo URL . CONTEXT_PATH_MEDIA_ADD_NEWS; ?>" class="ab-item"><?php echo DASHBOARD_MEDIA_TITLE; ?></a> </li>
+                                        <li id="wp-admin-bar-new-media"><a href="<?php echo URL . CONTEXT_PATH_MEDIA_ADD_NEW; ?>" class="ab-item"><?php echo DASHBOARD_MEDIA_TITLE; ?></a> </li>
                                         <?php
                                     }
                                     if (in_array(Auth::getCapability(),

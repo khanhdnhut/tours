@@ -25,3 +25,9 @@ require APP . 'config/autoload.php';
 
 // Start the application - Use autoload class
 $app = new Application();
+
+if (!isset($_SESSION['options'])){
+    require APP . 'controller/option_ctrl.php';
+    $optionCtrl = new OptionCtrl();
+    $optionCtrl->loadOption();
+}

@@ -8,7 +8,7 @@
  * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
  *
  */
-class Admin extends Controller {
+class OptionCtrl extends Controller {
 
     /**
      * Construct this object by extending the basic Controller class
@@ -23,7 +23,12 @@ class Admin extends Controller {
      */
     public function index() {
         if(Auth::handleLogin()){
-            $this->view->renderAdmin('admin/index');
+            $this->view->renderAdmin('option/index');
         }
+    }
+    
+    public function loadOption(){
+        $this->model = $this->loadModel('Option');
+        $this->model->loadOption();
     }
 }

@@ -42,29 +42,6 @@ class Auth
         return TRUE;
     }
 
-    public static function getRole($capability_encode)
-    {
-        $capability = json_decode($capability_encode);
-        $capability_administrator = CAPABILITY_ADMINISTRATOR;
-        $capability_editor = CAPABILITY_EDITOR;
-        $capability_author = CAPABILITY_AUTHOR;
-        $capability_contributor = CAPABILITY_CONTRIBUTOR;
-        $capability_subscriber = CAPABILITY_SUBSCRIBER;
-
-        if (property_exists($capability, $capability_administrator) && $capability->$capability_administrator) {
-            
-            return CAPABILITY_ADMINISTRATOR;
-        } else if (property_exists($capability, $capability_editor) && $capability->$capability_editor) {
-            return CAPABILITY_EDITOR;
-        } else if (property_exists($capability, $capability_author) && $capability->$capability_author) {
-            return CAPABILITY_AUTHOR;
-        } else if (property_exists($capability, $capability_contributor) && $capability->$capability_contributor) {
-            return CAPABILITY_CONTRIBUTOR;
-        } else if (property_exists($capability, $capability_subscriber) && $capability->$capability_subscriber) {
-            return CAPABILITY_SUBSCRIBER;
-        }
-    }
-
     public static function getCapability()
     {
         // Initialize the session
@@ -79,9 +56,8 @@ class Auth
                     return Session::get('capability');
                 } else {
                     $userBO = json_decode(Session::get('userInfo'));
-                    $role = Auth::getRole($userBO->wp_capabilities);
-                    Session::set("capability", $role);
-                    return $role;
+                    Session::set("capability", $userBO->wp_capabilities);
+                    return $userBO->wp_capabilities;
                 }
             }
         }

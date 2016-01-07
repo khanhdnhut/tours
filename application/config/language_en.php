@@ -97,6 +97,15 @@ define("CAPABILITY_AUTHOR", "author");
 define("CAPABILITY_EDITOR", "editor");
 
 /*
+ * Language for: RENDER_VIEW
+ */
+define("RENDER_VIEW_USER_EDIT", "user/user_edit");
+define("RENDER_VIEW_USER_LOGIN", "user/login");
+define("RENDER_VIEW_ERROR_INDEX", "error/index");
+define("RENDER_VIEW_ERROR_NOTFOUND", "error/notFound");
+define("RENDER_VIEW_HOME_INDEX", "home/index");
+
+/*
  * Language for: URL
  */
 define("CONTEXT_PATH_ADMIN", "admin/");
@@ -158,6 +167,8 @@ define("USERS_LIST_NAVIGATION", "Users list navigation");
 define("ITEMS_TITLE", "items");
 define("CURRENT_PAGE_TITLE", "Current Page");
 define("OF_TITLE", "of");
+define("FIRST_PAGE_TITLE", "First Page");
+define("PREVIOUS_PAGE_TITLE", "Previous page");
 define("NEXT_PAGE_TITLE", "Next page");
 define("LAST_PAGE_TITLE", "Last page");
 define("USERS_LIST_TITLE", "Users list");
