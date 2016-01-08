@@ -63,6 +63,12 @@ class UserCtrl extends Controller {
             $this->model = $this->loadModel('User');
             $this->para = new stdClass();
             
+            if (isset($_POST['type'])) {
+                $this->para->type = $_POST['type'];
+            }
+            if (isset($_POST['role'])) {
+                $this->para->role = $_POST['role'];
+            }
             if (isset($_POST['orderby'])) {
                 $this->para->orderby = $_POST['orderby'];
             }
@@ -92,6 +98,14 @@ class UserCtrl extends Controller {
             }
             if (isset($_POST['action2'])) {
                 $this->para->action2 = $_POST['action2'];
+            }
+            
+            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2", "new_role", "new_role2")) && isset($this->para->users)) {
+                if (in_array($this->para->type, array("action", "action2"))) {
+                    $this->model->executeAction($this->para);
+                } else {
+                    $this->model->changeRole($this->para);
+                }
             }
                         
             $this->model->prepareEditPage($this->view, $this->para);

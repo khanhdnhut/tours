@@ -151,6 +151,7 @@ define("CONTEXT_PATH_OPTIONS_EDIT_PERMALINK", "options/edit/permalink/");
  */
 define("FILTER_USERS_LIST_TITLE", "Filter users list");
 define("FILTER_USERS_LIST_ALL_TITLE", "All");
+define("NUMBER_SEARCH_USER", "number_search_user");
 define("ADMINISTRATOR_TITLE", "Administrator");
 define("EDITOR_TITLE", "Editor");
 define("AUTHOR_TITLE", "Author");

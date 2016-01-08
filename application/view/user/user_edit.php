@@ -5,32 +5,86 @@
 <h2 class="screen-reader-text"><?php echo FILTER_USERS_LIST_TITLE; ?></h2>
 <ul class="subsubsub">
     <li class="all">
-        <a class="current" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+        <a class="<?php
+        if (isset($this->role) && $this->role == -1) {
+            echo "current";
+        }
+
+        ?>" href="#" onclick="filterRole(this)" role="-1">
             <?php echo FILTER_USERS_LIST_ALL_TITLE; ?> <span class="count">(<?php echo $this->count[FILTER_USERS_LIST_ALL_TITLE]; ?>)</span></a> |</li>
     <li class="administrator">
-        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_ADMINISTRATOR; ?>">
+        <a class="<?php
+        if (isset($this->role) && $this->role == CAPABILITY_ADMINISTRATOR) {
+            echo "current";
+        }
+
+        ?>" href="#" onclick="filterRole(this)" role="<?php echo CAPABILITY_ADMINISTRATOR; ?>">
             <?php echo ADMINISTRATOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_ADMINISTRATOR]; ?>)</span></a> |</li>
     <li class="editor">
-        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_EDITOR; ?>">
+        <a class="<?php
+        if (isset($this->role) && $this->role == CAPABILITY_EDITOR) {
+            echo "current";
+        }
+
+        ?>" href="#" onclick="filterRole(this)" role="<?php echo CAPABILITY_EDITOR; ?>">
             <?php echo EDITOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_EDITOR]; ?>)</span></a> |</li>
     <li class="author">
-        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_AUTHOR; ?>">
+        <a class="<?php
+        if (isset($this->role) && $this->role == CAPABILITY_AUTHOR) {
+            echo "current";
+        }
+
+        ?>" href="#" onclick="filterRole(this)" role="<?php echo CAPABILITY_AUTHOR; ?>">
             <?php echo AUTHOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_AUTHOR]; ?>)</span></a> |</li>
     <li class="contributor">
-        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_CONTRIBUTOR; ?>">
+        <a class="<?php
+        if (isset($this->role) && $this->role == CAPABILITY_CONTRIBUTOR) {
+            echo "current";
+        }
+
+        ?>" href="#" onclick="filterRole(this)" role="<?php echo CAPABILITY_CONTRIBUTOR; ?>">
             <?php echo CONTRIBUTOR_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_CONTRIBUTOR]; ?>)</span></a> |</li>
     <li class="subscriber">
-        <a href="<?php echo URL . CONTEXT_PATH_USER_FILTER_SUBSCRIBER; ?>">
+        <a class="<?php
+        if (isset($this->role) && $this->role == CAPABILITY_SUBSCRIBER) {
+            echo "current";
+        }
+
+        ?>" href="#" onclick="filterRole(this)" role="<?php echo CAPABILITY_SUBSCRIBER; ?>">
             <?php echo SUBSCRIBER_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_SUBSCRIBER]; ?>)</span></a>
     </li>
 </ul>
 <form id="form-user-edit" method="post">
-    <input type="hidden" value="" name="orderby"/>
-    <input type="hidden" value="" name="order"/>
+    <input type="hidden" value="<?php
+    if (isset($this->role)) {
+        echo htmlspecialchars($this->role);
+    }
+
+    ?>" name="role"/>
+    <input type="hidden" value="<?php
+    if (isset($this->orderby)) {
+        echo htmlspecialchars($this->orderby);
+    }
+
+    ?>" name="orderby"/>
+    <input type="hidden" value="<?php
+    if (isset($this->order)) {
+        echo htmlspecialchars($this->order);
+    }
+
+    ?>" name="order"/>
+
+    <input type="hidden" value="" name="type"/>
+
     <p class="search-box">
         <label for="user-search-input" class="screen-reader-text">
             <?php echo SEARCH_USERS_TITLE; ?>:</label>
-        <input type="search" value="" name="s" id="user-search-input" />
+        <input type="search" value="<?php
+        if (isset($this->s)) {
+            echo htmlspecialchars($this->s);
+        }
+
+        ?>" name="s" id="user-search-input" />
         <input type="submit" value="<?php echo SEARCH_USERS_TITLE; ?>" class="button" id="search-submit" />
     </p>
 
@@ -45,7 +99,7 @@
                     <?php echo DELETE_TITLE; ?>
                 </option>
             </select>
-            <input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button action" id="doaction">
+            <div class="button" onclick="applyAction('action')"><?php echo APPLY_TITLE; ?></div>
         </div>
         <div class="alignleft actions">
             <label for="new_role" class="screen-reader-text">
@@ -70,24 +124,24 @@
                     <?php echo ADMINISTRATOR_TITLE; ?>
                 </option>
             </select>
-            <input type="submit" value="Change" class="button" id="changeit" name="changeit">
+            <div class="button" onclick="applyAction('new_role')"><?php echo APPLY_TITLE; ?></div>
         </div>
         <?php if ($this->pageNumber > 0) { ?>
             <h2 class="screen-reader-text"><?php echo USERS_LIST_NAVIGATION; ?></h2>
-            <div class="tablenav-pages"><span class="displaying-num"><?php echo $this->count[FILTER_USERS_LIST_ALL_TITLE]; ?> <?php echo ITEMS_TITLE; ?></span>
+            <div class="tablenav-pages"><span class="displaying-num"><?php echo $this->count[NUMBER_SEARCH_USER]; ?> <?php echo ITEMS_TITLE; ?></span>
                 <span class="pagination-links">
                     <?php if ($this->page == 1) { ?>
                         <span aria-hidden="true" class="tablenav-pages-navspan">«</span>
                         <span aria-hidden="true" class="tablenav-pages-navspan">‹</span>
                     <?php } else { ?>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "1"; ?>" class="first-page">
+                        <a  href="#" page="1" onclick="filterPage(this)" class="first-page">
                             <span class="screen-reader-text"><?php echo FIRST_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">«</span>
                         </a>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . ($this->page - 1); ?>" class="prev-page">
+                        <a href="#" page="<?php echo ($this->page - 1); ?>" onclick="filterPage(this)" class="prev-page">
                             <span class="screen-reader-text"><?php echo PREVIOUS_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">‹</span>
-                        </a>                        
+                        </a>
                     <?php } ?>
                     <span class="paging-input">
                         <label class="screen-reader-text" for="current-page-selector"><?php echo CURRENT_PAGE_TITLE; ?></label>
@@ -99,18 +153,15 @@
                         <span aria-hidden="true" class="tablenav-pages-navspan">›</span>
                         <span aria-hidden="true" class="tablenav-pages-navspan">»</span>
                     <?php } else { ?>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . ($this->page + 1); ?>" class="next-page">
+                        <a href="#" page="<?php echo ($this->page + 1); ?>" onclick="filterPage(this)" class="next-page">
                             <span class="screen-reader-text"><?php echo NEXT_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">›</span>
                         </a>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . $this->pageNumber; ?>" class="last-page">
+                        <a href="#" page="<?php echo $this->pageNumber; ?>" onclick="filterPage(this)" class="last-page">
                             <span class="screen-reader-text"><?php echo LAST_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">»</span>
-                        </a>                      
+                        </a>
                     <?php } ?> 
-
-
-
                 </span>
             </div>
             <br class="clear">
@@ -122,26 +173,78 @@
             <tr>
                 <td class="manage-column column-cb check-column" id="cb">
                     <label for="cb-select-all-1" class="screen-reader-text"><?php echo SELECT_ALL_TITLE; ?></label>
-                    <input type="checkbox" id="cb-select-all-1">
+                    <input type="checkbox" id="cb-select-all-1" onclick="checkAll(this)">
                 </td>
-                <th class="manage-column column-username column-primary sortable desc" id="username" scope="col">
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                        <span><?php echo USERNAME_TITLE; ?></span>
-                        <span class="sorting-indicator"></span>
-                    </a>
-                </th>
-                <th class="manage-column column-name sortable desc" id="name" scope="col">
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                        <span><?php echo NAME_TITLE; ?></span>
-                        <span class="sorting-indicator"></span>
-                    </a>
-                </th>
-                <th class="manage-column column-email sortable desc" id="email" scope="col">
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                        <span><?php echo EMAIL_TITLE; ?></span>
-                        <span class="sorting-indicator"></span>
-                    </a>
-                </th>
+
+                <?php
+                if (isset($this->orderby) && $this->orderby == "login" && in_array($this->order, array('asc', 'desc'))) {
+
+                    ?>
+                    <th class="manage-column column-username column-primary sorted <?php echo $this->order; ?>" id="username" scope="col">
+                        <a href="#" orderby="login" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                            <span><?php echo USERNAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                } else {
+
+                    ?>
+                    <th class="manage-column column-username column-primary sortable desc" id="username" scope="col">
+                        <a href="#" orderby="login" order="desc" onclick="filterOrderBy(this)">
+                            <span><?php echo USERNAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                }
+
+                if (isset($this->orderby) && $this->orderby == "name" && in_array($this->order, array('asc', 'desc'))) {
+
+                    ?>
+                    <th class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
+                        <a href="#" orderby="name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                            <span><?php echo NAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                } else {
+
+                    ?>
+                    <th class="manage-column column-name sortable desc" id="name" scope="col">
+                        <a href="#" orderby="name" order="desc" onclick="filterOrderBy(this)">
+                            <span><?php echo NAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                }
+
+                if (isset($this->orderby) && $this->orderby == "email" && in_array($this->order, array('asc', 'desc'))) {
+
+                    ?>
+                    <th class="manage-column column-email sorted <?php echo $this->order; ?>" id="email" scope="col">
+                        <a href="#" orderby="email" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                            <span><?php echo EMAIL_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>   
+                    <?php
+                } else {
+
+                    ?>
+                    <th class="manage-column column-email sortable desc" id="email" scope="col">
+                        <a href="#" orderby="email" order="desc" onclick="filterOrderBy(this)">
+                            <span><?php echo EMAIL_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>   
+                    <?php
+                }
+
+                ?>
+
                 <th class="manage-column column-role" id="role" scope="col"><?php echo ROLE_TITLE; ?></th>
                 <th class="manage-column column-posts num" id="posts" scope="col"><?php echo POSTS_TITLE; ?></th>
             </tr>
@@ -195,26 +298,76 @@
             <tr>
                 <td class="manage-column column-cb check-column">
                     <label for="cb-select-all-2" class="screen-reader-text"><?php echo SELECT_ALL_TITLE; ?></label>
-                    <input type="checkbox" id="cb-select-all-2">
+                    <input type="checkbox" id="cb-select-all-2" onclick="checkAll(this)">
                 </td>
-                <th class="manage-column column-username column-primary sortable desc" scope="col">
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                        <span><?php echo USERNAME_TITLE; ?></span>
-                        <span class="sorting-indicator"></span>
-                    </a>
-                </th>
-                <th class="manage-column column-name sortable desc" scope="col">
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                        <span><?php echo NAME_TITLE; ?></span>
-                        <span class="sorting-indicator"></span>
-                    </a>
-                </th>
-                <th class="manage-column column-email sortable desc" scope="col">
-                    <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
-                        <span><?php echo EMAIL_TITLE; ?></span>
-                        <span class="sorting-indicator"></span>
-                    </a>
-                </th>
+                <?php
+                if (isset($this->orderby) && $this->orderby == "login" && in_array($this->order, array('asc', 'desc'))) {
+
+                    ?>
+                    <th class="manage-column column-username column-primary sorted <?php echo $this->order; ?>" id="username" scope="col">
+                        <a href="#" orderby="login" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                            <span><?php echo USERNAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                } else {
+
+                    ?>
+                    <th class="manage-column column-username column-primary sortable desc" id="username" scope="col">
+                        <a href="#" orderby="login" order="desc" onclick="filterOrderBy(this)">
+                            <span><?php echo USERNAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                }
+
+                if (isset($this->orderby) && $this->orderby == "name" && in_array($this->order, array('asc', 'desc'))) {
+
+                    ?>
+                    <th class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
+                        <a href="#" orderby="name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                            <span><?php echo NAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                } else {
+
+                    ?>
+                    <th class="manage-column column-name sortable desc" id="name" scope="col">
+                        <a href="#" orderby="name" order="desc" onclick="filterOrderBy(this)">
+                            <span><?php echo NAME_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>
+                    <?php
+                }
+
+                if (isset($this->orderby) && $this->orderby == "email" && in_array($this->order, array('asc', 'desc'))) {
+
+                    ?>
+                    <th class="manage-column column-email sorted <?php echo $this->order; ?>" id="email" scope="col">
+                        <a href="#" orderby="email" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                            <span><?php echo EMAIL_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>   
+                    <?php
+                } else {
+
+                    ?>
+                    <th class="manage-column column-email sortable desc" id="email" scope="col">
+                        <a href="#" orderby="email" order="desc" onclick="filterOrderBy(this)">
+                            <span><?php echo EMAIL_TITLE; ?></span>
+                            <span class="sorting-indicator"></span>
+                        </a>
+                    </th>   
+                    <?php
+                }
+
+                ?>
                 <th class="manage-column column-role" scope="col"><?php echo ROLE_TITLE; ?></th>
                 <th class="manage-column column-posts num" scope="col"><?php echo POSTS_TITLE; ?></th>
             </tr>
@@ -229,7 +382,7 @@
                 <option value="-1"><?php echo BULK_ACTIONS; ?></option>
                 <option value="delete"><?php echo DELETE_TITLE; ?></option>
             </select>
-            <input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button action" id="doaction2">
+            <div class="button" onclick="applyAction('action2')"><?php echo APPLY_TITLE; ?></div>
         </div>
         <div class="alignleft actions">
             <label for="new_role2" class="screen-reader-text"><?php echo CHANGE_ROLE_TO; ?>…</label>
@@ -241,23 +394,23 @@
                 <option value="author"><?php echo AUTHOR_TITLE; ?></option>
                 <option value="editor"><?php echo EDITOR_TITLE; ?></option>
                 <option value="administrator"><?php echo ADMINISTRATOR_TITLE; ?></option>
-            </select>
-            <input type="submit" value="<?php echo CHANGE_TITLE; ?>" class="button" id="changeit" name="changeit">
+            </select>            
+            <div class="button" onclick="applyAction('new_role2')"><?php echo APPLY_TITLE; ?></div>
         </div>
 
         <?php if ($this->pageNumber > 0) { ?>
             <div class="tablenav-pages">
-                <span class="displaying-num"><?php echo $this->count[FILTER_USERS_LIST_ALL_TITLE]; ?> <?php echo ITEMS_TITLE; ?></span>
+                <span class="displaying-num"><?php echo $this->count[NUMBER_SEARCH_USER]; ?> <?php echo ITEMS_TITLE; ?></span>
                 <span class="pagination-links">
                     <?php if ($this->page == 1) { ?>
                         <span aria-hidden="true" class="tablenav-pages-navspan">«</span>
                         <span aria-hidden="true" class="tablenav-pages-navspan">‹</span>
                     <?php } else { ?>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . "1"; ?>" class="first-page">
+                        <a href="#" page="1" onclick="filterPage(this)" class="first-page">
                             <span class="screen-reader-text"><?php echo FIRST_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">«</span>
                         </a>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . ($this->page - 1); ?>" class="prev-page">
+                        <a href="#" page="<?php echo ($this->page - 1); ?>" onclick="filterPage(this)" class="prev-page">
                             <span class="screen-reader-text"><?php echo PREVIOUS_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">‹</span>
                         </a>                        
@@ -268,11 +421,11 @@
                         <span aria-hidden="true" class="tablenav-pages-navspan">›</span>
                         <span aria-hidden="true" class="tablenav-pages-navspan">»</span>
                     <?php } else { ?>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . ($this->page + 1); ?>" class="next-page">
+                        <a href="#" page="<?php echo ($this->page + 1); ?>" onclick="filterPage(this)" class="next-page">
                             <span class="screen-reader-text"><?php echo NEXT_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">›</span>
                         </a>
-                        <a href="<?php echo URL . CONTEXT_PATH_USER_EDIT . $this->pageNumber; ?>" class="last-page">
+                        <a href="#" page="<?php echo $this->pageNumber; ?>" onclick="filterPage(this)" class="last-page">
                             <span class="screen-reader-text"><?php echo LAST_PAGE_TITLE; ?></span>
                             <span aria-hidden="true">»</span>
                         </a>                      
@@ -287,6 +440,11 @@
     jQuery("#form-user-edit").submit(function (e) {
         var postData = jQuery(this).serializeArray();
 //        var formURL = jQuery(this).attr("action");
+        searchUser(postData);
+        e.preventDefault(); //STOP default action
+    });
+
+    function searchUser(postData) {
         jQuery.ajax({
             url: "",
             type: "POST",
@@ -301,11 +459,58 @@
                 //if fails      
             }
         });
-        e.preventDefault(); //STOP default action
-        e.unbind(); //unbind. to stop multiple form submit.
-    });
+    }
 
+    function filterRole(element) {
+        var role = jQuery(element).attr("role");
+        jQuery('#form-user-edit input[name="role"]').val(role);
+        var postData = jQuery("#form-user-edit").serializeArray();
+//        var formURL = jQuery(this).attr("action");
+        searchUser(postData);
+    }
 
+    function filterOrderBy(element) {
+        var orderby = jQuery(element).attr("orderby");
+        var order = jQuery(element).attr("order");
+        if (order == "asc") {
+            order = "desc";
+        } else {
+            order = "asc";
+        }
+        jQuery('#form-user-edit input[name="orderby"]').val(orderby);
+        jQuery('#form-user-edit input[name="order"]').val(order);
+        var postData = jQuery("#form-user-edit").serializeArray();
+//        var formURL = jQuery(this).attr("action");
+        searchUser(postData);
+    }
+
+    function filterPage(element) {
+        var page = jQuery(element).attr("page");
+        jQuery('#form-user-edit input[name="page"]').val(page);
+        var postData = jQuery("#form-user-edit").serializeArray();
+//        var formURL = jQuery(this).attr("action");
+        searchUser(postData);
+    }
+
+    function applyAction(type) {
+        jQuery('#form-user-edit input[name="type"]').val(type);
+        var postData = jQuery("#form-user-edit").serializeArray();
+//        var formURL = jQuery(this).attr("action");
+        searchUser(postData);
+    }
+
+    function checkAll(element) {
+        if (jQuery(element).prop('checked')) {
+            jQuery("#cb-select-all-1").prop('checked', true);
+            jQuery("#cb-select-all-2").prop('checked', true);
+            jQuery("input[name='users[]'][type=checkbox]").prop('checked', true);
+        } else {
+            jQuery("#cb-select-all-1").prop('checked', false);
+            jQuery("#cb-select-all-2").prop('checked', false);
+            jQuery("input[name='users[]'][type=checkbox]").prop('checked', false);
+        }
+
+    }
 
 </script>
 <br class="clear">

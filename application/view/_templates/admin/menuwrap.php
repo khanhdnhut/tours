@@ -3,18 +3,6 @@
         document.body.className = document.body.className.replace('no-js', 'js');
     </script>
 
-    <script type="text/javascript">
-        (function () {
-            var request, b = document.body,
-                    c = 'className',
-                    cs = 'customize-support',
-                    rcs = new RegExp('(^|\\s+)(no-)?' + cs + '(\\s+|$)');
-            request = true;
-            b[c] = b[c].replace(rcs, ' ');
-            b[c] += (window.postMessage & amp; & amp; request ? ' ' : ' no-') + cs;
-        }());
-    </script>
-
     <div id="wpwrap">
 
         <div aria-label="Main menu" role="navigation" id="adminmenumain">
