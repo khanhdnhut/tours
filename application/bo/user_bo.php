@@ -22,17 +22,9 @@ class UserBO {
     public $first_name = null;
     public $last_name = null;
     public $description = null;
-    public $rich_editing = null;
-    public $comment_shortcuts = null;
-    public $admin_color = null;
-    public $show_admin_bar_front = null;
+    public $avatar = null;
     public $wp_capabilities = null;
-    public $wp_user_level = null;
-    public $dismissed_wp_pointers = null;
-    public $show_welcome_panel = null;
     public $session_tokens = null;
-    public $wp_dashboard_quick_press_last_post_id = null;
-    public $wporg_favorites = null;
 
     public function setUserInfo($userInfo) {
         if ($userInfo != NULL) {

@@ -13,8 +13,22 @@
                 <ul id="adminmenu">
 
 
-                    <li id="menu-dashboard" class="wp-first-item wp-has-submenu wp-has-current-submenu wp-menu-open menu-top menu-top-first menu-icon-dashboard menu-top-last">
-                        <a class="wp-first-item wp-has-submenu wp-has-current-submenu wp-menu-open menu-top menu-top-first menu-icon-dashboard menu-top-last" href="<?php echo URL . CONTEXT_PATH_ADMIN; ?>" aria-haspopup="false">
+                    <li id="menu-dashboard" class="wp-first-item wp-has-submenu <?php
+                    if ($this->checkForActiveController($_GET['url'], 'admin')) {
+                        echo "wp-has-current-submenu wp-menu-open";
+                    } else {
+                        echo "wp-not-current-submenu";
+                    }
+
+                    ?> menu-top menu-top-first menu-icon-dashboard menu-top-last">
+                        <a class="wp-first-item wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'admin')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-top-first menu-icon-dashboard menu-top-last" href="<?php echo URL . CONTEXT_PATH_ADMIN; ?>" aria-haspopup="false">
                             <div class="wp-menu-arrow">
                                 <div></div>
                             </div>
@@ -26,28 +40,43 @@
                     </li>
 
                     <?php
-                    if (!in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_SUBSCRIBER))) {
+                    if (!in_array(Auth::getCapability(), array(
+                            CAPABILITY_SUBSCRIBER))) {
+
                         ?>                                     
                         <li aria-hidden="true" class="wp-not-current-submenu wp-menu-separator">
                             <div class="separator"></div>
                         </li>
                         <?php
                     }
+
                     ?>
 
 
                     <?php
-                    if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_CONTRIBUTOR,
-                                CAPABILITY_AUTHOR,
-                                CAPABILITY_EDITOR,
-                                CAPABILITY_ADMINISTRATOR))) {
+                    if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_CONTRIBUTOR,
+                            CAPABILITY_AUTHOR,
+                            CAPABILITY_EDITOR,
+                            CAPABILITY_ADMINISTRATOR))) {
+
                         ?>
-                        <li id="menu-posts" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-post open-if-no-js menu-top-first">
-                            <a aria-haspopup="true" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-post open-if-no-js menu-top-first" href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT; ?>">
+                        <li id="menu-posts" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'tour')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-post open-if-no-js menu-top-first">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'tour')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-post open-if-no-js menu-top-first" href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -58,35 +87,91 @@
                             </a>
                             <ul class="wp-submenu wp-submenu-wrap">
                                 <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_TOURS_TITLE; ?></li>
-                                <li class="wp-first-item"><a class="wp-first-item" href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT; ?>"><?php echo DASHBOARD_ALL_TOURS_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_TOUR_ADD_NEW; ?>"><?php echo DASHBOARD_TOURS_ADD_NEW_TITLE; ?></a></li>
-                                <?php
-                                if (in_array(Auth::getCapability(),
-                                                array(
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_EDIT)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_EDIT)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT; ?>"><?php echo DASHBOARD_ALL_TOURS_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_ADD_NEW)) {
+                                            echo "current";
+                                        }
+
+                                        ?>" href="<?php echo URL . CONTEXT_PATH_TOUR_ADD_NEW; ?>"><?php echo DASHBOARD_TOURS_ADD_NEW_TITLE; ?></a></li>
+                                    <?php
+                                    if (in_array(Auth::getCapability(), array(
                                             CAPABILITY_EDITOR,
                                             CAPABILITY_ADMINISTRATOR))) {
-                                    ?>                                     
-                                    <li><a href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT_CATEGORY; ?>"><?php echo DASHBOARD_TOURS_CATEGORIES_TITLE; ?></a></li>
-                                    <li><a href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT_TAG; ?>"><?php echo DASHBOARD_TOURS_TAGS_TITLE; ?></a></li>   
-                                    <?php
-                                }
-                                ?>
+
+                                        ?>                                     
+                                    <li class="<?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_EDIT_CATEGORY)) {
+                                        echo "current";
+                                    }
+
+                                    ?>"><a class="<?php
+                                            if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_EDIT_CATEGORY)) {
+                                                echo "current";
+                                            }
+
+                                            ?>" href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT_CATEGORY; ?>"><?php echo DASHBOARD_TOURS_CATEGORIES_TITLE; ?></a></li>
+                                    <li class="<?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_EDIT_TAG)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" ><a class="<?php
+                                            if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TOUR_EDIT_TAG)) {
+                                                echo "current";
+                                            }
+
+                                            ?>"  href="<?php echo URL . CONTEXT_PATH_TOUR_EDIT_TAG; ?>"><?php echo DASHBOARD_TOURS_TAGS_TITLE; ?></a></li>   
+                                        <?php
+                                    }
+
+                                    ?>
                             </ul>
                         </li>
                         <?php
                     }
+
                     ?>
 
 
                     <?php
-                    if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_AUTHOR,
-                                CAPABILITY_EDITOR,
-                                CAPABILITY_ADMINISTRATOR))) {
+                    if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_AUTHOR,
+                            CAPABILITY_EDITOR,
+                            CAPABILITY_ADMINISTRATOR))) {
+
                         ?>                                     
-                        <li id="menu-media" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-media">
-                            <a aria-haspopup="true" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-media" href="<?php echo URL . CONTEXT_PATH_MEDIA_EDIT; ?>">
+                        <li id="menu-media" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'media')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-media">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'media')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-media" href="<?php echo URL . CONTEXT_PATH_MEDIA_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -97,25 +182,60 @@
                             </a>
                             <ul class="wp-submenu wp-submenu-wrap">
                                 <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_MEDIA_TITLE; ?></li>
-                                <li class="wp-first-item"><a class="wp-first-item" href="<?php echo URL . CONTEXT_PATH_MEDIA_UPLOAD; ?>">Library</a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_MEDIA_ADD_NEW; ?>"><?php echo DASHBOARD_MEDIA_ADD_NEW_TITLE; ?></a></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_MEDIA_UPLOAD)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_MEDIA_UPLOAD)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_MEDIA_UPLOAD; ?>">Library</a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_MEDIA_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_MEDIA_ADD_NEW)) {
+                                            echo "current";
+                                        }
+
+                                        ?>" href="<?php echo URL . CONTEXT_PATH_MEDIA_ADD_NEW; ?>"><?php echo DASHBOARD_MEDIA_ADD_NEW_TITLE; ?></a></li>
                             </ul>
                         </li>
                         <?php
                     }
+
                     ?>
 
 
                     <?php
-                    if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_CONTRIBUTOR,
-                                CAPABILITY_AUTHOR,
-                                CAPABILITY_EDITOR,
-                                CAPABILITY_ADMINISTRATOR))) {
+                    if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_CONTRIBUTOR,
+                            CAPABILITY_AUTHOR,
+                            CAPABILITY_EDITOR,
+                            CAPABILITY_ADMINISTRATOR))) {
+
                         ?>                                     
-                        <li id="menu-pages" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-page">
-                            <a aria-haspopup="true" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-page" href="<?php echo URL . CONTEXT_PATH_NEWS_EDIT; ?>">
+                        <li id="menu-pages" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'news')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-page">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'news')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-page" href="<?php echo URL . CONTEXT_PATH_NEWS_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -126,24 +246,59 @@
                             </a>
                             <ul class="wp-submenu wp-submenu-wrap">
                                 <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_NEWS_TITLE; ?></li>
-                                <li class="wp-first-item"><a class="wp-first-item" href="<?php echo URL . CONTEXT_PATH_NEWS_EDIT; ?>"><?php echo DASHBOARD_ALL_NEWS_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_NEWS_ADD_NEW; ?>"><?php echo DASHBOARD_NEWS_ADD_NEW_TITLE; ?></a></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NEWS_EDIT)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NEWS_EDIT)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_NEWS_EDIT; ?>"><?php echo DASHBOARD_ALL_NEWS_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NEWS_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NEWS_ADD_NEW)) {
+                                            echo "current";
+                                        }
+
+                                        ?>"  href="<?php echo URL . CONTEXT_PATH_NEWS_ADD_NEW; ?>"><?php echo DASHBOARD_NEWS_ADD_NEW_TITLE; ?></a></li>
                             </ul>
                         </li>
                         <?php
                     }
+
                     ?>
 
                     <?php
-                    if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_CONTRIBUTOR,
-                                CAPABILITY_AUTHOR,
-                                CAPABILITY_EDITOR,
-                                CAPABILITY_ADMINISTRATOR))) {
+                    if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_CONTRIBUTOR,
+                            CAPABILITY_AUTHOR,
+                            CAPABILITY_EDITOR,
+                            CAPABILITY_ADMINISTRATOR))) {
+
                         ?>                                     
-                        <li id="menu-comments" class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last">
-                            <a class="wp-not-current-submenu menu-top menu-icon-comments menu-top-last" href="<?php echo URL . CONTEXT_PATH_REQUEST_EDIT; ?>">
+                        <li id="menu-comments" class="<?php
+                        if ($this->checkForActiveController($_GET['url'], 'request')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-comments menu-top-last">
+                            <a class="<?php
+                            if ($this->checkForActiveController($_GET['url'], 'request')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-comments menu-top-last" href="<?php echo URL . CONTEXT_PATH_REQUEST_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -156,26 +311,42 @@
                         </li>
                         <?php
                     }
+
                     ?>
 
                     <?php
-                    if (!in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_SUBSCRIBER))) {
+                    if (!in_array(Auth::getCapability(), array(
+                            CAPABILITY_SUBSCRIBER))) {
+
                         ?>                                     
                         <li aria-hidden="true" class="wp-not-current-submenu wp-menu-separator">
                             <div class="separator"></div>
                         </li>
                         <?php
                     }
+
                     ?>
                     <?php
-                    if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_ADMINISTRATOR))) {
+                    if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_ADMINISTRATOR))) {
+
                         ?>                                     
-                        <li id="menu-users" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-users">
-                            <a aria-haspopup="true" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-users" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <li id="menu-users" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'user')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-users">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'user')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-users" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -186,21 +357,65 @@
                             </a>
                             <ul class="wp-submenu wp-submenu-wrap">
                                 <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_USERS_TITLE; ?></li>
-                                <li class="wp-first-item"><a class="wp-first-item" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>"><?php echo DASHBOARD_ALL_USERS_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>"><?php echo DASHBOARD_USERS_ADD_NEW_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_USER_PROFILE; ?>"><?php echo DASHBOARD_USERS_YOUR_PROFILE_TITLE; ?></a></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_USER_EDIT)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_USER_EDIT)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>"><?php echo DASHBOARD_ALL_USERS_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_USER_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_USER_ADD_NEW)) {
+                                            echo "current";
+                                        }
+
+                                        ?>" href="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>"><?php echo DASHBOARD_USERS_ADD_NEW_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_USER_PROFILE)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_USER_PROFILE)) {
+                                            echo "current";
+                                        }
+
+                                        ?>" href="<?php echo URL . CONTEXT_PATH_USER_PROFILE; ?>"><?php echo DASHBOARD_USERS_YOUR_PROFILE_TITLE; ?></a></li>
                             </ul>
                         </li>
                         <?php
-                    } else if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_SUBSCRIBER,
-                                CAPABILITY_CONTRIBUTOR,
-                                CAPABILITY_AUTHOR,
-                                CAPABILITY_EDITOR))) {
+                    } else if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_SUBSCRIBER,
+                            CAPABILITY_CONTRIBUTOR,
+                            CAPABILITY_AUTHOR,
+                            CAPABILITY_EDITOR))) {
+
                         ?>
-                        <li id="menu-users" class="wp-not-current-submenu menu-top menu-icon-users menu-top-first">
-                            <a aria-haspopup="true" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-users" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
+                        <li id="menu-users" class="<?php
+                        if ($this->checkForActiveController($_GET['url'], 'user')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-users menu-top-first">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'user')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-users" href="<?php echo URL . CONTEXT_PATH_USER_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -212,15 +427,30 @@
                         </li>
                         <?php
                     }
+
                     ?>
 
                     <?php
-                    if (in_array(Auth::getCapability(),
-                                    array(
-                                CAPABILITY_ADMINISTRATOR))) {
+                    if (in_array(Auth::getCapability(), array(
+                            CAPABILITY_ADMINISTRATOR))) {
+
                         ?>                                     
-                        <li id="menu-settings" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-settings menu-top-last">
-                            <a aria-haspopup="true" class="wp-has-submenu wp-not-current-submenu menu-top menu-icon-settings menu-top-last" href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT; ?>">
+                        <li id="menu-settings" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'options')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-settings menu-top-last">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'options')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-settings menu-top-last" href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT; ?>">
                                 <div class="wp-menu-arrow">
                                     <div></div>
                                 </div>
@@ -231,16 +461,77 @@
                             </a>
                             <ul class="wp-submenu wp-submenu-wrap" style="">
                                 <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_SETTINGS_TITLE; ?></li>
-                                <li class="wp-first-item"><a class="wp-first-item" href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_GENERAL; ?>">General</a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_WRITING; ?>"><?php echo DASHBOARD_SETTINGS_WRITING_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_READING; ?>"><?php echo DASHBOARD_SETTINGS_READING_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_DISCUSSION; ?>"><?php echo DASHBOARD_SETTINGS_DISCUSSION_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_MEDIA; ?>"><?php echo DASHBOARD_SETTINGS_MEDIA_TITLE; ?></a></li>
-                                <li><a href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_PERMALINK; ?>"><?php echo DASHBOARD_SETTINGS_PERMALINKS_TITLE; ?></a></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_GENERAL)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_GENERAL)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_GENERAL; ?>">General</a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_WRITING)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_WRITING)) {
+                                            echo "current";
+                                        }
+
+                                        ?>"  href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_WRITING; ?>"><?php echo DASHBOARD_SETTINGS_WRITING_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_READING)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_READING)) {
+                                            echo "current";
+                                        }
+
+                                        ?>"  href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_READING; ?>"><?php echo DASHBOARD_SETTINGS_READING_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_DISCUSSION)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_DISCUSSION)) {
+                                            echo "current";
+                                        }
+
+                                        ?>"  href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_DISCUSSION; ?>"><?php echo DASHBOARD_SETTINGS_DISCUSSION_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_MEDIA)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_MEDIA)) {
+                                            echo "current";
+                                        }
+
+                                        ?>"  href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_MEDIA; ?>"><?php echo DASHBOARD_SETTINGS_MEDIA_TITLE; ?></a></li>
+                                <li class="<?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_PERMALINK)) {
+                                    echo "current";
+                                }
+
+                                ?>" ><a class="<?php
+                                        if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_OPTIONS_EDIT_PERMALINK)) {
+                                            echo "current";
+                                        }
+
+                                        ?>"  href="<?php echo URL . CONTEXT_PATH_OPTIONS_EDIT_PERMALINK; ?>"><?php echo DASHBOARD_SETTINGS_PERMALINKS_TITLE; ?></a></li>
                             </ul>
                         </li>
                         <?php
                     }
+
                     ?> 
                     <li class="hide-if-no-js" id="collapse-menu">
                         <div id="collapse-button">

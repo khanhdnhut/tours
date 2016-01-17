@@ -8,26 +8,19 @@
  * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
  *
  */
-class UserCtrl extends Controller {
+class UserCtrl extends Controller
+{
 
     /**
      * Construct this object by extending the basic Controller class
      */
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
     }
 
-    /**
-     * PAGE: index
-     * This method handles what happens when you move to http://yourproject/home/index (which is the default page btw)
-     */
-    public function index() {
-        if (Auth::handleLogin()) {
-            header('location: ' . URL . CONTEXT_PATH_ADMIN);
-        }
-    }
-
-    public function login() {
+    public function login()
+    {
         if (empty($_POST['log'])) {
             if (Auth::isLogged()) {
                 header('location: ' . URL . CONTEXT_PATH_ADMIN);
@@ -51,18 +44,58 @@ class UserCtrl extends Controller {
         }
     }
 
-    public function logout() {
+    public function logout()
+    {
         $this->model = $this->loadModel('User');
         $this->model->logout();
         // redirect user to base URL
         header('location: ' . URL . CONTEXT_PATH_USER_LOGIN);
     }
 
-    public function edit() {
+    public function editInfo($user_id = NULL)
+    {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             $this->model = $this->loadModel('User');
             $this->para = new stdClass();
-            
+            if (isset($_POST['user'])) {
+                $this->para->user_id = $_POST['user'];
+            } elseif(isset($user_id) && $user_id != NULL) {
+                $this->para->user_id = $user_id;
+            }
+            $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
+            if (isset($user_id) && $user_id != NULL) {
+                $this->view->renderAdmin(RENDER_VIEW_USER_EDIT);
+            } else {
+                $this->view->renderAdmin(RENDER_VIEW_USER_EDIT, TRUE);
+            }
+        }
+    }
+
+    public function info($user_id = NULL)
+    {
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
+            $this->model = $this->loadModel('User');
+            $this->para = new stdClass();
+            if (isset($_POST['user'])) {
+                $this->para->user_id = $_POST['user'];
+            } elseif(isset($user_id) && $user_id != NULL) {
+                $this->para->user_id = $user_id;
+            }
+            $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
+            if (isset($user_id) && $user_id != NULL) {
+                $this->view->renderAdmin(RENDER_VIEW_USER_INFO);
+            } else {
+                $this->view->renderAdmin(RENDER_VIEW_USER_INFO, TRUE);
+            }            
+        }
+    }
+
+    public function index()
+    {
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
+            $this->model = $this->loadModel('User');
+            $this->para = new stdClass();
+
             if (isset($_POST['type'])) {
                 $this->para->type = $_POST['type'];
             }
@@ -99,7 +132,7 @@ class UserCtrl extends Controller {
             if (isset($_POST['action2'])) {
                 $this->para->action2 = $_POST['action2'];
             }
-            
+
             if (isset($this->para->type) && in_array($this->para->type, array("action", "action2", "new_role", "new_role2")) && isset($this->para->users)) {
                 if (in_array($this->para->type, array("action", "action2"))) {
                     $this->model->executeAction($this->para);
@@ -107,17 +140,16 @@ class UserCtrl extends Controller {
                     $this->model->changeRole($this->para);
                 }
             }
-                        
+
             $this->model->prepareEditPage($this->view, $this->para);
 
-            if (count((array) $this->para) > 0 ) {
-                $this->view->renderAdmin(RENDER_VIEW_USER_EDIT, TRUE);
+            if (count((array) $this->para) > 0) {
+                $this->view->renderAdmin(RENDER_VIEW_USER_INDEX, TRUE);
             } else {
-                $this->view->renderAdmin(RENDER_VIEW_USER_EDIT);
+                $this->view->renderAdmin(RENDER_VIEW_USER_INDEX);
             }
         } else {
             header('location: ' . URL . CONTEXT_PATH_ADMIN);
         }
     }
-
 }

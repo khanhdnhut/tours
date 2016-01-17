@@ -1,20 +1,36 @@
 <?php
-
-// Get the feedback
-// They are arrays, to make multiple positive/negative messages possible
 $fb_success = Session::get('fb_success');
 $fb_error = Session::get('fb_error');
 
-// Echo out positive messages
-if (isset($fb_success)) {
-    foreach ($fb_success as $feedback) {
-        echo '<div class="alert alert-success">' . $feedback . '</div>';
-    }
-}
+if ($fb_success != NULL) {
+    ?>
+    <div class="updated notice is-dismissible" id="message">
+        <?php
+        foreach ($fb_success as $feedback) {
+            echo "<p>" . $feedback . ".</p>";
+        }
 
-// Echo out negative messages
-if (isset($fb_error)) {
-    foreach ($fb_error as $feedback) {
-        echo '<div class="alert alert-warning">' . $feedback . '</div>';
-    }
+        ?>
+        <button class="notice-dismiss" type="button">
+            <span class="screen-reader-text">Dismiss this notice.</span>
+        </button>
+    </div>
+    <?php
 }
+if ($fb_error != NULL) {
+
+    ?>
+    <div class="error notice is-dismissible" id="message">
+        <?php
+        foreach ($fb_error as $feedback) {
+            echo "<p>" . $feedback . ".</p>";
+        }
+
+        ?>
+        <button class="notice-dismiss" type="button">
+            <span class="screen-reader-text">Dismiss this notice.</span>
+        </button>
+    </div>
+    <?php
+}
+?>

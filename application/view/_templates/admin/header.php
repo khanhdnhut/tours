@@ -32,7 +32,7 @@
         <!--[if lte IE 7]>
         <link rel='stylesheet' id='ie-css'  href='<?php echo PUBLIC_CSS; ?>admin/ie.css?ver=4.4' type='text/css' media='all' />
         <![endif]-->
-        
+
         <script src="<?php echo PUBLIC_JS; ?>includes/wp-emoji-release.min.js?ver=4.4" type="text/javascript"></script>
 
         <script src="<?php echo PUBLIC_JS; ?>includes/jquery/jquery.js?ver=4.4" type="text/javascript"></script>

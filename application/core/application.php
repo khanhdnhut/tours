@@ -27,6 +27,8 @@ class Application
             require CONTROLLER_PATH . 'home_ctrl.php';
             $page = new HomeCtrl();
             $page->index();
+        } elseif($this->controllerName == 'public'){
+            return;
         } elseif (!file_exists(CONTROLLER_PATH . $this->controllerName . '_ctrl.php')) {
             require CONTROLLER_PATH . 'error_ctrl.php';
             $page = new ErrorCtrl();

@@ -99,7 +99,9 @@ define("CAPABILITY_EDITOR", "editor");
 /*
  * Language for: RENDER_VIEW
  */
+define("RENDER_VIEW_USER_INDEX", "user/index");
 define("RENDER_VIEW_USER_EDIT", "user/user_edit");
+define("RENDER_VIEW_USER_INFO", "user/user_info");
 define("RENDER_VIEW_USER_LOGIN", "user/login");
 define("RENDER_VIEW_ERROR_INDEX", "error/index");
 define("RENDER_VIEW_ERROR_NOTFOUND", "error/notFound");
@@ -110,8 +112,9 @@ define("RENDER_VIEW_HOME_INDEX", "home/index");
  */
 define("CONTEXT_PATH_ADMIN", "admin/");
 
-define("CONTEXT_PATH_USER_EDIT", "user/edit/");
+define("CONTEXT_PATH_USER_EDIT", "user/index/");
 define("CONTEXT_PATH_USER_EDIT_INFO", "user/editInfo/");
+define("CONTEXT_PATH_USER_INFO", "user/info/");
 define("CONTEXT_PATH_USER_DELETE", "user/delete/");
 define("CONTEXT_PATH_USER_LOST_PASSWORD", "user/lostpassword/");
 define("CONTEXT_PATH_USER_ADD_NEW", "user/addNew/");
@@ -182,3 +185,24 @@ define("POSTS_TITLE", "Tours");
 define("EDIT_TITLE", "Edit");
 define("SHOW_MORE_DETAILS_TITLE", "Show more details");
 define("CHANGE_TITLE", "Change");
+define("CONFIRM_DELETE_USER", "You are about to permanently delete these user: ");
+define("CONFIRM_DELETE_CANCEL_OK", ". \\n \"Cancel\" to stop, \"OK\" to delete.");
+define("CONFIRM_EDIT_INFO_USER", "You are about to permanently edit these user: ");
+define("CONFIRM_EDIT_INFO_CANCEL_OK", ". \\n \"Cancel\" to stop, \"OK\" to edit.");
+define("ERROR_DELETE_USER_NOT_PERMISSION", "You don't have permission to delete user");
+
+define("ERR_USER_INFO_NOT_FOUND", "Not found user");
+define("PROFILE_OF_USER", "Profile of ");
+define("USER_NAME_TITLE", "Name");
+define("USER_NAME_DESC", "Usernames cannot be changed.");
+define("FIRST_NAME_TITLE", "First Name");
+define("LAST_NAME_TITLE", "Last Name");
+define("NICKNAME_TITLE", "Nickname");
+define("DISPLAY_NAME_TITLE", "Display name publicly as");
+define("CONTACT_INFO_TITLE", "Contact Info");
+define("USER_WEBSITE_TITLE", "Website");
+define("USER_ABOUT_TITLE", "About");
+define("BIOGRAPHICAL_INFO_TITLE", "Biographical Info");
+define("PROFILE_PICTURE_TITLE", "Profile picture");
+define("AVATAR_DEFAULT", "public/img/icon/no_avatar.jpg");
+define("YOU_TITLE", "You");

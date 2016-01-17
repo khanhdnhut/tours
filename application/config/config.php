@@ -83,11 +83,13 @@ define('VIEW_MODULE_PATH', VIEW_PATH. 'module/');
  * 
  */
 
+define('PUBLIC_PATH', 'public' . DIRECTORY_SEPARATOR);
 define('PUBLIC_URL', URL. 'public/');
 define('PUBLIC_CSS', PUBLIC_URL. 'css/');
 define('PUBLIC_IMG', PUBLIC_URL. 'img/');
 define('PUBLIC_JS', PUBLIC_URL. 'js/');
 define('PUBLIC_REF', PUBLIC_URL. 'ref/');
 define('PUBLIC_UPLOAD', PUBLIC_URL. 'upload/');
+define('PUBLIC_UPLOAD_PATH', PUBLIC_PATH. 'upload' . DIRECTORY_SEPARATOR);
 
 

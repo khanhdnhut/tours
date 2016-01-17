@@ -49,6 +49,7 @@ class UserModel extends Model
                 //write user info into session
                 Session::init();
                 Session::set('userInfo', json_encode($userBO));
+                Session::set('user_id', $result->ID);
                 Session::set('user_logged_in', true);
                 if (isset($_POST['rememberme']) && $_POST['rememberme'] == 'forever') {
                     $this->saveCookieLogin();
@@ -60,7 +61,7 @@ class UserModel extends Model
             } elseif ($result->user_status == USER_STATUS_BLOCKED) {
                 $_SESSION["fb_error"][] = ERR_USER_BLOCKED;
                 return false;
-            } elseif ($result->user_status == USER_STATUS_DELETEED) {
+            } elseif ($result->user_status == USER_STATUS_DELETED) {
                 $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
                 return false;
             }
@@ -68,6 +69,30 @@ class UserModel extends Model
             $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
             return false;
         }
+    }
+
+    public function getUserByUserId($user_id)
+    {
+        $sth = $this->db->prepare("SELECT *
+                                   FROM   " . TABLE_USERS . "
+                                   WHERE  " . TB_USERS_COL_ID . " = :user_id");
+
+        $sth->execute(array(':user_id' => $user_id));
+        $count = $sth->rowCount();
+        if ($count != 1) {
+            $_SESSION["fb_error"][] = ERR_USER_INFO_NOT_FOUND;
+            return null;
+        }
+        // fetch one row (we only have one result)
+        $result = $sth->fetch();
+        if ($result->user_status != USER_STATUS_DELETED) {
+            $userBO = $this->getBO('user');
+            $userBO->setUserInfo($result);
+            $userMetaInfoArray = $this->getMetaInfoUser($result->ID);
+            $userBO->setUserMetaInfo($userMetaInfoArray);
+            return $userBO;
+        }
+        return null;
     }
 
     public function getMetaInfoUser($user_id)
@@ -98,7 +123,7 @@ class UserModel extends Model
 
     public function logout()
     {
-        $this->detroyCookieLogin();
+//        $this->detroyCookieLogin();
         // delete the session
         Session::destroy();
     }
@@ -144,6 +169,18 @@ class UserModel extends Model
             $userBO = json_decode(Session::get('userInfo'));
             $user_id = $userBO->user_id;
 
+            if (in_array("1", $para->users)) {
+                $user_delete = $this->getUserByUserId("1");
+                if ($user_delete != NULL) {
+                    $_SESSION["fb_error"][] = ERROR_DELETE_USER_NOT_PERMISSION . " <strong>" . $user_delete->user_login . "</strong>";
+                } else {
+                    $_SESSION["fb_error"][] = ERR_USER_INFO_NOT_FOUND;
+                }
+            }
+            if (in_array($user_id, $para->users) && $user_id != "1") {
+                $_SESSION["fb_error"][] = ERROR_DELETE_USER_NOT_PERMISSION . " <strong>" . $userBO->user_login . "</strong>";
+            }
+
             $sql = "UPDATE " . TABLE_USERS . " 
                     SET " . TB_USERS_COL_USER_STATUS . " = " . USER_STATUS_DELETED . "
                     WHERE " . TB_USERS_COL_ID . " IN (" . $user_ids . ")
@@ -157,7 +194,7 @@ class UserModel extends Model
 
     public function executeChangeRole($para, $role)
     {
-        if (isset($para->users) && is_array($para->users) && 
+        if (isset($para->users) && is_array($para->users) &&
             in_array($role, array(CAPABILITY_ADMINISTRATOR, CAPABILITY_EDITOR,
                 CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_SUBSCRIBER))) {
             foreach ($para->users as $user_id) {
@@ -210,8 +247,7 @@ class UserModel extends Model
     {
         try {
             $paraSQL = [];
-            $sqlSelectAll = "SELECT u." . TB_USERS_COL_ID . " as '" . USER_ID . "', u." . TB_USERS_COL_USER_LOGIN . ", u." . TB_USERS_COL_DISPLAY_NAME . ", 
-            u." . TB_USERS_COL_USER_EMAIL . ", m." . TB_USERMETA_COL_META_VALUE . " AS '" . WP_CAPABILITIES . "'";
+            $sqlSelectAll = "SELECT u.* ";
             $sqlSelectCount = "SELECT COUNT(*) as countUser ";
             //para: orderby, order, page, s, paged, users, new_role, new_role2, action, action2
             $sqlFrom = " FROM " . TABLE_USERS . " AS u, " . TABLE_USERMETA . " AS m ";
@@ -350,7 +386,16 @@ class UserModel extends Model
                     $sth->execute($paraSQL);
                     $count = $sth->rowCount();
                     if ($count > 0) {
-                        $view->userList = $sth->fetchAll();
+                        $userList = $sth->fetchAll();
+                        for ($i = 0; $i < sizeof($userList); $i++){
+                            $userInfo = $userList[$i];
+                            $userBO = $this->getBO('user');
+                            $userBO->setUserInfo($userInfo);
+                            $userMetaInfoArray = $this->getMetaInfoUser($userInfo->ID);
+                            $userBO->setUserMetaInfo($userMetaInfoArray);
+                            $userList[$i] = $userBO;
+                        }
+                        $view->userList = $userList;
                     } else {
                         $view->userList = NULL;
                     }
