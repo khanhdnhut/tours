@@ -101,7 +101,7 @@ class ImageModel extends Model
                 $folder = PUBLIC_UPLOAD_PATH . $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR;
                 $path_parts = pathinfo($_FILES[$name_image]['name']);
                 $date = new DateTime();
-                $name = $date->getTimestamp() . mt_rand() . '.' . $path_parts['extension'];
+                $name = $date->getTimestamp() . mt_rand();
                 $file_name = $name . '.' . $path_parts['extension'];
 
                 if (!$this->copyImage($_FILES[$name_image]['tmp_name'], $folder . $file_name)) {
