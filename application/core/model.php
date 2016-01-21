@@ -39,6 +39,18 @@ class Model {
                 return null;
             }
         }
+    }    
+    
+    public function autoloadModel($name)
+    {
+        $modelName = $name . 'Model';
+        if (!class_exists($modelName, FALSE)) {
+            $path = MODEL_PATH . strtolower($name) . '_model.php';
+            // Check for model: Does such a model exist?
+            if (file_exists($path)) {
+                require MODEL_PATH . strtolower($name) . '_model.php';
+            }
+        }
     }
     
     public function autoloadBO($name){
@@ -67,5 +79,5 @@ class Model {
                 return null;
             }
         }
-    }
+    }    
 }

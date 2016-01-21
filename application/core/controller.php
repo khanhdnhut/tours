@@ -1,26 +1,28 @@
 <?php
-
 /*
  * This is the "Base controller class". All the other "real" controllers extend this class 
  * 
  */
 
-class Controller {
-    
+class Controller
+{
     /* @var null Database Connection */
+
     public $db = null;
-    
+
     /* @var null Model Object */
     public $model = null;
-    
+
     /* @var null View Object */
     public $view = null;
+
     /**
-    * Whenever a controller is created, we also:
-    * 1. Create a database connection (that will be passed to all models that need a database connection)
-    * 2. Create a view object
-    */
-    function __construct() {        
+     * Whenever a controller is created, we also:
+     * 1. Create a database connection (that will be passed to all models that need a database connection)
+     * 2. Create a view object
+     */
+    function __construct()
+    {
         Session::init();
         // Create database connection
         try {
@@ -28,18 +30,19 @@ class Controller {
         } catch (PDOException $e) {
             die('Database connection could not be established');
         }
-        
+
         // Create a view object
         $this->view = new View();
-    }   
-    
+    }
+
     /**
-    * Load the model with the given name.
-    * Note that the model class name is written in "LoginModel", the model's filename is the same in lowercase letters
-    * @param string $name The name of the model
-    * @return object model
-    */
-    public function loadModel ($name) {   
+     * Load the model with the given name.
+     * Note that the model class name is written in "LoginModel", the model's filename is the same in lowercase letters
+     * @param string $name The name of the model
+     * @return object model
+     */
+    public function loadModel($name)
+    {
         $modelName = $name . 'Model';
         if (class_exists($modelName, FALSE)) {
             return new $modelName($this->db);
@@ -47,7 +50,7 @@ class Controller {
             $path = MODEL_PATH . strtolower($name) . '_model.php';
             // Check for model: Does such a model exist?
             if (file_exists($path)) {
-                require MODEL_PATH . strtolower($name) . '_model.php';            
+                require MODEL_PATH . strtolower($name) . '_model.php';
                 // Return new model and pass the database connection to the model
                 return new $modelName($this->db);
             } else {
@@ -55,8 +58,21 @@ class Controller {
             }
         }
     }
-    
-    public function loadBO ($name) {   
+
+    public function autoloadModel($name)
+    {
+        $modelName = $name . 'Model';
+        if (!class_exists($modelName, FALSE)) {
+            $path = MODEL_PATH . strtolower($name) . '_model.php';
+            // Check for model: Does such a model exist?
+            if (file_exists($path)) {
+                require MODEL_PATH . strtolower($name) . '_model.php';
+            }
+        }
+    }
+
+    public function getBO($name)
+    {
         $boName = $name . 'BO';
         if (class_exists($boName, FALSE)) {
             return new $boName($this->db);
@@ -64,11 +80,23 @@ class Controller {
             $path = BO_PATH . strtolower($name) . '_bo.php';
             // Check for model: Does such a model exist?
             if (file_exists($path)) {
-                require BO_PATH . strtolower($name) . '_bo.php';            
+                require BO_PATH . strtolower($name) . '_bo.php';
                 // Return new model and pass the database connection to the model
                 return new $boName();
             } else {
                 return null;
+            }
+        }
+    }
+
+    public function autoloadBO($name)
+    {
+        $boName = $name . 'BO';
+        if (!class_exists($boName, FALSE)) {
+            $path = BO_PATH . strtolower($name) . '_bo.php';
+            // Check for model: Does such a model exist?
+            if (file_exists($path)) {
+                require BO_PATH . strtolower($name) . '_bo.php';
             }
         }
     }

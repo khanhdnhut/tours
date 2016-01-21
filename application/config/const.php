@@ -163,3 +163,14 @@ define("TB_USERS_COL_USER_REGISTERED", "user_registered");
 define("TB_USERS_COL_USER_ACTIVATION_KEY", "user_activation_key");
 define("TB_USERS_COL_USER_STATUS", "user_status");
 define("TB_USERS_COL_DISPLAY_NAME", "display_name");
+
+
+/*
+ * CONSTANT for: IMAGE
+ */
+define("SIZE_WITH_SLIDER_THUMB", 100);
+define("SIZE_WITH_THUMBNAIL", 150);
+define("SIZE_WITH_POST_THUMBNAIL", 200);
+define("SIZE_WITH_MEDIUM", 300);
+define("SIZE_WITH_MEDIUM_LARGE", 768);
+define("SIZE_WITH_LARGE", 1024);

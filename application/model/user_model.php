@@ -42,7 +42,8 @@ class UserModel extends Model
         $result = $sth->fetch();
         if (hash('sha1', $_POST['pwd']) == $result->user_pass) {
             if ($result->user_status == USER_STATUS_ACTIVE) {
-                $userBO = $this->getBO('user');
+                $this->autoloadBO('user');
+                $userBO = new UserBO();
                 $userBO->setUserInfo($result);
                 $userMetaInfoArray = $this->getMetaInfoUser($result->ID);
                 $userBO->setUserMetaInfo($userMetaInfoArray);
@@ -71,6 +72,139 @@ class UserModel extends Model
         }
     }
 
+    public function validateUpdateInfoUser($para)
+    {
+        if ($para == null || !is_object($para)) {
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
+            return false;
+        }
+        if (!isset($para->user_id)) {
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
+            return false;
+        } else {
+            try {
+                $para->user_id = (int) $para->user_id;
+            } catch (Exception $e) {
+                $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
+                return false;
+            }
+        }
+        if (isset($para->role) && !in_array($para->role, array(CAPABILITY_ADMINISTRATOR, CAPABILITY_EDITOR,
+                CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_SUBSCRIBER))) {
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
+            return false;
+        }
+        if (isset($para->pass1) && $para->pass1 != "") {
+            if (!isset($para->pass1_text) || $para->pass1 != $para->pass1_text) {
+                $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER_PASS;
+                return false;
+            }
+            if (!in_array($this->analyzePassword($para->pass1), array("Better", "Medium", "Strong", "Strongest"))) {
+                $para->is_weak = TRUE;
+                if (!(isset($para->pw_weak) && $para->pw_weak == "confirm")) {
+                    $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER_CONFIRM_WEAK_PASS;
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public function analyzePassword($txtpass)
+    {
+        $desc = array("Very Weak", "Weak", "Better", "Medium", "Strong", "Strongest");
+        $resultCheck;
+
+        $score = 0;
+
+        //if $txtpass bigger than 6 give 1 point
+        if (strlen($txtpass) > 8) {
+            $score++;
+
+            //if $txtpass has both lower and uppercase characters give 1 point
+            if (preg_match($txtpass, '/[a-z]/') && preg_match($txtpass, '/[A-Z]/'))
+                $score++;
+
+            //if $txtpass has at least one number give 1 point
+            if (preg_match($txtpass, '/\d+/'))
+                $score++;
+
+            //if $txtpass has at least one special caracther give 1 point              
+            if (preg_match($txtpass, '/.[!,@,#,$,%,^,&,*,?,_,~,-,+,`,|,},{,(,),\],\[,\\,\/,<,>,=,:,;,\,]/'))
+                $score++;
+
+            //if $txtpass bigger than 12 give another 1 point
+            if (strlen($txtpass) > 12)
+                $score++;
+            $resultCheck = desc[$score];
+        } else {
+            $resultCheck = "Password Should be Minimum 8 Characters";
+        }
+        return $resultCheck;
+    }
+
+    public function updateInfoUser($para)
+    {
+        if ($this->validateUpdateInfoUser($para)) {
+            if (isset($para->avatar)) {
+                $this->autoloadModel("image");
+                $imageModel = new ImageModel($this->db);
+                $array_id = $imageModel->uploadImages("avatar");
+                
+            }
+        }
+    }
+
+    public function getUserMeta($user_id, $meta_key)
+    {
+        $sth = $this->db->prepare("SELECT *
+                                   FROM   " . TABLE_USERMETA . "
+                                   WHERE  " . TB_USERMETA_COL_USER_ID . " = :user_id");
+
+        $sth->execute(array(':user_id' => $user_id));
+        $count = $sth->rowCount();
+        if ($count != 1) {
+            return NULL;
+        }
+        // fetch one row (we only have one result)
+        $result = $sth->fetch();
+        return $result->meta_value;
+    }
+
+    public function setUserMeta($user_id, $meta_key, $meta_value)
+    {
+        try {
+            if (getUserMeta($user_id, $meta_key) != NULL) {
+                //update
+                $sql = "UPDATE " . TABLE_USERMETA . " 
+                    SET " . TB_USERMETA_COL_META_VALUE . " = :meta_value
+                    WHERE " . TB_USERMETA_COL_USER_ID . " = :user_id AND " . TB_USERMETA_COL_META_KEY . " = :meta_key;";
+                $sth = $this->db->prepare($sql);
+                $sth->execute(array(':meta_value' => $meta_value, ':user_id' => $user_id, ':meta_key' => $meta_key));
+                $count = $sth->rowCount();
+                if ($count != 1) {
+                    return false;
+                }
+            } else {
+                //insert
+                $sql = "INSERT INTO " . TABLE_USERMETA . " 
+                                (" . TB_USERMETA_COL_USER_ID . ",
+                                 " . TB_USERMETA_COL_META_KEY . ",
+                                 " . TB_USERMETA_COL_META_VALUE . ")
+                    VALUES (:user_id, :meta_key, :meta_value);";
+                $sth = $this->db->prepare($sql);
+                $sth->execute(array(':meta_value' => $meta_value, ':user_id' => $user_id, ':meta_key' => $meta_key));
+                $count = $sth->rowCount();
+                if ($count != 1) {
+                    return false;
+                }
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
     public function getUserByUserId($user_id)
     {
         $sth = $this->db->prepare("SELECT *
@@ -86,7 +220,8 @@ class UserModel extends Model
         // fetch one row (we only have one result)
         $result = $sth->fetch();
         if ($result->user_status != USER_STATUS_DELETED) {
-            $userBO = $this->getBO('user');
+            $this->autoloadBO('user');
+            $userBO = new UserBO();
             $userBO->setUserInfo($result);
             $userMetaInfoArray = $this->getMetaInfoUser($result->ID);
             $userBO->setUserMetaInfo($userMetaInfoArray);
@@ -387,9 +522,10 @@ class UserModel extends Model
                     $count = $sth->rowCount();
                     if ($count > 0) {
                         $userList = $sth->fetchAll();
-                        for ($i = 0; $i < sizeof($userList); $i++){
+                        for ($i = 0; $i < sizeof($userList); $i++) {
                             $userInfo = $userList[$i];
-                            $userBO = $this->getBO('user');
+                            $this->autoloadBO('user');
+                            $userBO = new UserBO();
                             $userBO->setUserInfo($userInfo);
                             $userMetaInfoArray = $this->getMetaInfoUser($userInfo->ID);
                             $userBO->setUserMetaInfo($userMetaInfoArray);

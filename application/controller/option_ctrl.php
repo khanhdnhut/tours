@@ -28,7 +28,8 @@ class OptionCtrl extends Controller {
     }
     
     public function loadOption(){
-        $this->model = $this->loadModel('Option');
+        $this->autoloadModel('Option');
+        $this->model = new OptionModel($this->db);
         $this->model->loadOption();
     }
 }

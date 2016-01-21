@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-class UserBO {
+class UserBO extends BO {
 
     public $user_id = null;
     public $user_login = null;

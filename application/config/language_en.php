@@ -206,3 +206,7 @@ define("BIOGRAPHICAL_INFO_TITLE", "Biographical Info");
 define("PROFILE_PICTURE_TITLE", "Profile picture");
 define("AVATAR_DEFAULT", "public/img/icon/no_avatar.jpg");
 define("YOU_TITLE", "You");
+
+define("ERROR_UPDATE_INFO_USER", "Update profile of user failed!");
+define("ERROR_UPDATE_INFO_USER_PASS", "Password of user is invalid!");
+define("ERROR_UPDATE_INFO_USER_CONFIRM_WEAK_PASS", "Password of user is weak, you must confirm use of weak password!");
