@@ -27,3 +27,4 @@ require CORE_PATH . "model.php";
 require CORE_PATH . "session.php";
 require CORE_PATH . "view.php";
 require CORE_PATH . "bo.php";
+require CORE_PATH . "utils.php";

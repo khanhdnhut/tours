@@ -6,10 +6,8 @@
  */
 
 BO::autoloadBO('post');
-class AttachmentBO extends BO 
+class AttachmentBO extends PostBO 
 {
-    /** @var PostBO */
-    public $attachment_post;
     public $attached_file;
     public $attachment_metadata;
 

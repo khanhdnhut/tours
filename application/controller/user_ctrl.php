@@ -30,7 +30,7 @@ class UserCtrl extends Controller
         } else {
             //Thực hiện đăng nhập
             // run the login() method in the login-model, put the result in $login_successful (true or false)
-            $this->autoloadModel('User');
+            Model::autoloadModel('User');
             $this->model = new UserModel($this->db);
 
             if ($this->model->loginValidate()) {
@@ -47,7 +47,7 @@ class UserCtrl extends Controller
 
     public function logout()
     {
-        $this->autoloadModel('User');
+        Model::autoloadModel('User');
             $this->model = new UserModel($this->db);
         $this->model->logout();
         // redirect user to base URL
@@ -57,12 +57,12 @@ class UserCtrl extends Controller
     public function editInfo($user_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            $this->autoloadModel('User');
+            Model::autoloadModel('User');
             $this->model = new UserModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['user'])) {
                 $this->para->user_id = $_POST['user'];
-            } elseif (isset($user_id) && $user_id != NULL) {
+            } elseif (isset($user_id) && !is_null($user_id)) {
                 $this->para->user_id = $user_id;
             }
             if (isset($_POST['action']) && $_POST['action'] == "update") {
@@ -92,9 +92,6 @@ class UserCtrl extends Controller
                 if (isset($_POST['description'])) {
                     $this->para->description = $_POST['description'];
                 }
-                if (isset($_FILE['avatar'])) {
-                    $this->para->avatar = $_FILE['avatar'];
-                }
                 if (isset($_FILES['avatar']) && isset($_FILES['avatar']['name']) && 
                     $_FILES['avatar']['name'] != '') {
                     $this->para->avatar = $_FILES['avatar'];
@@ -108,11 +105,13 @@ class UserCtrl extends Controller
                 if (isset($_POST['pw_weak'])) {
                     $this->para->pw_weak = $_POST['pw_weak'];
                 }
-                $this->model->updateInfoUser($this->para);
-                $this->view->para = $this->para;
+                $result = $this->model->updateInfoUser($this->para);
+                if (!$result) {
+                    $this->view->para = $this->para;
+                }                
             }
             $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
-            if (isset($user_id) && $user_id != NULL) {
+            if (isset($user_id) && !is_null($user_id)) {
                 $this->view->renderAdmin(RENDER_VIEW_USER_EDIT);
             } else {
                 $this->view->renderAdmin(RENDER_VIEW_USER_EDIT, TRUE);
@@ -123,16 +122,16 @@ class UserCtrl extends Controller
     public function info($user_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            $this->autoloadModel('User');
+            Model::autoloadModel('User');
             $this->model = new UserModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['user'])) {
                 $this->para->user_id = $_POST['user'];
-            } elseif (isset($user_id) && $user_id != NULL) {
+            } elseif (isset($user_id) && !is_null($user_id)) {
                 $this->para->user_id = $user_id;
             }
             $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
-            if (isset($user_id) && $user_id != NULL) {
+            if (isset($user_id) && !is_null($user_id)) {
                 $this->view->renderAdmin(RENDER_VIEW_USER_INFO);
             } else {
                 $this->view->renderAdmin(RENDER_VIEW_USER_INFO, TRUE);
@@ -143,7 +142,7 @@ class UserCtrl extends Controller
     public function index()
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            $this->autoloadModel('User');
+            Model::autoloadModel('User');
             $this->model = new UserModel($this->db);
             $this->para = new stdClass();
 

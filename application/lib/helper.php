@@ -33,7 +33,7 @@ class Helper
                 $values[$key] = "'" . $value . "'";
             } elseif (is_array($value)) {
                 $values[$key] = implode(',', $value);
-            } elseif (is_null($value)) {
+            } elseif (!is_null($value)) {
                 $values[$key] = 'NULL';
             }
         }

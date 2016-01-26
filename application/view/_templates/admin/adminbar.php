@@ -1,5 +1,5 @@
 <?php
-if (Session::get('userInfo') != NULL) {
+if (!is_null(Session::get('userInfo'))) {
     $userLoginBO = json_decode(Session::get('userInfo'));
 
     ?>

@@ -14,4 +14,14 @@ class ImageBO extends AttachmentBO
     function __construct()
     {
     }
+    
+    function decode_attachment_metadata()
+    {
+        if (!is_object($this->attachment_metadata)) {
+            $this->attachment_metadata = json_decode($this->attachment_metadata);
+        }
+        
+    }
+
+
 }

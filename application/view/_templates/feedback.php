@@ -2,7 +2,7 @@
 $fb_success = Session::get('fb_success');
 $fb_error = Session::get('fb_error');
 
-if ($fb_success != NULL) {
+if (!is_null($fb_success)) {
     ?>
     <div class="updated notice is-dismissible" id="message-success">
         <?php
@@ -17,7 +17,7 @@ if ($fb_success != NULL) {
     </div>
     <?php
 }
-if ($fb_error != NULL) {
+if (!is_null($fb_error)) {
 
     ?>
     <div class="error notice is-dismissible" id="message-error">
@@ -34,7 +34,7 @@ if ($fb_error != NULL) {
     <?php
 }
 
-if ($fb_error != NULL || $fb_success != NULL) {
+if (!is_null($fb_error) || !is_null($fb_success)) {
     ?>
 <script>
 function hideMessageSuccess(){

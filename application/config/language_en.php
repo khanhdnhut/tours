@@ -210,3 +210,7 @@ define("YOU_TITLE", "You");
 define("ERROR_UPDATE_INFO_USER", "Update profile of user failed!");
 define("ERROR_UPDATE_INFO_USER_PASS", "Password of user is invalid!");
 define("ERROR_UPDATE_INFO_USER_CONFIRM_WEAK_PASS", "Password of user is weak, you must confirm use of weak password!");
+define("ERROR_UPDATE_INFO_USER_PASSWORD_EMPTY", "Password of user is empty!");
+define("ERROR_UPDATE_AVATAR_FAILED", "Update avatar failed!");
+define("ERROR_UPDATE_USER_SUCCESS", "Update profile of user successed!");
+define("ERROR_ROLE_OF_USER", "Role of user is not impossible");

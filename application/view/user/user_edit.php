@@ -235,15 +235,15 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                     <th><?php echo PROFILE_PICTURE_TITLE; ?></th>
                     <td>
                         <img width="96" height="96" class="avatar avatar-96 photo" srcset="<?php
-                        if (isset($this->userBO->avatar)) {
-                            echo URL . htmlspecialchars($this->userBO->avatar);
+                        if (isset($this->userBO->avatar_url)) {
+                            echo URL . htmlspecialchars($this->userBO->avatar_url);
                         } else {
                             echo URL . AVATAR_DEFAULT;
                         }
 
                         ?>" src="<?php
-                             if (isset($this->userBO->avatar)) {
-                                 echo URL . htmlspecialchars($this->userBO->avatar);
+                             if (isset($this->userBO->avatar_url)) {
+                                 echo URL . htmlspecialchars($this->userBO->avatar_url);
                              } else {
                                  echo URL . AVATAR_DEFAULT;
                              }
@@ -266,15 +266,15 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                     <td>
                         <!-- #24364 workaround -->
                         <button id="button-generate-password" class="button button-secondary wp-generate-pw hide-if-no-js" type="button" style="<?php
-                        if (isset($this->para) && isset($this->para->pass1)) {
+                        if (isset($this->para) && isset($this->para->pass1) && !is_null($this->para->pass1) && $this->para->pass1 != "") {
                             echo "display: none;";
                         } else {
                             echo "display: inline-block;";
                         }
 
-                        ?>" onclick="clickGeneratePassword()">Generate Password</button>
+                        ?>">Generate Password</button>
                         <div id="area-generate-password" class="wp-pwd hide-if-js" style="<?php
-                        if (isset($this->para) && isset($this->para->pass1)) {
+                        if (isset($this->para) && isset($this->para->pass1) && !is_null($this->para->pass1) && $this->para->pass1 != "") {
                             echo "display: inline-block;";
                         } else {
                             echo "display: none;";
@@ -287,23 +287,23 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                                     echo htmlspecialchars($this->para->pass1);
                                 }
 
-                                ?>" class="regular-text" id="pass1" name="pass1">
+                                ?>" class="regular-text" id="pass1" name="pass1" style="display: none;">
                                 <input value="<?php
                                 if (isset($this->para) && isset($this->para->pass1_text)) {
                                     echo htmlspecialchars($this->para->pass1_text);
                                 }
 
-                                ?>" type="text" id="pass1-text" name="pass1-text" autocomplete="off" class="regular-text strong">
+                                ?>" type="text" id="pass1-text" name="pass1-text" autocomplete="off" class="regular-text strong" style="display: none;">
                             </span>
-                            <button id="button-hide-password" onclick="clickHidePassword()" aria-label="Hide password" data-toggle="0" class="button button-secondary wp-hide-pw hide-if-no-js" type="button">
+                            <button id="button-hide-password" aria-label="Hide password" data-toggle="0" class="button button-secondary wp-hide-pw hide-if-no-js" type="button">
                                 <span class="dashicons dashicons-hidden"></span>
                                 <span class="text">Hide</span>
                             </button>
-                            <button id="button-show-password" onclick="clickShowPassword()" aria-label="Show password" data-toggle="0" class="button button-secondary wp-hide-pw hide-if-no-js" type="button">
+                            <button id="button-show-password" aria-label="Show password" data-toggle="0" class="button button-secondary wp-hide-pw hide-if-no-js" type="button">
                                 <span class="dashicons dashicons-visibility"></span>
                                 <span class="text">Show</span>
                             </button>
-                            <button onclick="clickCancleGeneratePassword()" aria-label="Cancel password change" data-toggle="0" class="button button-secondary wp-cancel-pw hide-if-no-js" type="button">
+                            <button id="button-cancle-generate-password" aria-label="Cancel password change" data-toggle="0" class="button button-secondary wp-cancel-pw hide-if-no-js" type="button">
                                 <span class="text">Cancel</span>
                             </button>
                             <div aria-live="polite" id="pass-strength-result" style="" class="strong">&nbsp;</div>
@@ -311,14 +311,18 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                     </td>
                 </tr>
                 <tr id="confirm_pw_weak" class="user-pass2-wrap" style="<?php
-                if (isset($this->para) && isset($this->para->pw_weak) && $this->para->pw_weak == "confirm") {
-                    echo "";
-                } else {
-                    if (isset($this->para) && isset($this->para->is_weak) && $this->para->is_weak) {
+                if (!(isset($this->para->pass1_text) && $this->para->pass1_text != NULL)) {
+                    if (isset($this->para) && isset($this->para->pw_weak) && $this->para->pw_weak == "confirm") {
                         echo "";
                     } else {
-                        echo "display: none;";
+                        if (isset($this->para) && isset($this->para->pass1_text)) {
+                            echo "";
+                        } else {
+                            echo "display: none;";
+                        }
                     }
+                } else {
+                    echo "display: none;";
                 }
 
                 ?>">
@@ -334,6 +338,8 @@ if (isset($this->userBO) && $this->userBO != NULL) {
     </form>
     <script>
         window.scrollTo(0, 0);
+
+
         function getDoc(frame) {
             var doc = null;
 
@@ -357,52 +363,55 @@ if (isset($this->userBO) && $this->userBO != NULL) {
         }
 
         jQuery("#form-your-profile").submit(function (e) {
-            var formObj = jQuery(this);
-            var formURL = formObj.attr("action");
+            if (confirm('<?php echo CONFIRM_EDIT_INFO_USER; ?>' + name + '<?php echo CONFIRM_EDIT_INFO_CANCEL_OK; ?>')) {
+                var formObj = jQuery(this);
+                var formURL = formObj.attr("action");
 
-            if (window.FormData !== undefined)  // for HTML5 browsers
-            {
-                var formData = new FormData(this);
-                jQuery.ajax({
-                    url: formURL,
-                    type: "POST",
-                    data: formData,
-                    mimeType: "multipart/form-data",
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success: function (data, textStatus, jqXHR)
-                    {
-                        jQuery(".wrap").html(data);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)
-                    {
-                    }
-                });
-                e.preventDefault();
-            }
-            else  //for olden browsers
-            {
-                //generate a random id
-                var iframeId = "unique" + (new Date().getTime());
-                //create an empty iframe
-                var iframe = jQuery('<iframe src="javascript:false;" name="' + iframeId + '" />');
-                //hide it
-                iframe.hide();
-                //set form target to iframe
-                formObj.attr("target", iframeId);
-                //Add iframe to body
-                iframe.appendTo("body");
-                iframe.load(function (e)
+                if (window.FormData !== undefined)  // for HTML5 browsers
                 {
-                    var doc = getDoc(iframe[0]);
-                    var docRoot = doc.body ? doc.body : doc.documentElement;
-                    var data = docRoot.innerHTML;
-                    jQuery(".wrap").html(data);
-                    //data return from server.
+                    var formData = new FormData(this);
+                    jQuery.ajax({
+                        url: formURL,
+                        type: "POST",
+                        data: formData,
+                        mimeType: "multipart/form-data",
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        success: function (data, textStatus, jqXHR)
+                        {
+                            jQuery(".wrap").html(data);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown)
+                        {
+                        }
+                    });
+                    e.preventDefault();
+                }
+                else  //for olden browsers
+                {
+                    //generate a random id
+                    var iframeId = "unique" + (new Date().getTime());
+                    //create an empty iframe
+                    var iframe = jQuery('<iframe src="javascript:false;" name="' + iframeId + '" />');
+                    //hide it
+                    iframe.hide();
+                    //set form target to iframe
+                    formObj.attr("target", iframeId);
+                    //Add iframe to body
+                    iframe.appendTo("body");
+                    iframe.load(function (e)
+                    {
+                        var doc = getDoc(iframe[0]);
+                        var docRoot = doc.body ? doc.body : doc.documentElement;
+                        var data = docRoot.innerHTML;
+                        jQuery(".wrap").html(data);
+                        //data return from server.
 
-                });
+                    });
+                }
             }
+
         });
         function analyzePassword(txtpass) {
             var desc = new Array();
@@ -467,33 +476,6 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             }
         }
 
-    <?php
-    if (isset($this->para) && isset($this->para->pass1)) {
-        echo "chkPasswordStrength('" . $this->para->pass1 . "')";
-    }
-
-    ?>
-
-        function clickGeneratePassword() {
-            jQuery("#button-generate-password").hide();
-            jQuery("#area-generate-password").show();
-            var pw_random = password_generator();
-            jQuery("input[name='pass1']").val(pw_random);
-            jQuery("input[name='pass1-text']").val(pw_random);
-            jQuery("input[name='pass1']").hide();
-            jQuery("input[name='pass1-text']").show();
-            chkPasswordStrength(jQuery("input[name='pass1']").val());
-            jQuery("#button-hide-password").show();
-            jQuery("#button-show-password").hide();
-            jQuery("input[name='pass1-text']").focus();
-        }
-        function clickCancleGeneratePassword() {
-            jQuery("#button-generate-password").show();
-            jQuery("#area-generate-password").hide();
-            jQuery("input[name='pass1']").val('');
-            jQuery("input[name='pass1-text']").val('');
-        }
-
         jQuery("input[name='pass1']").keyup(function () {
             jQuery("input[name='pass1-text']").val(jQuery("input[name='pass1']").val());
             chkPasswordStrength(jQuery("input[name='pass1']").val());
@@ -503,29 +485,6 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             chkPasswordStrength(jQuery("input[name='pass1']").val());
 
         });
-        function clickHidePassword() {
-            jQuery("#button-generate-password").hide();
-            jQuery("#area-generate-password").show();
-            jQuery("input[name='pass1']").show();
-            jQuery("input[name='pass1']").val(jQuery("input[name='pass1-text']").val());
-            jQuery("input[name='pass1-text']").hide();
-            chkPasswordStrength(jQuery("input[name='pass1']").val());
-            jQuery("#button-hide-password").hide();
-            jQuery("#button-show-password").show();
-            jQuery("input[name='pass1']").focus();
-        }
-
-        function clickShowPassword() {
-            jQuery("#button-generate-password").hide();
-            jQuery("#area-generate-password").show();
-            jQuery("input[name='pass1']").hide();
-            jQuery("input[name='pass1-text']").val(jQuery("input[name='pass1']").val());
-            jQuery("input[name='pass1-text']").show();
-            chkPasswordStrength(jQuery("input[name='pass1']").val());
-            jQuery("#button-hide-password").show();
-            jQuery("#button-show-password").hide();
-            jQuery("input[name='pass1-text']").focus();
-        }
 
         function password_generator(len) {
             var length = (len) ? (len) : (10);
@@ -548,6 +507,68 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             }
             return password;
         }
+
+    <?php if (isset($this->para) && isset($this->para->pass1) && !is_null($this->para->pass1) && $this->para->pass1 != "") { ?>
+            chkPasswordStrength('<?php echo $this->para->pass1; ?>');
+            jQuery("#button-generate-password").hide();
+            jQuery("#area-generate-password").show();
+            jQuery("input[name='pass1']").hide();
+            jQuery("input[name='pass1-text']").show();
+            jQuery("#button-hide-password").show();
+            jQuery("#button-show-password").hide();
+        <?php
+    } else {
+        ?>
+            jQuery("#button-generate-password").show();
+            jQuery("#area-generate-password").hide();
+            jQuery("input[name='pass1']").hide();
+            jQuery("input[name='pass1-text']").show();
+        <?php
+    }
+    ?>
+
+        jQuery("#button-hide-password").click(function () {
+            jQuery("#button-generate-password").hide();
+            jQuery("#area-generate-password").show();
+            jQuery("input[name='pass1']").show();
+            jQuery("input[name='pass1']").val(jQuery("input[name='pass1-text']").val());
+            jQuery("input[name='pass1-text']").hide();
+            chkPasswordStrength(jQuery("input[name='pass1']").val());
+            jQuery("#button-hide-password").hide();
+            jQuery("#button-show-password").show();
+            jQuery("input[name='pass1']").focus();
+        });
+        jQuery("#button-show-password").click(function () {
+            jQuery("#button-generate-password").hide();
+            jQuery("#area-generate-password").show();
+            jQuery("input[name='pass1']").hide();
+            jQuery("input[name='pass1-text']").val(jQuery("input[name='pass1']").val());
+            jQuery("input[name='pass1-text']").show();
+            chkPasswordStrength(jQuery("input[name='pass1']").val());
+            jQuery("#button-hide-password").show();
+            jQuery("#button-show-password").hide();
+            jQuery("input[name='pass1-text']").focus();
+        });
+        jQuery("#button-cancle-generate-password").click(function () {
+            jQuery("#button-generate-password").show();
+            jQuery("#area-generate-password").hide();
+            jQuery("input[name='pass1']").val('');
+            jQuery("input[name='pass1-text']").val('');
+        });
+        jQuery("#button-generate-password").click(function () {
+            jQuery("#button-generate-password").hide();
+            jQuery("#area-generate-password").show();
+            var pw_random = password_generator();
+            jQuery("input[name='pass1']").val(pw_random);
+            jQuery("input[name='pass1-text']").val(pw_random);
+            jQuery("input[name='pass1']").hide();
+            jQuery("input[name='pass1-text']").show();
+            chkPasswordStrength(jQuery("input[name='pass1']").val());
+            jQuery("#button-hide-password").show();
+            jQuery("#button-show-password").hide();
+            jQuery("input[name='pass1-text']").focus();
+        });
+
     </script>
     <?php
 } else {

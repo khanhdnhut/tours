@@ -91,7 +91,7 @@ class UserModel extends Model
         }
         if (isset($para->role) && !in_array($para->role, array(CAPABILITY_ADMINISTRATOR, CAPABILITY_EDITOR,
                 CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_SUBSCRIBER))) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
+            $_SESSION["fb_error"][] = ERROR_ROLE_OF_USER;
             return false;
         }
         if (isset($para->pass1) && $para->pass1 != "") {
@@ -100,7 +100,6 @@ class UserModel extends Model
                 return false;
             }
             if (!in_array($this->analyzePassword($para->pass1), array("Better", "Medium", "Strong", "Strongest"))) {
-                $para->is_weak = TRUE;
                 if (!(isset($para->pw_weak) && $para->pw_weak == "confirm")) {
                     $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER_CONFIRM_WEAK_PASS;
                     return false;
@@ -122,21 +121,21 @@ class UserModel extends Model
             $score++;
 
             //if $txtpass has both lower and uppercase characters give 1 point
-            if (preg_match($txtpass, '/[a-z]/') && preg_match($txtpass, '/[A-Z]/'))
+            if (preg_match('/[a-z]/', $txtpass) && preg_match('/[A-Z]/', $txtpass))
                 $score++;
 
             //if $txtpass has at least one number give 1 point
-            if (preg_match($txtpass, '/\d+/'))
+            if (preg_match('/\d+/', $txtpass))
                 $score++;
 
             //if $txtpass has at least one special caracther give 1 point              
-            if (preg_match($txtpass, '/.[!,@,#,$,%,^,&,*,?,_,~,-,+,`,|,},{,(,),\],\[,\\,\/,<,>,=,:,;,\,]/'))
+            if (preg_match('/.[!,@,#,$,%,^,&,*,?,_,~,-,+,`,|,},{,(,),\],\[,\\,\/,<,>,=,:,;,\,]/', $txtpass))
                 $score++;
 
             //if $txtpass bigger than 12 give another 1 point
             if (strlen($txtpass) > 12)
                 $score++;
-            $resultCheck = desc[$score];
+            $resultCheck = $desc[$score];
         } else {
             $resultCheck = "Password Should be Minimum 8 Characters";
         }
@@ -145,23 +144,78 @@ class UserModel extends Model
 
     public function updateInfoUser($para)
     {
-        if ($this->validateUpdateInfoUser($para)) {
-            if (isset($para->avatar)) {
-                $this->autoloadModel("image");
-                $imageModel = new ImageModel($this->db);
-                $array_id = $imageModel->uploadImages("avatar");
-                
+        try {
+            if ($this->validateUpdateInfoUser($para)) {
+                BO::autoloadBO("user");
+                $userBO = new UserBO();
+
+                if (isset($para->user_id)) {
+                    $userBO->user_id = $para->user_id;
+                }
+                if (isset($para->role)) {
+                    $userBO->wp_capabilities = $para->role;
+                }
+                if (isset($para->first_name)) {
+                    $userBO->first_name = $para->first_name;
+                }
+                if (isset($para->last_name)) {
+                    $userBO->last_name = $para->last_name;
+                }
+                if (isset($para->nickname)) {
+                    $userBO->nickname = $para->nickname;
+                }
+                if (isset($para->display_name)) {
+                    $userBO->display_name = $para->display_name;
+                }
+                if (isset($para->email)) {
+                    $userBO->user_email = $para->email;
+                }
+                if (isset($para->url)) {
+                    $userBO->user_url = $para->url;
+                }
+                if (isset($para->description)) {
+                    $userBO->description = $para->description;
+                }
+                if (isset($para->pass1_text)) {
+                    $userBO->user_pass = $para->pass1_text;
+                }
+
+                $this->db->beginTransaction();
+                if (isset($para->avatar)) {
+                    Model::autoloadModel("image");
+                    $imageModel = new ImageModel($this->db);
+                    $avatar_array_id = $imageModel->uploadImages("avatar");
+
+                    if (!is_null($avatar_array_id) && is_array($avatar_array_id) && sizeof($avatar_array_id) != 0) {
+                        $avatar_id = $avatar_array_id[0];
+                        $userBO->avatar = $avatar_id;
+                    } else {
+                        $_SESSION["fb_error"][] = ERROR_UPDATE_AVATAR_FAILED;
+                    }
+                }
+
+                if ($this->updateUser($userBO)) {
+                    $this->db->commit();
+                    $_SESSION["fb_success"][] = ERROR_UPDATE_USER_SUCCESS;
+                    return TRUE;
+                } else {
+                    $this->db->rollBack();
+                    $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
+                }
             }
+        } catch (Exception $e) {
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
         }
+        return FALSE;
     }
 
     public function getUserMeta($user_id, $meta_key)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_USERMETA . "
-                                   WHERE  " . TB_USERMETA_COL_USER_ID . " = :user_id");
+                                   WHERE  " . TB_USERMETA_COL_USER_ID . " = :user_id AND " . TB_USERMETA_COL_META_KEY . " = :meta_key; ");
 
-        $sth->execute(array(':user_id' => $user_id));
+        $sth->execute(array(':user_id' => $user_id, ':meta_key' => $meta_key));
         $count = $sth->rowCount();
         if ($count != 1) {
             return NULL;
@@ -174,7 +228,7 @@ class UserModel extends Model
     public function setUserMeta($user_id, $meta_key, $meta_value)
     {
         try {
-            if (getUserMeta($user_id, $meta_key) != NULL) {
+            if (!is_null($this->getUserMeta($user_id, $meta_key))) {
                 //update
                 $sql = "UPDATE " . TABLE_USERMETA . " 
                     SET " . TB_USERMETA_COL_META_VALUE . " = :meta_value
@@ -203,6 +257,180 @@ class UserModel extends Model
             return false;
         }
         return true;
+    }
+
+    public function updateUser($userBO)
+    {
+        if (is_a($userBO, "UserBO")) {
+            if (isset($userBO->user_id)) {
+                $sql = "UPDATE " . TABLE_USERS . " ";
+                $set = "SET ";
+                $where = " WHERE " . TB_USERS_COL_ID . " = :user_id;";
+
+                $para_array = [];
+                $para_array[":user_id"] = $userBO->user_id;
+
+                if (isset($userBO->user_login)) {
+                    $set .= " " . TB_USERS_COL_USER_LOGIN . " = :user_login,";
+                    $para_array[":user_login"] = $userBO->user_login;
+                }
+                if (isset($userBO->user_pass) && $userBO->user_pass != "") {
+                    $set .= " " . TB_USERS_COL_USER_PASS . " = :user_pass,";
+                    $para_array[":user_pass"] = hash('sha1', $userBO->user_pass);
+                }
+                if (isset($userBO->user_nicename)) {
+                    $set .= " " . TB_USERS_COL_USER_NICENAME . " = :user_nicename,";
+                    $para_array[":user_nicename"] = $userBO->user_nicename;
+                }
+                if (isset($userBO->user_email)) {
+                    $set .= " " . TB_USERS_COL_USER_EMAIL . " = :user_email,";
+                    $para_array[":user_email"] = $userBO->user_email;
+                }
+                if (isset($userBO->user_url)) {
+                    $set .= " " . TB_USERS_COL_USER_URL . " = :user_url,";
+                    $para_array[":user_url"] = $userBO->user_url;
+                }
+                if (isset($userBO->user_registered)) {
+                    $set .= " " . TB_USERS_COL_USER_REGISTERED . " = :user_registered,";
+                    $para_array[":user_registered"] = $userBO->user_registered;
+                }
+                if (isset($userBO->user_activation_key)) {
+                    $set .= " " . TB_USERS_COL_USER_ACTIVATION_KEY . " = :user_activation_key,";
+                    $para_array[":user_activation_key"] = $userBO->user_activation_key;
+                }
+                if (isset($userBO->user_status)) {
+                    $set .= " " . TB_USERS_COL_USER_STATUS . " = :user_status,";
+                    $para_array[":user_status"] = $userBO->user_status;
+                }
+                if (isset($userBO->display_name)) {
+                    $set .= " " . TB_USERS_COL_DISPLAY_NAME . " = :display_name,";
+                    $para_array[":display_name"] = $userBO->display_name;
+                }
+
+                if (count($para_array) != 0) {
+                    $set = substr($set, 0, strlen($set) - 1);
+                    $sql .= $set . $where;
+                    $sth = $this->db->prepare($sql);
+                    $sth->execute($para_array);
+//                    $count = $sth->rowCount();
+//                    if ($count == 1) {
+//                        
+//                    }
+                    $user_id = $userBO->user_id;
+                    if (isset($userBO->first_name)) {
+                        $this->setUserMeta($user_id, "first_name", $userBO->first_name);
+                    }
+                    if (isset($userBO->last_name)) {
+                        $this->setUserMeta($user_id, "last_name", $userBO->last_name);
+                    }
+                    if (isset($userBO->description)) {
+                        $this->setUserMeta($user_id, "description", $userBO->description);
+                    }
+                    if (isset($userBO->avatar)) {
+                        $this->setUserMeta($user_id, "avatar", $userBO->avatar);
+                    }
+                    if (isset($userBO->wp_capabilities)) {
+                        $this->setUserMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
+                    }
+                    if (isset($userBO->session_tokens)) {
+                        $this->setUserMeta($user_id, "session_tokens", $userBO->session_tokens);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function insertUser($userBO)
+    {
+        try {
+            if (is_a($userBO, "UserBO")) {
+
+                //insert
+                $sql = "INSERT INTO " . TABLE_USERS . " ";
+                $column = " ( ";
+                $value = " VALUES ( ";
+                $para_array = [];
+                if (isset($userBO->user_pass)) {
+                    $column .= " " . TB_USERS_COL_USER_PASS . ",";
+                    $value .= " :user_pass,";
+                    $para_array[":user_pass"] = hash('sha1', $userBO->user_pass);
+                }
+                if (isset($userBO->user_nicename)) {
+                    $column .= " " . TB_USERS_COL_USER_NICENAME . ",";
+                    $value .= " :user_nicename,";
+                    $para_array[":user_nicename"] = $userBO->user_nicename;
+                }
+                if (isset($userBO->user_email)) {
+                    $column .= " " . TB_USERS_COL_USER_EMAIL . ",";
+                    $value .= " :user_email,";
+                    $para_array[":user_email"] = $userBO->user_email;
+                }
+                if (isset($userBO->user_url)) {
+                    $column .= " " . TB_USERS_COL_USER_URL . ",";
+                    $value .= " :user_url,";
+                    $para_array[":user_url"] = $userBO->user_url;
+                }
+                if (isset($userBO->user_registered)) {
+                    $column .= " " . TB_USERS_COL_USER_REGISTERED . ",";
+                    $value .= " :user_registered,";
+                    $para_array[":user_registered"] = $userBO->user_registered;
+                }
+                if (isset($userBO->user_activation_key)) {
+                    $column .= " " . TB_USERS_COL_USER_ACTIVATION_KEY . ",";
+                    $value .= " :user_activation_key,";
+                    $para_array[":user_activation_key"] = $userBO->user_activation_key;
+                }
+                if (isset($userBO->user_status)) {
+                    $column .= " " . TB_USERS_COL_USER_STATUS . ",";
+                    $value .= " :user_status,";
+                    $para_array[":user_status"] = $userBO->user_status;
+                }
+                if (isset($userBO->display_name)) {
+                    $column .= " " . TB_USERS_COL_DISPLAY_NAME . ",";
+                    $value .= " :display_name,";
+                    $para_array[":display_name"] = $userBO->display_name;
+                }
+
+                if (count($para_array) != 0) {
+                    $column = substr($column, 0, strlen($column) - 1) . ") ";
+                    $value = substr($value, 0, strlen($value) - 1) . "); ";
+
+                    $sql .= $column . $value;
+
+                    $sth = $this->db->prepare($sql);
+                    $sth->execute($para_array);
+                    $count = $sth->rowCount();
+                    if ($count == 1) {
+                        $user_id = $this->db->lastInsertId();
+
+                        if (isset($userBO->first_name)) {
+                            $this->setUserMeta($user_id, "first_name", $userBO->first_name);
+                        }
+                        if (isset($userBO->last_name)) {
+                            $this->setUserMeta($user_id, "last_name", $userBO->last_name);
+                        }
+                        if (isset($userBO->description)) {
+                            $this->setUserMeta($user_id, "description", $userBO->description);
+                        }
+                        if (isset($userBO->avatar)) {
+                            $this->setUserMeta($user_id, "avatar", $userBO->avatar);
+                        }
+                        if (isset($userBO->wp_capabilities)) {
+                            $this->setUserMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
+                        }
+                        if (isset($userBO->session_tokens)) {
+                            $this->setUserMeta($user_id, "session_tokens", $userBO->session_tokens);
+                        }
+                        return $user_id;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            
+        }
+        return NULL;
     }
 
     public function getUserByUserId($user_id)
@@ -239,7 +467,15 @@ class UserModel extends Model
         $sth->execute(array(':user_id' => $user_id));
         $count = $sth->rowCount();
         if ($count > 0) {
-            return $sth->fetchAll();
+            $userMetaInfoArray = $sth->fetchAll();
+            foreach ($userMetaInfoArray as $userMeta) {
+                if (isset($userMeta->meta_key) && $userMeta->meta_key == "avatar") {
+                    Model::autoloadModel('image');
+                    $imageModel = new ImageModel($this->db);
+                    $userMeta->meta_value = $imageModel->getAttachment($userMeta->meta_value);
+                }
+            }
+            return $userMetaInfoArray;
         } else {
             $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
             return false;
@@ -277,7 +513,7 @@ class UserModel extends Model
                 }
             }
         }
-        if ($action != NULL) {
+        if (!is_null($action)) {
             switch ($action) {
                 case "delete":
                     $this->executeActionDelete($para);
@@ -306,7 +542,7 @@ class UserModel extends Model
 
             if (in_array("1", $para->users)) {
                 $user_delete = $this->getUserByUserId("1");
-                if ($user_delete != NULL) {
+                if (!is_null($user_delete)) {
                     $_SESSION["fb_error"][] = ERROR_DELETE_USER_NOT_PERMISSION . " <strong>" . $user_delete->user_login . "</strong>";
                 } else {
                     $_SESSION["fb_error"][] = ERR_USER_INFO_NOT_FOUND;
@@ -373,7 +609,7 @@ class UserModel extends Model
                 }
             }
         }
-        if ($role != NULL) {
+        if (!is_null($role)) {
             $this->executeChangeRole($para, $role);
         }
     }

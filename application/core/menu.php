@@ -37,7 +37,7 @@ class MenuItem {
                 }                
                 $this->menu_render .= "</ul>";     
         } else {
-            if($this->menu_title != null){
+            if(!is_null($this->menu_title)){
                 if (count($this->menu_children) > 0 || count($this->menu_columns) > 0) {
                     //Chứng tỏ đây không phải lá
                     if (count($this->menu_children) > 0) {

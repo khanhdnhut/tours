@@ -41,7 +41,7 @@ class Model {
         }
     }    
     
-    public function autoloadModel($name)
+    public static function autoloadModel($name)
     {
         $modelName = $name . 'Model';
         if (!class_exists($modelName, FALSE)) {

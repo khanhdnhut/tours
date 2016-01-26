@@ -172,15 +172,15 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                 <th><?php echo PROFILE_PICTURE_TITLE; ?></th>
                 <td>
                     <img width="96" height="96" class="avatar avatar-96 photo" srcset="<?php
-                         if (isset($this->userBO->avatar)) {
-                             echo URL . htmlspecialchars($this->userBO->avatar);
+                         if (isset($this->userBO->avatar_url)) {
+                             echo URL . htmlspecialchars($this->userBO->avatar_url);
                          } else {
                              echo URL . AVATAR_DEFAULT;
                          }
 
                          ?>" src="<?php
-                         if (isset($this->userBO->avatar)) {
-                             echo URL . htmlspecialchars($this->userBO->avatar);
+                         if (isset($this->userBO->avatar_url)) {
+                             echo URL . htmlspecialchars($this->userBO->avatar_url);
                          } else {
                              echo URL . AVATAR_DEFAULT;
                          }
