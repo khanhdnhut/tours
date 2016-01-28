@@ -81,25 +81,25 @@ if (!is_null(Session::get('userInfo'))) {
                                 </ul>
                             </div>
                         </li>
-        <?php
-    }
+                        <?php
+                    }
 
-    ?>
+                    ?>
 
                 </ul>
                 <ul class="ab-top-secondary ab-top-menu" id="wp-admin-bar-top-secondary">
                     <li class="menupop with-avatar" id="wp-admin-bar-my-account">
                         <a href="#" aria-haspopup="true" class="ab-item">
                             Hello <?php echo htmlspecialchars($userLoginBO->user_login); ?><img width="26" height="26" class="avatar avatar-26 photo" srcset="<?php
-                            if (isset($userLoginBO->avatar)) {
-                                echo URL . htmlspecialchars($userLoginBO->avatar);
+                            if (isset($userLoginBO->avatar_url)) {
+                                echo URL . htmlspecialchars($userLoginBO->avatar_url);
                             } else {
                                 echo URL . AVATAR_DEFAULT;
                             }
 
                             ?>" src="<?php
-                                                                                                if (isset($userLoginBO->avatar)) {
-                                                                                                    echo URL . htmlspecialchars($userLoginBO->avatar);
+                                                                                                if (isset($userLoginBO->avatar_url)) {
+                                                                                                    echo URL . htmlspecialchars($userLoginBO->avatar_url);
                                                                                                 } else {
                                                                                                     echo URL . AVATAR_DEFAULT;
                                                                                                 }
@@ -110,22 +110,22 @@ if (!is_null(Session::get('userInfo'))) {
                             <ul class="ab-submenu" id="wp-admin-bar-user-actions">
                                 <li id="wp-admin-bar-user-info">
                                     <a href="<?php echo URL . CONTEXT_PATH_USER_PROFILE; ?>" tabindex="-1" class="ab-item"><img width="64" height="64" class="avatar avatar-64 photo" srcset="<?php
-                                                                                                                                if (isset($userLoginBO->avatar)) {
-                                                                                                                                    echo URL . htmlspecialchars($userLoginBO->avatar);
+                                        if (isset($userLoginBO->avatar_url)) {
+                                            echo URL . htmlspecialchars($userLoginBO->avatar_url);
+                                        } else {
+                                            echo URL . AVATAR_DEFAULT;
+                                        }
+
+                                        ?>" src="<?php
+                                                                                                                                if (isset($userLoginBO->avatar_url)) {
+                                                                                                                                    echo URL . htmlspecialchars($userLoginBO->avatar_url);
                                                                                                                                 } else {
                                                                                                                                     echo URL . AVATAR_DEFAULT;
                                                                                                                                 }
 
-                                                                                                                                ?>" src="<?php
-                                                                                                                            if (isset($userLoginBO->avatar)) {
-                                                                                                                                echo URL . htmlspecialchars($userLoginBO->avatar);
-                                                                                                                            } else {
-                                                                                                                                echo URL . AVATAR_DEFAULT;
-                                                                                                                            }
-
-                                                                                                                            ?>" alt=""><span class="display-name"><?php echo htmlspecialchars($userLoginBO->user_login); ?></span></a>
+                                                                                                                                ?>" alt=""><span class="display-name"><?php echo htmlspecialchars($userLoginBO->user_login); ?></span></a>
                                 </li>
-                                <li id="wp-admin-bar-edit-profile"><a href="<?php echo URL . CONTEXT_PATH_USER_PROFILE; ?>" class="ab-item"><?php echo ADMIN_BAR_EDIT_MY_PROFILE_TITLE; ?></a> </li>
+                                <li id="wp-admin-bar-edit-profile"><a href="<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO . $userLoginBO->user_id . "/" . htmlspecialchars($userLoginBO->user_login); ?>" class="ab-item"><?php echo ADMIN_BAR_EDIT_MY_PROFILE_TITLE; ?></a> </li>
                                 <li id="wp-admin-bar-logout"><a href="<?php echo URL . CONTEXT_PATH_USER_LOGOUT; ?>" class="ab-item"><?php echo ADMIN_BAR_LOG_OUT_TITLE; ?></a> </li>
                             </ul>
                         </div>
@@ -135,27 +135,11 @@ if (!is_null(Session::get('userInfo'))) {
             <a href="<?php echo URL . CONTEXT_PATH_USER_LOGOUT; ?>" class="screen-reader-shortcut"><?php echo ADMIN_BAR_LOG_OUT_TITLE; ?></a>
         </div>
         <div role="main" id="wpbody">
-            <div tabindex="0" aria-label="Main content" id="wpbody-content" style="overflow: hidden;">
-                <div class="metabox-prefs" id="screen-meta">
-                    <div aria-label="Contextual Help Tab" tabindex="-1" class="hidden" id="contextual-help-wrap">
-                        Help
-                    </div>
-                    <div aria-label="Screen Options Tab" tabindex="-1" class="hidden" id="screen-options-wrap">
-                        Screen Options
-                    </div>
-                </div>
-                <div id="screen-meta-links">
-                    <div class="hide-if-no-js screen-meta-toggle" id="contextual-help-link-wrap">
-                        <button aria-expanded="false" aria-controls="contextual-help-wrap" class="button show-settings" id="contextual-help-link" type="button">Help</button>
-                    </div>
-                    <div class="hide-if-no-js screen-meta-toggle" id="screen-options-link-wrap">
-                        <button aria-expanded="false" aria-controls="screen-options-wrap" class="button show-settings" id="show-settings-link" type="button">Screen Options</button>
-                    </div>
-                </div>
+            <div tabindex="0" aria-label="Main content" id="wpbody-content" style="overflow: hidden;">               
                 <div class="wrap">
-    <?php
-} else {
-    Auth::handleLogin();
-}
+                    <?php
+                } else {
+                    Auth::handleLogin();
+                }
 
-?>
+                ?>

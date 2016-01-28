@@ -60,6 +60,7 @@ define("DASHBOARD_HOME_TITLE", "Home");
 define("DASHBOARD_TOURS_TITLE", "Tours");
 define("DASHBOARD_ALL_TOURS_TITLE", "All Tours");
 define("DASHBOARD_TOURS_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_TOURS_EDIT_USER_TITLE", "Edit User");
 define("DASHBOARD_TOURS_CATEGORIES_TITLE", "Categories");
 define("DASHBOARD_TOURS_TAGS_TITLE", "Tags");
 define("DASHBOARD_MEDIA_TITLE", "Media");
@@ -72,6 +73,11 @@ define("DASHBOARD_USERS_TITLE", "Users");
 define("DASHBOARD_USERS_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_USERS_YOUR_PROFILE_TITLE", "Your Profile");
 define("DASHBOARD_ALL_USERS_TITLE", "All Users");
+
+define("DASHBOARD_COUNTRY_TITLE", "Countries");
+define("DASHBOARD_COUNTRY_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_ALL_COUNTRY_TITLE", "All Countries");
+
 define("DASHBOARD_SETTINGS_TITLE", "Settings");
 define("DASHBOARD_SETTINGS_WRITING_TITLE", "Writing");
 define("DASHBOARD_SETTINGS_READING_TITLE", "Reading");
@@ -100,12 +106,18 @@ define("CAPABILITY_EDITOR", "editor");
  * Language for: RENDER_VIEW
  */
 define("RENDER_VIEW_USER_INDEX", "user/index");
+define("RENDER_VIEW_USER_ADD_NEW", "user/user_add_new");
 define("RENDER_VIEW_USER_EDIT", "user/user_edit");
 define("RENDER_VIEW_USER_INFO", "user/user_info");
 define("RENDER_VIEW_USER_LOGIN", "user/login");
 define("RENDER_VIEW_ERROR_INDEX", "error/index");
 define("RENDER_VIEW_ERROR_NOTFOUND", "error/notFound");
 define("RENDER_VIEW_HOME_INDEX", "home/index");
+
+define("RENDER_VIEW_COUNTRY_INDEX", "country/index");
+define("RENDER_VIEW_COUNTRY_ADD_NEW", "country/country_add_new");
+define("RENDER_VIEW_COUNTRY_EDIT", "country/country_edit");
+define("RENDER_VIEW_COUNTRY_INFO", "country/country_info");
 
 /*
  * Language for: URL
@@ -140,6 +152,11 @@ define("CONTEXT_PATH_TOUR_EDIT", "tour/edit/");
 define("CONTEXT_PATH_TOUR_ADD_NEW", "tour/addNew/");
 define("CONTEXT_PATH_TOUR_EDIT_CATEGORY", "tour/editCategory/");
 define("CONTEXT_PATH_TOUR_EDIT_TAG", "tour/editTag/");
+
+
+define("CONTEXT_PATH_COUNTRY_INDEX", "country/index/");
+define("CONTEXT_PATH_COUNTRY_ADD_NEW", "country/addNew/");
+define("CONTEXT_PATH_COUNTRY_EDIT_INFO", "country/editInfo/");
 
 define("CONTEXT_PATH_OPTIONS_EDIT", "options/edit/");
 define("CONTEXT_PATH_OPTIONS_EDIT_GENERAL", "options/edit/general/");
@@ -181,7 +198,8 @@ define("USERNAME_TITLE", "Username");
 define("NAME_TITLE", "Name");
 define("EMAIL_TITLE", "Email");
 define("ROLE_TITLE", "Role");
-define("POSTS_TITLE", "Tours");
+define("POSTS_TITLE", "Posts");
+define("TOURS_TITLE", "Tours");
 define("EDIT_TITLE", "Edit");
 define("SHOW_MORE_DETAILS_TITLE", "Show more details");
 define("CHANGE_TITLE", "Change");
@@ -208,9 +226,45 @@ define("AVATAR_DEFAULT", "public/img/icon/no_avatar.jpg");
 define("YOU_TITLE", "You");
 
 define("ERROR_UPDATE_INFO_USER", "Update profile of user failed!");
-define("ERROR_UPDATE_INFO_USER_PASS", "Password of user is invalid!");
+define("ERROR_UPDATE_INFO_COUNTRY", "Update profile of country failed!");
+define("ERROR_ADD_NEW_USER", "Add new user failed!");
+define("ERROR_ADD_NEW_COUNTRY", "Add new country failed!");
+define("ERROR_USER_PASS", "Password of user is invalid!");
 define("ERROR_UPDATE_INFO_USER_CONFIRM_WEAK_PASS", "Password of user is weak, you must confirm use of weak password!");
-define("ERROR_UPDATE_INFO_USER_PASSWORD_EMPTY", "Password of user is empty!");
+define("ERROR_USER_PASSWORD_EMPTY", "Password of user is empty!");
 define("ERROR_UPDATE_AVATAR_FAILED", "Update avatar failed!");
-define("ERROR_UPDATE_USER_SUCCESS", "Update profile of user successed!");
+define("ERROR_UPLOAD_AVATAR_FAILED", "Upload avatar failed!");
+define("UPDATE_USER_SUCCESS", "Update profile of user successed!");
+define("UPDATE_COUNTRY_SUCCESS", "Update profile of country successed!");
+define("ADD_USER_SUCCESS", "Add new user successed!");
+define("ADD_COUNTRY_SUCCESS", "Add new country successed!");
 define("ERROR_ROLE_OF_USER", "Role of user is not impossible");
+define("ERROR_USER_LOGIN", "Username is empty");
+define("ERROR_NAME_EMPTY", "Name is empty");
+define("ERROR_SLUG_EMPTY", "Slug is empty");
+define("ERROR_USER_EXISTED", "Username existed");
+define("ERROR_SLUG_EXISTED", "Slug existed");
+define("ERROR_NAME_EXISTED", "Name existed");
+define("ERROR_USER_EMAIL", "Email of user is empty");
+define("ERROR_USER_EMAIL_INVALID", "Invalid email format");
+
+define("ADD_NEW_USER_LABEL", "Add New User");
+define("ADD_NEW_USER_DESC", "Create a brand new user and add them to this site.");
+define("LABEL_REQUIRED", "(required)");
+define("BUTTON_SHOW_PASSWORD", "Show password");
+define("BUTTON_HIDE", "Hide");
+define("BUTTON_SHOW", "Show");
+define("BUTTON_CANCEL", "Cancel");
+define("BUTTON_GENERATE_PASSWORD", "Generate Password");
+define("LABEL_CONFIRM_PASSWORD", "Confirm Password");
+define("DESC_CONFIRM_PASSWORD", "Confirm use of weak password");
+define("LABEL_ACCOUNT_MANAGEMENT", "Account Management");
+define("LABEL_NEW_PASSWORD", "New Password");
+define("LABEL_GENERATE_PASSWORD", "Generate Password");
+define("LABEL_UPDATE_USER", "Update User");
+define("ERROR_EMAIL_IS_EMPTY", "Error: Email is emtpy!");
+define("ERROR_USERNAME_IS_EMPTY", "Error: Username is emtpy!");
+define("ERROR_PASSWORD_IS_EMPTY", "Error: Password is emtpy!");
+define("COLUMNS_LABEL", "Columns");
+define("PAGINATION_LABEL", "Pagination");
+define("NUMBER_OF_ITEMS_PER_PAGE_DESC", "Number of items per page:");

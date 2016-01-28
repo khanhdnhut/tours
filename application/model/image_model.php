@@ -1,8 +1,40 @@
 <?php
-Model::autoloadModel('attachment');
 
+Model::autoloadModel('attachment');
 class ImageModel extends AttachmentModel
 {
+
+    public $is_create_thumb = false;
+    public $is_slider_thumb = false;
+    public $slider_thumb_height;
+    public $slider_thumb_width;
+    public $slider_thumb_crop = true;
+    public $slider_thumb_quality = 100;
+    public $is_thumbnail = false;
+    public $thumbnail_height;
+    public $thumbnail_width;
+    public $thumbnail_crop = true;
+    public $thumbnail_quality = 100;
+    public $is_post_thumbnail = false;
+    public $post_thumbnail_height;
+    public $post_thumbnail_width;
+    public $post_thumbnail_crop = true;
+    public $post_thumbnail_quality = 100;
+    public $is_medium = false;
+    public $medium_height;
+    public $medium_width;
+    public $medium_crop = true;
+    public $medium_quality = 100;
+    public $is_medium_large = false;
+    public $medium_large_height;
+    public $medium_large_width;
+    public $medium_large_crop = true;
+    public $medium_large_quality = 100;
+    public $is_large = false;
+    public $large_height;
+    public $large_width;
+    public $large_crop = true;
+    public $large_quality = 100;
 
     /**
      * Constructor, expects a Database connection
@@ -13,7 +45,16 @@ class ImageModel extends AttachmentModel
         parent::__construct($db);
     }
 
-    public function uploadImage($name, $tmp_name, $is_thumb = true)
+    public function createThumbnail(Image_MetadataBO $attachment_metadata, $file_ori, $thumb_type, $width_ori, $height_ori, $width_new, $height_new, $folder, $path, $name, $extention, $crop = true, $quality = 100)
+    {
+        $file_name_thumb = $folder . $name . "-" . $width_new . "x" . round($height_new) . "." . $extention;
+        $file_path = $path . $name . "-" . $width_new . "x" . round($height_new) . "." . $extention;
+        if ($this->resize_image($file_ori, $file_name_thumb, $width_new, $height_new, $crop, $quality)) {
+            $attachment_metadata->sizes->$thumb_type = new ThumbnailBO($file_name_thumb, $file_path);
+        }
+    }
+
+    public function uploadImage($name, $tmp_name)
     {
         $this->autoloadBO('image');
         $imageInfo = new ImageBO();
@@ -64,11 +105,11 @@ class ImageModel extends AttachmentModel
             return NULL;
         }
 
-        if (!Utils::checkCreateFolder(PUBLIC_UPLOAD_PATH . $year . '/' . $month)) {
+        if (!Utils::checkCreateFolder(PUBLIC_UPLOAD_PATH . $year . DIRECTORY_SEPARATOR . $month)) {
             return NULL;
         }
 
-        $folder = PUBLIC_UPLOAD_PATH . $year . '/' . $month . '/';
+        $folder = PUBLIC_UPLOAD_PATH . $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR;
         $path_parts = pathinfo($name);
         $date = new DateTime();
         $name = $date->getTimestamp() . mt_rand();
@@ -78,61 +119,89 @@ class ImageModel extends AttachmentModel
             return NULL;
         }
         $imageInfo->guid = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $file_name;
+        $attachment_metadata->file = $folder . $file_name;
+        $imageInfo->attached_file = $folder . $file_name;
         $imageInfo->attachment_post = $imageInfo;
-        if ($is_thumb) {
+        if ($this->is_create_thumb) {
             $attachment_metadata->sizes = new Image_SizesBO();
-            if ($attachment_metadata->width >= SIZE_WITH_SLIDER_THUMB) {
-                $with = SIZE_WITH_SLIDER_THUMB;
-                $height = SIZE_WITH_SLIDER_THUMB * $imageSizes[1] / $imageSizes[0];
-                $file_name_thumb = $folder . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                $file_path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                if ($this->resize_image($tmp_name, $file_name_thumb, $with, $height)) {
-                    $attachment_metadata->sizes->slider_thumb = new ThumbnailBO($file_name_thumb, $file_path);
+            $path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/";
+
+            if ($this->is_slider_thumb) {
+                if (!(isset($this->slider_thumb_width) && is_numeric($this->slider_thumb_width))) {
+                    $this->slider_thumb_width = SIZE_WITH_SLIDER_THUMB;
                 }
-                if ($attachment_metadata->width >= SIZE_WITH_THUMBNAIL) {
-                    $with = SIZE_WITH_THUMBNAIL;
-                    $height = SIZE_WITH_THUMBNAIL * $imageSizes[1] / $imageSizes[0];
-                    $file_name_thumb = $folder . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                    $file_path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                    if ($this->resize_image($tmp_name, $file_name_thumb, $with, $height)) {
-                        $attachment_metadata->sizes->thumbnail = new ThumbnailBO($file_name_thumb, $file_path);
+                if ($attachment_metadata->width >= $this->slider_thumb_width) {
+                    if (!(isset($this->slider_thumb_height) && is_numeric($this->slider_thumb_height))) {
+                        $this->slider_thumb_height = SIZE_WITH_SLIDER_THUMB * $imageSizes[1] / $imageSizes[0];
+                        ;
                     }
-                    if ($attachment_metadata->width >= SIZE_WITH_POST_THUMBNAIL) {
-                        $with = SIZE_WITH_POST_THUMBNAIL;
-                        $height = SIZE_WITH_POST_THUMBNAIL * $imageSizes[1] / $imageSizes[0];
-                        $file_name_thumb = $folder . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                        $file_path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                        if ($this->resize_image($tmp_name, $file_name_thumb, $with, $height)) {
-                            $attachment_metadata->sizes->post_thumbnail = new ThumbnailBO($file_name_thumb, $file_path);
-                        }
-                        if ($attachment_metadata->width >= SIZE_WITH_MEDIUM) {
-                            $with = SIZE_WITH_MEDIUM;
-                            $height = SIZE_WITH_MEDIUM * $imageSizes[1] / $imageSizes[0];
-                            $file_name_thumb = $folder . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                            $file_path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                            if ($this->resize_image($tmp_name, $file_name_thumb, $with, $height)) {
-                                $attachment_metadata->sizes->medium = new ThumbnailBO($file_name_thumb, $file_path);
-                            }
-                            if ($attachment_metadata->width >= SIZE_WITH_MEDIUM_LARGE) {
-                                $with = SIZE_WITH_MEDIUM_LARGE;
-                                $height = SIZE_WITH_MEDIUM_LARGE * $imageSizes[1] / $imageSizes[0];
-                                $file_name_thumb = $folder . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                                $file_path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                                if ($this->resize_image($tmp_name, $file_name_thumb, $with, $height)) {
-                                    $attachment_metadata->sizes->medium_large = new ThumbnailBO($file_name_thumb, $file_path);
-                                }
-                                if ($attachment_metadata->width >= SIZE_WITH_LARGE) {
-                                    $with = SIZE_WITH_LARGE;
-                                    $height = SIZE_WITH_LARGE * $imageSizes[1] / $imageSizes[0];
-                                    $file_name_thumb = $folder . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                                    $file_path = PUBLIC_UPLOAD_REL . $year . "/" . $month . "/" . $name . "-" . $with . "x" . round($height) . "." . $path_parts['extension'];
-                                    if ($this->resize_image($tmp_name, $file_name_thumb, $with, $height)) {
-                                        $attachment_metadata->sizes->large = new ThumbnailBO($file_name_thumb, $file_path);
-                                    }
-                                }
-                            }
-                        }
+
+                    $this->createThumbnail($attachment_metadata, $tmp_name, "slider_thumb", $imageSizes[0], $imageSizes[1], $this->slider_thumb_width, $this->slider_thumb_height, $folder, $path, $name, $path_parts['extension'], $this->slider_thumb_crop, $this->slider_thumb_quality);
+                }
+            }
+            if ($this->is_thumbnail) {
+                if (!(isset($this->thumbnail_width) && is_numeric($this->thumbnail_width))) {
+                    $this->thumbnail_width = SIZE_WITH_THUMBNAIL;
+                }
+                if ($attachment_metadata->width >= $this->thumbnail_width) {
+                    if (!(isset($this->thumbnail_height) && is_numeric($this->thumbnail_height))) {
+                        $this->thumbnail_height = SIZE_WITH_THUMBNAIL * $imageSizes[1] / $imageSizes[0];
+                        ;
                     }
+
+                    $this->createThumbnail($attachment_metadata, $tmp_name, "thumbnail", $imageSizes[0], $imageSizes[1], $this->thumbnail_width, $this->thumbnail_height, $folder, $path, $name, $path_parts['extension'], $this->thumbnail_crop, $this->thumbnail_quality);
+                }
+            }
+            if ($this->is_post_thumbnail) {
+                if (!(isset($this->post_thumbnail_width) && is_numeric($this->post_thumbnail_width))) {
+                    $this->post_thumbnail_width = SIZE_WITH_POST_THUMBNAIL;
+                }
+                if ($attachment_metadata->width >= $this->post_thumbnail_width) {
+                    if (!(isset($this->post_thumbnail_height) && is_numeric($this->post_thumbnail_height))) {
+                        $this->post_thumbnail_height = SIZE_WITH_POST_THUMBNAIL * $imageSizes[1] / $imageSizes[0];
+                        ;
+                    }
+
+                    $this->createThumbnail($attachment_metadata, $tmp_name, "post_thumbnail", $imageSizes[0], $imageSizes[1], $this->post_thumbnail_width, $this->post_thumbnail_height, $folder, $path, $name, $path_parts['extension'], $this->post_thumbnail_crop, $this->post_thumbnail_quality);
+                }
+            }
+            if ($this->is_medium) {
+                if (!(isset($this->medium_width) && is_numeric($this->medium_width))) {
+                    $this->medium_width = SIZE_WITH_MEDIUM;
+                }
+                if ($attachment_metadata->width >= $this->medium_width) {
+                    if (!(isset($this->medium_height) && is_numeric($this->medium_height))) {
+                        $this->medium_height = SIZE_WITH_MEDIUM * $imageSizes[1] / $imageSizes[0];
+                        ;
+                    }
+
+                    $this->createThumbnail($attachment_metadata, $tmp_name, "medium", $imageSizes[0], $imageSizes[1], $this->medium_width, $this->medium_height, $folder, $path, $name, $path_parts['extension'], $this->medium_crop, $this->medium_quality);
+                }
+            }
+            if ($this->is_medium_large) {
+                if (!(isset($this->medium_large_width) && is_numeric($this->medium_large_width))) {
+                    $this->medium_large_width = SIZE_WITH_MEDIUM_LARGE;
+                }
+                if ($attachment_metadata->width >= $this->medium_large_width) {
+                    if (!(isset($this->medium_large_height) && is_numeric($this->medium_large_height))) {
+                        $this->medium_large_height = SIZE_WITH_MEDIUM_LARGE * $imageSizes[1] / $imageSizes[0];
+                        ;
+                    }
+
+                    $this->createThumbnail($attachment_metadata, $tmp_name, "medium_large", $imageSizes[0], $imageSizes[1], $this->medium_large_width, $this->medium_large_height, $folder, $path, $name, $path_parts['extension'], $this->medium_large_crop, $this->medium_large_quality);
+                }
+            }
+            if ($this->is_large) {
+                if (!(isset($this->large_width) && is_numeric($this->large_width))) {
+                    $this->large_width = SIZE_WITH_LARGE;
+                }
+                if ($attachment_metadata->width >= $this->large_width) {
+                    if (!(isset($this->large_height) && is_numeric($this->large_height))) {
+                        $this->large_height = SIZE_WITH_LARGE * $imageSizes[1] / $imageSizes[0];
+                        ;
+                    }
+
+                    $this->createThumbnail($attachment_metadata, $tmp_name, "large", $imageSizes[0], $imageSizes[1], $this->large_width, $this->large_height, $folder, $path, $name, $path_parts['extension'], $this->large_crop, $this->large_quality);
                 }
             }
         }
@@ -147,7 +216,7 @@ class ImageModel extends AttachmentModel
      * @param type $name_image
      * @return boolean images_id
      */
-    public function uploadImages($name_image, $is_thumb = true)
+    public function uploadImages($name_image)
     {
         if (isset($_FILES[$name_image])) {
             $images_id_array = array();
@@ -177,11 +246,11 @@ class ImageModel extends AttachmentModel
      * @param type $destination_filename
      * @param type $width
      * @param type $height
-     * @param type $quality
      * @param type $crop
+     * @param type $quality
      * @return boolean
      */
-    public function resize_image($source_image, $destination_filename, $width = 1024, $height = 1024, $quality = 100, $crop = true)
+    public function resize_image($source_image, $destination_filename, $width = 1024, $height = 1024, $crop = true, $quality = 100)
     {
         $image_data = getimagesize($source_image);
         if (!$image_data) {
@@ -287,5 +356,38 @@ class ImageModel extends AttachmentModel
         }
         // default return
         return false;
+    }
+
+    public function deletePost($post_id)
+    {
+        try {
+            $postBO = $this->getPost($post_id);
+            if (isset($postBO->attachment_metadata) && isset($postBO->attachment_metadata->sizes)) {
+                if (isset($postBO->attachment_metadata->sizes->slider_thumb) && isset($postBO->attachment_metadata->sizes->slider_thumb->file)) {
+                    Utils::deleteFile($postBO->attachment_metadata->sizes->slider_thumb->file);
+                }
+                if (isset($postBO->attachment_metadata->sizes->thumbnail) && isset($postBO->attachment_metadata->sizes->thumbnail->file)) {
+                    Utils::deleteFile($postBO->attachment_metadata->sizes->thumbnail->file);
+                }
+                if (isset($postBO->attachment_metadata->sizes->post_thumbnail) && isset($postBO->attachment_metadata->sizes->post_thumbnail->file)) {
+                    Utils::deleteFile($postBO->attachment_metadata->sizes->post_thumbnail->file);
+                }
+                if (isset($postBO->attachment_metadata->sizes->medium) && isset($postBO->attachment_metadata->sizes->medium->file)) {
+                    Utils::deleteFile($postBO->attachment_metadata->sizes->medium->file);
+                }
+                if (isset($postBO->attachment_metadata->sizes->medium_large) && isset($postBO->attachment_metadata->sizes->medium_large->file)) {
+                    Utils::deleteFile($postBO->attachment_metadata->sizes->medium_large->file);
+                }
+                if (isset($postBO->attachment_metadata->sizes->large) && isset($postBO->attachment_metadata->sizes->large->file)) {
+                    Utils::deleteFile($postBO->attachment_metadata->sizes->large->file);
+                }
+            }
+            if (parent::deletePost($post_id)) {
+                return TRUE;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return FALSE;
     }
 }

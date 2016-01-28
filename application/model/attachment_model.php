@@ -33,12 +33,28 @@ class AttachmentModel extends PostModel
         return NULL;
     }
 
-    public function getAttachment($attachment_id)
+    public function getPost($attachment_id)
     {
-        $attachmentBO = $this->getPost($attachment_id);
+        $attachmentBO = parent::getPost($attachment_id);
         if (isset($attachmentBO->attachment_metadata) && !is_object($attachmentBO->attachment_metadata)) {
             $attachmentBO->attachment_metadata = json_decode($attachmentBO->attachment_metadata);
         }
         return $attachmentBO;
+    }
+
+    public function deletePost($post_id)
+    {
+        try {
+            $postBO = $this->getPost($post_id);
+            if (isset($postBO->attached_file) && $postBO->attached_file != "") {
+                Utils::deleteFile($postBO->attached_file);
+            }
+            if (parent::deletePost($post_id)) {
+                return TRUE;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return FALSE;
     }
 }

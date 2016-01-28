@@ -101,37 +101,86 @@ class PostModel extends Model
 
     public function getPost($post_id)
     {
-        $sth = $this->db->prepare("SELECT *
+        try {
+            $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_POSTS . "
                                    WHERE  " . TB_POST_COL_ID . " = :post_id");
 
-        $sth->execute(array(':post_id' => $post_id));
-        $count = $sth->rowCount();
-        if ($count != 1) {
-            return null;
+            $sth->execute(array(':post_id' => $post_id));
+            $count = $sth->rowCount();
+            if ($count != 1) {
+                return null;
+            }
+            // fetch one row (we only have one result)
+            $result = $sth->fetch();
+            $this->autoloadBO('post');
+            $postBO = new PostBO();
+            $postBO->setPost($result);
+            $postMetaInfoArray = $this->getPostMetaInfo($result->ID);
+            $postBO->setPostMetaInfo($postMetaInfoArray);
+            return $postBO;
+        } catch (Exception $e) {
+            
         }
-        // fetch one row (we only have one result)
-        $result = $sth->fetch();
-        $this->autoloadBO('post');
-        $postBO = new PostBO();
-        $postBO->setPost($result);
-        $postMetaInfoArray = $this->getPostMetaInfo($result->ID);
-        $postBO->setPostMetaInfo($postMetaInfoArray);
-        return $postBO;
+        return null;
     }
 
     public function getPostMetaInfo($post_id)
     {
-        $sth = $this->db->prepare("SELECT *
+        try {
+            $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_POSTMETA . "
                                    WHERE  " . TB_POSTMETA_COL_POST_ID . " = :post_id");
 
-        $sth->execute(array(':post_id' => $post_id));
-        $count = $sth->rowCount();
-        if ($count > 0) {
-            return $sth->fetchAll();
-        } else {
-            return null;
+            $sth->execute(array(':post_id' => $post_id));
+            $count = $sth->rowCount();
+            if ($count > 0) {
+                return $sth->fetchAll();
+            } else {
+                return null;
+            }
+        } catch (Exception $e) {
+            
         }
+        return null;
+    }
+
+    public function deletePost($post_id)
+    {
+        try {
+            $sth = $this->db->prepare("DELETE 
+                                   FROM   " . TABLE_POSTS . "
+                                   WHERE  " . TB_POST_COL_ID . " = :post_id");
+            $sth->execute(array(':post_id' => $post_id));
+            $count = $sth->rowCount();
+            if ($count > 0) {
+                $this->deletePostMeta($post_id);
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return FALSE;
+    }
+
+    public function deletePostMeta($post_id)
+    {
+        try {
+            $sth = $this->db->prepare("DELETE 
+                                   FROM   " . TABLE_POSTMETA . "
+                                   WHERE  " . TB_POSTMETA_COL_POST_ID . " = :post_id");
+            $sth->execute(array(':post_id' => $post_id));
+            $count = $sth->rowCount();
+            if ($count > 0) {
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return FALSE;
     }
 }

@@ -23,9 +23,12 @@ class UserBO extends BO
     public $last_name = null;
     public $description = null;
     public $avatar = null;
+    public $avatar_object = null;
     public $avatar_url = null;
     public $wp_capabilities = null;
     public $session_tokens = null;
+    public $users_per_page = null;
+    public $manage_users_columns_show = null;
 
     public function setUserInfo($userInfo)
     {
@@ -73,7 +76,7 @@ class UserBO extends BO
                         $meta_key = $userMeta->meta_key;
                         $this->$meta_key = $userMeta->meta_value;
 
-                        if ($userMeta->meta_key == 'avatar' && is_object($userMeta->meta_value)) {
+                        if ($userMeta->meta_key == 'avatar_object' && is_object($userMeta->meta_value)) {
                             $image_metadataBO = $userMeta->meta_value;
                             if (isset($image_metadataBO->attachment_metadata) && isset($image_metadataBO->attachment_metadata->sizes)) {
                                 if (isset($image_metadataBO->attachment_metadata->sizes->slider_thumb) && isset($image_metadataBO->attachment_metadata->sizes->slider_thumb->url)) {

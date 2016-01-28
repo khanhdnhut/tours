@@ -16,8 +16,13 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             }
 
             ?></strong>
+        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo DASHBOARD_TOURS_ADD_NEW_TITLE; ?></a>
     </h1>
-    <?php $this->renderFeedbackMessages(); ?>
+
+    <div id="message_notice">
+        <?php $this->renderFeedbackMessages(); ?>
+    </div>
+
     <form id="form-your-profile" novalidate="novalidate"  method="POST" enctype="multipart/form-data" action="<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>">
         <input type="hidden" value="update" name="action">
         <input type="hidden" value="<?php
@@ -178,12 +183,12 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             <tbody>
                 <tr class="user-email-wrap">
                     <th>
-                        <label for="email"><?php echo EMAIL_TITLE; ?></label>
+                        <label for="email"><?php echo EMAIL_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label>
                     </th>
                     <td>
                         <input type="email" class="regular-text ltr" value="<?php
-                        if (isset($this->para) && isset($this->para->user_email)) {
-                            echo htmlspecialchars($this->para->user_email);
+                        if (isset($this->para) && isset($this->para->email)) {
+                            echo htmlspecialchars($this->para->email);
                         } elseif (isset($this->userBO->user_email)) {
                             echo htmlspecialchars($this->userBO->user_email);
                         }
@@ -256,15 +261,14 @@ if (isset($this->userBO) && $this->userBO != NULL) {
 
             </tbody>
         </table>
-        <h2>Account Management</h2>
+        <h2><?php echo LABEL_ACCOUNT_MANAGEMENT; ?></h2>
         <table class="form-table">
             <tbody>
                 <tr class="user-pass1-wrap" id="password">
                     <th>
-                        <label for="pass1-text">New Password</label>
+                        <label for="pass1-text"><?php echo LABEL_NEW_PASSWORD; ?></label>
                     </th>
                     <td>
-                        <!-- #24364 workaround -->
                         <button id="button-generate-password" class="button button-secondary wp-generate-pw hide-if-no-js" type="button" style="<?php
                         if (isset($this->para) && isset($this->para->pass1) && !is_null($this->para->pass1) && $this->para->pass1 != "") {
                             echo "display: none;";
@@ -272,7 +276,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                             echo "display: inline-block;";
                         }
 
-                        ?>">Generate Password</button>
+                        ?>"><?php echo LABEL_GENERATE_PASSWORD; ?></button>
                         <div id="area-generate-password" class="wp-pwd hide-if-js" style="<?php
                         if (isset($this->para) && isset($this->para->pass1) && !is_null($this->para->pass1) && $this->para->pass1 != "") {
                             echo "display: inline-block;";
@@ -297,25 +301,29 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                             </span>
                             <button id="button-hide-password" aria-label="Hide password" data-toggle="0" class="button button-secondary wp-hide-pw hide-if-no-js" type="button">
                                 <span class="dashicons dashicons-hidden"></span>
-                                <span class="text">Hide</span>
+                                <span class="text"><?php echo BUTTON_HIDE; ?></span>
                             </button>
                             <button id="button-show-password" aria-label="Show password" data-toggle="0" class="button button-secondary wp-hide-pw hide-if-no-js" type="button">
                                 <span class="dashicons dashicons-visibility"></span>
-                                <span class="text">Show</span>
+                                <span class="text"><?php echo BUTTON_SHOW; ?></span>
                             </button>
+                            <button id="button-generate-password-random" aria-label="<?php echo BUTTON_GENERATE_PASSWORD; ?>" data-toggle="0" class="button button-secondary wp-cancel-pw hide-if-no-js" type="button">
+                                <span class="text"><?php echo BUTTON_GENERATE_PASSWORD; ?></span>
+                            </button>                            
                             <button id="button-cancle-generate-password" aria-label="Cancel password change" data-toggle="0" class="button button-secondary wp-cancel-pw hide-if-no-js" type="button">
-                                <span class="text">Cancel</span>
+                                <span class="text"><?php echo BUTTON_CANCEL; ?></span>
                             </button>
                             <div aria-live="polite" id="pass-strength-result" style="" class="strong">&nbsp;</div>
                         </div>
                     </td>
                 </tr>
                 <tr id="confirm_pw_weak" class="user-pass2-wrap" style="<?php
-                if (!(isset($this->para->pass1_text) && $this->para->pass1_text != NULL)) {
+                if (!(isset($this->para->pass1_text) && $this->para->pass1_text != NULL &&
+                    $this->para->pass1_text != "")) {
                     if (isset($this->para) && isset($this->para->pw_weak) && $this->para->pw_weak == "confirm") {
                         echo "";
                     } else {
-                        if (isset($this->para) && isset($this->para->pass1_text)) {
+                        if (isset($this->para) && isset($this->para->pass1_text) && $this->para->pass1_text != NULL && $this->para->pass1_text != "") {
                             echo "";
                         } else {
                             echo "display: none;";
@@ -326,23 +334,21 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                 }
 
                 ?>">
-                    <th>Confirm Password</th>
+                    <th><?php echo LABEL_CONFIRM_PASSWORD; ?></th>
                     <td>
                         <label>
-                            <input type="checkbox" class="pw-checkbox" name="pw_weak" value="confirm"> Confirm use of weak password </label>
+                            <input type="checkbox" class="pw-checkbox" name="pw_weak" value="confirm"> <?php echo DESC_CONFIRM_PASSWORD; ?> </label>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <p class="submit"><input type="submit" value="Update User" class="button button-primary" id="submit" name="submit"></p>
+        <p class="submit"><input type="submit" value="<?php echo LABEL_UPDATE_USER; ?>" class="button button-primary" id="submit" name="submit"></p>
     </form>
     <script>
         window.scrollTo(0, 0);
 
-
         function getDoc(frame) {
             var doc = null;
-
             // IE8 cascading access check
             try {
                 if (frame.contentWindow) {
@@ -362,11 +368,38 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             return doc;
         }
 
+        function hideMessageSuccess() {
+            jQuery("#message-success").hide();
+        }
+        function hideMessageError() {
+            jQuery("#message-error").hide();
+        }
+
+        function noticeError(message) {
+            document.getElementById('message_notice').innerHTML =
+                    "<div class='error notice is-dismissible' id='message-error'><p>" + message + "</p>"
+            "   <button class='notice-dismiss' type='button' onclick='hideMessageError()'>" + "       <span class='screen-reader-text'>Dismiss this notice.</span>" +
+                    "   </button>" +
+                    "</div>";
+            window.scrollTo(0, 0);
+        }
+
+        function validateFormEditUser() {
+            if (jQuery('#form-your-profile input[name="email"]').val() == "") {
+                noticeError("<?php echo ERROR_EMAIL_IS_EMPTY; ?>");
+                return false;
+            }
+            return true;
+        }
         jQuery("#form-your-profile").submit(function (e) {
+            e.preventDefault();
+            if (!validateFormEditUser()) {
+                return;
+            }
+
             if (confirm('<?php echo CONFIRM_EDIT_INFO_USER; ?>' + name + '<?php echo CONFIRM_EDIT_INFO_CANCEL_OK; ?>')) {
                 var formObj = jQuery(this);
                 var formURL = formObj.attr("action");
-
                 if (window.FormData !== undefined)  // for HTML5 browsers
                 {
                     var formData = new FormData(this);
@@ -411,7 +444,6 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                     });
                 }
             }
-
         });
         function analyzePassword(txtpass) {
             var desc = new Array();
@@ -422,26 +454,19 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             desc[3] = "Medium";
             desc[4] = "Strong";
             desc[5] = "Strongest";
-
-            var score = 0;
-
-            //if txtpass bigger than 6 give 1 point
+            var score = 0;             //if txtpass bigger than 6 give 1 point
             if (txtpass.length > 8) {
                 score++;
-
                 //if txtpass has both lower and uppercase characters give 1 point
                 if ((txtpass.match(/[a-z]/)) && (txtpass.match(/[A-Z]/)))
                     score++;
-
                 //if txtpass has at least one number give 1 point
                 if (txtpass.match(/\d+/))
                     score++;
-
                 //if txtpass has at least one special caracther give 1 point
                 //!@#$%^&*()_+~`|}{[]\:;?><,./-=
                 if (txtpass.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,+,`,|,},{,(,),\],\[,\\,\/,<,>,=,:,;,\,]/))
                     score++;
-
                 //if txtpass bigger than 12 give another 1 point
                 if (txtpass.length > 12)
                     score++;
@@ -462,17 +487,22 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             desc[5] = "Strongest";
             var resultCheck = analyzePassword(txtpass);
             document.getElementById("pass-strength-result").innerHTML = resultCheck;
-
             if (resultCheck == desc[5]) {
                 jQuery("#pass-strength-result").removeClass().addClass("strong");
+                jQuery("#pass-strength-result").show();
+                jQuery("#confirm_pw_weak").hide();
             } else if (resultCheck == desc[4] || resultCheck == desc[3]) {
                 jQuery("#pass-strength-result").removeClass().addClass("good");
+                jQuery("#pass-strength-result").show();
+                jQuery("#confirm_pw_weak").hide();
             } else if (resultCheck == desc[2] || resultCheck == desc[1]) {
                 jQuery("#pass-strength-result").removeClass().addClass("bad");
                 jQuery("#confirm_pw_weak").show();
+                jQuery("#pass-strength-result").show();
             } else {
                 jQuery("#pass-strength-result").removeClass().addClass("short");
                 jQuery("#confirm_pw_weak").show();
+                jQuery("#pass-strength-result").show();
             }
         }
 
@@ -483,9 +513,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
         jQuery("input[name='pass1-text']").keyup(function () {
             jQuery("input[name='pass1']").val(jQuery("input[name='pass1-text']").val());
             chkPasswordStrength(jQuery("input[name='pass1']").val());
-
         });
-
         function password_generator(len) {
             var length = (len) ? (len) : (10);
             var string = "abcdefghijklmnopqrstuvwxyz"; //to upper 
@@ -518,6 +546,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             jQuery("#button-show-password").hide();
         <?php
     } else {
+
         ?>
             jQuery("#button-generate-password").show();
             jQuery("#area-generate-password").hide();
@@ -525,6 +554,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             jQuery("input[name='pass1-text']").show();
         <?php
     }
+
     ?>
 
         jQuery("#button-hide-password").click(function () {
@@ -568,7 +598,19 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             jQuery("#button-show-password").hide();
             jQuery("input[name='pass1-text']").focus();
         });
-
+        jQuery("#button-generate-password-random").click(function () {
+            jQuery("#button-generate-password").hide();
+            jQuery("#area-generate-password").show();
+            var pw_random = password_generator();
+            jQuery("input[name='pass1']").val(pw_random);
+            jQuery("input[name='pass1-text']").val(pw_random);
+            jQuery("input[name='pass1']").hide();
+            jQuery("input[name='pass1-text']").show();
+            chkPasswordStrength(jQuery("input[name='pass1']").val());
+            jQuery("#button-hide-password").show();
+            jQuery("#button-show-password").hide();
+            jQuery("input[name='pass1-text']").focus();
+        });
     </script>
     <?php
 } else {

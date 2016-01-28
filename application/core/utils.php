@@ -35,6 +35,18 @@ class Utils
         return $destination;
     }
 
+    public static function deleteFile($filePath)
+    {
+        try {
+            if (Utils::checkFileExist($filePath)) {
+                unlink($filePath);
+            }
+        } catch (Exception $e) {
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     public static function getFileFormatArray()
     {
         if (empty(Utils::$format_info)) {
@@ -523,14 +535,25 @@ class Utils
         $info = $getFileFormatArray[$extension];
         return $info['mime_type'];
     }
-    
+
+    public static function checkFileExist($filePath)
+    {
+        try {
+            if (file_exists($filePath)) {
+                return TRUE;
+            }
+        } catch (Exception $ex) {
+            
+        }
+        return FALSE;
+    }
+
     public static function checkCreateFolder($folder)
     {
         try {
-            if (!file_exists($folder)) {
-//                if(mkdir($folder, 0777)){
+            if (!Utils::checkFileExist($folder)) {
                 if (mkdir($folder)) {
-                    return true;
+                    return TRUE;
                 }
             } else {
                 return TRUE;
@@ -538,6 +561,6 @@ class Utils
         } catch (Exception $ex) {
             
         }
-        return false;
+        return FALSE;
     }
 }
