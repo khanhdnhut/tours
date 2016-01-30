@@ -8,14 +8,14 @@ if (isset($this->userBO) && $this->userBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo PROFILE_OF_TITLE; ?> <strong><?php
+        <?php echo EDIT_PROFILE_OF_TITLE . " " . USER_TITLE; ?> "<strong><?php
             if (isset($this->userBO->user_login) && $this->userBO->user_id != Session::get('user_id')) {
                 echo $this->userBO->user_login;
             } else {
                 echo YOU_TITLE;
             }
 
-            ?></strong>
+            ?></strong>"
         <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 

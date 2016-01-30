@@ -130,20 +130,22 @@ class TaxonomyModel extends TermModel
 
     function getAllTaxonomiesSorted($result, $tree, $level)
     {
-        if (!is_a($result, "SplDoublyLinkedList")) {
-            $result = new SplDoublyLinkedList();
-        }
-        if (is_array($tree)) {
-            foreach ($tree as $value) {
-                $this->getAllTaxonomiesSorted($result, $value, $level + 1);
+        if ($tree != NULL) {
+            if (!is_a($result, "SplDoublyLinkedList")) {
+                $result = new SplDoublyLinkedList();
             }
-        } else {
-            if (isset($tree->name)) {
-                $tree->name = str_repeat("--",$level) . " " . $tree->name;
-            }
-            $result->push($tree);
-            if (isset($tree->childs) && is_array($tree->childs)) {
-                $this->getAllTaxonomiesSorted($result, $tree->childs, $level + 1);
+            if (is_array($tree)) {
+                foreach ($tree as $value) {
+                    $this->getAllTaxonomiesSorted($result, $value, $level + 1);
+                }
+            } else {
+                if (isset($tree->name)) {
+                    $tree->name = str_repeat("-", $level) . " " . $tree->name;
+                }
+                $result->push($tree);
+                if (isset($tree->childs) && is_array($tree->childs)) {
+                    $this->getAllTaxonomiesSorted($result, $tree->childs, $level + 1);
+                }
             }
         }
         return $result;
@@ -151,18 +153,20 @@ class TaxonomyModel extends TermModel
 
     function buildTree($taxonomyList)
     {
+        if ($taxonomyList != NULL) {
+            $childs = array();
 
-        $childs = array();
+            foreach ($taxonomyList as &$taxonomy)
+                $childs[$taxonomy->parent][] = &$taxonomy;
+            unset($taxonomy);
 
-        foreach ($taxonomyList as &$taxonomy)
-            $childs[$taxonomy->parent][] = &$taxonomy;
-        unset($taxonomy);
+            foreach ($taxonomyList as &$taxonomy)
+                if (isset($childs[$taxonomy->term_taxonomy_id]))
+                    $taxonomy->childs = $childs[$taxonomy->term_taxonomy_id];
 
-        foreach ($taxonomyList as &$taxonomy)
-            if (isset($childs[$taxonomy->term_taxonomy_id]))
-                $taxonomy->childs = $childs[$taxonomy->term_taxonomy_id];
-
-        return $childs[0];
+            return $childs[0];
+        }
+        return NULL;
     }
 
     public function getAllTaxonomies($taxonomy)
@@ -245,7 +249,7 @@ class TaxonomyModel extends TermModel
         return FALSE;
     }
 
-    public function searchTaxonomy($view, $para, $taxonomy_per_page)
+    public function searchTaxonomy($view, $para, $taxonomy_per_page, $taxonomy)
     {
         try {
             $paraSQL = [];
@@ -253,8 +257,9 @@ class TaxonomyModel extends TermModel
             $sqlSelectCount = "SELECT COUNT(*) as countTaxonomy ";
             //para: orderby, order, page, s, paged, countries, new_role, new_role2, action, action2
             $sqlFrom = " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m ";
-            $sqlWhere = " WHERE m." . TB_TERMS_COL_TERM_ID . " = u." . TB_TERM_TAXONOMY_COL_TERM_ID . " ";
+            $sqlWhere = " WHERE m." . TB_TERMS_COL_TERM_ID . " = u." . TB_TERM_TAXONOMY_COL_TERM_ID . " AND u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " = :taxonomy ";
 
+            $paraSQL[':taxonomy'] = $taxonomy;
             if (isset($para->s) && strlen(trim($para->s)) > 0) {
                 $sqlWhere .= "  AND (u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " like :s OR
                                 u." . TB_TERM_TAXONOMY_COL_DESCRIPTION . " like :s OR

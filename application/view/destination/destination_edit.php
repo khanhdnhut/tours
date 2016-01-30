@@ -1,5 +1,5 @@
 <?php
-if (isset($this->countryBO) && $this->countryBO != NULL) {
+if (isset($this->destinationBO) && $this->destinationBO != NULL) {
 
     ?>
     <style>
@@ -8,70 +8,70 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo EDIT_PROFILE_OF_TITLE . " " . COUNTRY_TITLE ; ?> "<strong><?php
-            if (isset($this->countryBO->name)) {
-                echo $this->countryBO->name;
+        <?php echo EDIT_PROFILE_OF_TITLE . " " . DESTINATION_TITLE ; ?> "<strong><?php
+            if (isset($this->destinationBO->name)) {
+                echo $this->destinationBO->name;
             }
 
             ?></strong>"
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_COUNTRY_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
+        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_DESTINATION_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <div id="message_notice">
         <?php $this->renderFeedbackMessages(); ?>
     </div>
 
-    <form id="form-your-profile" novalidate="novalidate"  method="POST" enctype="multipart/form-data" action="<?php echo URL . CONTEXT_PATH_COUNTRY_EDIT_INFO; ?>">
+    <form id="form-your-profile" novalidate="novalidate"  method="POST" enctype="multipart/form-data" action="<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>">
         <input type="hidden" value="update" name="action">
         <input type="hidden" value="<?php
-        if (isset($this->countryBO->term_taxonomy_id)) {
-            echo htmlspecialchars($this->countryBO->term_taxonomy_id);
+        if (isset($this->destinationBO->term_taxonomy_id)) {
+            echo htmlspecialchars($this->destinationBO->term_taxonomy_id);
         }
 
-        ?>" id="country" name="country">
+        ?>" id="destination" name="destination">
         <table class="form-table">
             <tbody>
-                <tr class="country-name-wrap">
+                <tr class="destination-name-wrap">
                     <th>
                         <label for="name"><?php echo NAME_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label>
                     </th>
                     <td>
                         <input type="text" class="regular-text" value="<?php
-                        if (isset($this->countryBO->name)) {
-                            echo htmlspecialchars($this->countryBO->name);
+                        if (isset($this->destinationBO->name)) {
+                            echo htmlspecialchars($this->destinationBO->name);
                         }
 
                         ?>" id="name" name="name">
-                        <p class="description"><?php echo COUNTRY_NAME_DESC; ?></p>
+                        <p class="description"><?php echo DESTINATION_NAME_DESC; ?></p>
                     </td>
                 </tr>
-                <tr class="country-slug-wrap">
+                <tr class="destination-slug-wrap">
                     <th>
                         <label for="slug"><?php echo SLUG_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label>
                     </th>
                     <td>
                         <input type="text" class="regular-text" value="<?php
-                        if (isset($this->countryBO->slug)) {
-                            echo htmlspecialchars($this->countryBO->slug);
+                        if (isset($this->destinationBO->slug)) {
+                            echo htmlspecialchars($this->destinationBO->slug);
                         }
 
                         ?>" id="slug" name="slug">
-                        <p class="description"><?php echo COUNTRY_SLUG_DESC; ?></p>
+                        <p class="description"><?php echo DESTINATION_SLUG_DESC; ?></p>
                     </td>
                 </tr>
 
-                <tr class="country-parent-wrap"><th><label for="parent"><?php echo COUNTRY_PERENT_TITLE; ?> </label></th>
+                <tr class="destination-parent-wrap"><th><label for="parent"><?php echo DESTINATION_PERENT_TITLE; ?> </label></th>
                     <td>
                         <select id="parent" name="parent" >
                             <?php
                             if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
                                 $this->parentList->rewind();
                                 foreach ($this->parentList as $value) {
-                                    if ($value->term_taxonomy_id != $this->countryBO->term_taxonomy_id && 
-                                        $value->parent != $this->countryBO->term_taxonomy_id) {
+                                    if ($value->term_taxonomy_id != $this->destinationBO->term_taxonomy_id && 
+                                        $value->parent != $this->destinationBO->term_taxonomy_id) {
 
                                         ?> 
-                                        <option <?php if ($value->term_taxonomy_id == $this->countryBO->parent) {
+                                        <option <?php if ($value->term_taxonomy_id == $this->destinationBO->parent) {
 
                                             ?>
                                                 selected="selected"
@@ -94,33 +94,33 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                             }
 
                             ?>
-                            <option value="0" <?php if ($this->countryBO->parent == 0 || $this->countryBO->parent == "0") { ?>
+                            <option value="0" <?php if ($this->destinationBO->parent == 0 || $this->destinationBO->parent == "0") { ?>
                                         selected="selected"
                                     <?php } ?> ><?php echo NONE_TITLE; ?></option>    
                         </select>
-                        <p class="description"><?php echo COUNTRY_PERENT_DESC; ?></p>
+                        <p class="description"><?php echo DESTINATION_PERENT_DESC; ?></p>
                     </td>
                 </tr>
 
-                <tr class="country-description-wrap">
+                <tr class="destination-description-wrap">
                     <th>
                         <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
                     </th>
                     <td>
                         <input type="text" class="regular-text" value="<?php
-                        if (isset($this->countryBO->description)) {
-                            echo htmlspecialchars($this->countryBO->description);
+                        if (isset($this->destinationBO->description)) {
+                            echo htmlspecialchars($this->destinationBO->description);
                         }
 
                         ?>" id="description" name="description">
-                        <p class="description"><?php echo COUNTRY_DESCRIPTION_DESC; ?></p>
+                        <p class="description"><?php echo DESTINATION_DESCRIPTION_DESC; ?></p>
                     </td>
                 </tr>
 
             </tbody>
         </table>
 
-        <p class="submit"><input type="submit" value="<?php echo LABEL_UPDATE_COUNTRY; ?>" class="button button-primary" id="submit" name="submit"></p>
+        <p class="submit"><input type="submit" value="<?php echo LABEL_UPDATE_DESTINATION; ?>" class="button button-primary" id="submit" name="submit"></p>
     </form>
     <script>
         window.scrollTo(0, 0);
@@ -162,7 +162,7 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
             window.scrollTo(0, 0);
         }
 
-        function validateFormEditCountry() {
+        function validateFormEditDestination() {
             if (jQuery('#form-your-profile input[name="name"]').val() == "") {
                 noticeError("<?php echo ERROR_NAME_EMPTY; ?>");
                 return false;
@@ -175,11 +175,11 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
         }
         jQuery("#form-your-profile").submit(function (e) {
             e.preventDefault();
-            if (!validateFormEditCountry()) {
+            if (!validateFormEditDestination()) {
                 return;
             }
             var name = jQuery('#form-your-profile input[name="name"]').val();
-            if (confirm('<?php echo CONFIRM_EDIT_INFO_COUNTRY; ?>' + name + '<?php echo CONFIRM_EDIT_INFO_CANCEL_OK; ?>')) {
+            if (confirm('<?php echo CONFIRM_EDIT_INFO_DESTINATION; ?>' + name + '<?php echo CONFIRM_EDIT_INFO_CANCEL_OK; ?>')) {
                 var formObj = jQuery(this);
                 var formURL = formObj.attr("action");
                 if (window.FormData !== undefined)  // for HTML5 browsers

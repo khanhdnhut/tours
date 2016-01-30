@@ -1,14 +1,5 @@
 <?php
-
-/**
- * Class Home
- *
- * Please note:
- * Don't use the same name for class and method, as this might trigger an (unintended) __construct of the class.
- * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
- *
- */
-class CountryCtrl extends Controller
+class TagCtrl extends Controller
 {
 
     /**
@@ -21,9 +12,9 @@ class CountryCtrl extends Controller
 
     public function addNew()
     {
-        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('country');
-            $model = new CountryModel($this->db);
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR, CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_EDITOR))) {
+            Model::autoloadModel('tag');
+            $model = new TagModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['action']) && $_POST['action'] == "addNew") {
                 $this->para->action = $_POST['action'];
@@ -40,19 +31,19 @@ class CountryCtrl extends Controller
                 if (isset($_POST['parent'])) {
                     $this->para->parent = $_POST['parent'];
                 }
-                $result = $model->addNewCountry($this->para);
+                $result = $model->addNewTag($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
             }
 
             $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("country")), -1);
+            $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("tag")), -1);
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
-                $this->view->renderAdmin(RENDER_VIEW_COUNTRY_ADD_NEW, TRUE);
+                $this->view->renderAdmin(RENDER_VIEW_TAG_ADD_NEW, TRUE);
             } else {
-                $this->view->renderAdmin(RENDER_VIEW_COUNTRY_ADD_NEW);
+                $this->view->renderAdmin(RENDER_VIEW_TAG_ADD_NEW);
             }
         } else {
             $this->login();
@@ -61,12 +52,12 @@ class CountryCtrl extends Controller
 
     public function editInfo($term_taxonomy_id = NULL)
     {
-        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('country');
-            $model = new CountryModel($this->db);
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR, CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_EDITOR))) {
+            Model::autoloadModel('tag');
+            $model = new TagModel($this->db);
             $this->para = new stdClass();
-            if (isset($_POST['country'])) {
-                $this->para->term_taxonomy_id = $_POST['country'];
+            if (isset($_POST['tag'])) {
+                $this->para->term_taxonomy_id = $_POST['tag'];
             } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                 $this->para->term_taxonomy_id = $term_taxonomy_id;
             }
@@ -88,25 +79,25 @@ class CountryCtrl extends Controller
                         $this->para->parent = $_POST['parent'];
                     }
 
-                    $result = $model->updateInfoCountry($this->para);
+                    $result = $model->updateInfoTag($this->para);
                     if (!$result) {
                         $this->view->para = $this->para;
                     } else {
                         $update_success = TRUE;
                     }
                 }
-                $this->view->countryBO = $model->getTerm($this->para->term_taxonomy_id);
+                $this->view->tagBO = $model->getTerm($this->para->term_taxonomy_id);
 
                 $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("country")), -1);
+                $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("tag")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                    $this->view->renderAdmin(RENDER_VIEW_COUNTRY_EDIT);
+                    $this->view->renderAdmin(RENDER_VIEW_TAG_EDIT);
                 } else {
-                    $this->view->renderAdmin(RENDER_VIEW_COUNTRY_EDIT, TRUE);
+                    $this->view->renderAdmin(RENDER_VIEW_TAG_EDIT, TRUE);
                 }
             } else {
-                header('location: ' . URL . CONTEXT_PATH_COUNTRY_INDEX);
+                header('location: ' . URL . CONTEXT_PATH_TAG_INDEX);
             }
         } else {
             $this->login();
@@ -115,25 +106,25 @@ class CountryCtrl extends Controller
 
     public function info($term_taxonomy_id = NULL)
     {
-        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('country');
-            $model = new CountryModel($this->db);
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR, CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_EDITOR))) {
+            Model::autoloadModel('tag');
+            $model = new TagModel($this->db);
             $this->para = new stdClass();
-            if (isset($_POST['country'])) {
-                $this->para->term_taxonomy_id = $_POST['country'];
+            if (isset($_POST['tag'])) {
+                $this->para->term_taxonomy_id = $_POST['tag'];
             } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                 $this->para->term_taxonomy_id = $term_taxonomy_id;
             }
 
             if (isset($this->para->term_taxonomy_id)) {
-                $this->view->countryBO = $model->getTerm($this->para->term_taxonomy_id);
+                $this->view->tagBO = $model->getTerm($this->para->term_taxonomy_id);
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                    $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INFO);
+                    $this->view->renderAdmin(RENDER_VIEW_TAG_INFO);
                 } else {
-                    $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INFO, TRUE);
+                    $this->view->renderAdmin(RENDER_VIEW_TAG_INFO, TRUE);
                 }
             } else {
-                header('location: ' . URL . CONTEXT_PATH_COUNTRY_INDEX);
+                header('location: ' . URL . CONTEXT_PATH_TAG_INDEX);
             }
         } else {
             $this->login();
@@ -142,9 +133,9 @@ class CountryCtrl extends Controller
 
     public function index()
     {
-        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('country');
-            $model = new CountryModel($this->db);
+        if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR, CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_EDITOR))) {
+            Model::autoloadModel('tag');
+            $model = new TagModel($this->db);
             $this->para = new stdClass();
 
             if (isset($_POST['type'])) {
@@ -165,8 +156,8 @@ class CountryCtrl extends Controller
             if (isset($_POST['paged'])) {
                 $this->para->paged = $_POST['paged'];
             }
-            if (isset($_POST['countries'])) {
-                $this->para->countries = $_POST['countries'];
+            if (isset($_POST['tags'])) {
+                $this->para->tags = $_POST['tags'];
             }
             if (isset($_POST['action'])) {
                 $this->para->action = $_POST['action'];
@@ -183,8 +174,8 @@ class CountryCtrl extends Controller
             if (isset($_POST['tours_show'])) {
                 $this->para->tours_show = $_POST['tours_show'];
             }
-            if (isset($_POST['countries_per_page'])) {
-                $this->para->countries_per_page = $_POST['countries_per_page'];
+            if (isset($_POST['tags_per_page'])) {
+                $this->para->tags_per_page = $_POST['tags_per_page'];
             }
             if (isset($_POST['adv_setting'])) {
                 $this->para->adv_setting = $_POST['adv_setting'];
@@ -193,18 +184,18 @@ class CountryCtrl extends Controller
             if (isset($this->para->adv_setting) && $this->para->adv_setting == "adv_setting") {
                 $model->changeAdvSetting($this->para);
             }
-            
-            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->countries)) {
+
+            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->tags)) {
                 $model->executeAction($this->para);
             }
-
-            $model->searchCountry($this->view, $this->para);
+            
+            $model->searchTag($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {
                 $this->view->ajax = TRUE;
-                $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INDEX, TRUE);
+                $this->view->renderAdmin(RENDER_VIEW_TAG_INDEX, TRUE);
             } else {
-                $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INDEX);
+                $this->view->renderAdmin(RENDER_VIEW_TAG_INDEX);
             }
         } else {
             $this->login();

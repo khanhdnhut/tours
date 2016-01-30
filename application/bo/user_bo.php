@@ -28,9 +28,11 @@ class UserBO extends BO
     public $wp_capabilities = null;
     public $session_tokens = null;
     public $users_per_page = null;
-    public $countries_per_page = null;
     public $manage_users_columns_show = null;
+    public $countries_per_page = null;
     public $manage_countries_columns_show = null;
+    public $tags_per_page = null;
+    public $manage_tags_columns_show = null;
 
     public function setUserInfo($userInfo)
     {

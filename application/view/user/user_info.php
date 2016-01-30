@@ -8,14 +8,14 @@ if (isset($this->userBO) && $this->userBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo PROFILE_OF_TITLE; ?> <strong><?php
+        <?php echo PROFILE_OF_TITLE . " " . USER_TITLE; ?> "<strong><?php
             if (isset($this->userBO->user_login) && $this->userBO->user_id != Session::get('user_id')) {
                 echo $this->userBO->user_login;
             } else {
                 echo YOU_TITLE;
             }
 
-            ?></strong>
+            ?></strong>"
         <a class="page-title-action" href="#" user="<?php echo $this->userBO->user_id; ?>" name="<?php echo htmlspecialchars($this->userBO->user_login); ?>" onclick="getEditUserPage(this)"><?php echo DASHBOARD_TOURS_EDIT_USER_TITLE; ?></a>
     </h1>
     <?php $this->renderFeedbackMessages(); ?>

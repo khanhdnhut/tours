@@ -1,5 +1,5 @@
 <?php
-if (isset($this->countryBO) && $this->countryBO != NULL) {
+if (isset($this->tagBO) && $this->tagBO != NULL) {
 
     ?>
     <style>
@@ -8,44 +8,44 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo PROFILE_OF_TITLE . " " . COUNTRY_TITLE; ?> "<strong><?php
-            if (isset($this->countryBO->name)) {
-                echo $this->countryBO->name;
+        <?php echo PROFILE_OF_TITLE . " " . TAG_TITLE; ?> "<strong><?php
+            if (isset($this->tagBO->name)) {
+                echo $this->tagBO->name;
             }
             ?></strong>"
-        <a class="page-title-action" href="#" country="<?php echo $this->countryBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->countryBO->name); ?>" onclick="getEditCountryPage(this)"><?php echo DASHBOARD_TOURS_EDIT_COUNTRY_TITLE; ?></a>
+        <a class="page-title-action" href="#" tag="<?php echo $this->tagBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->tagBO->name); ?>" onclick="getEditCountryPage(this)"><?php echo DASHBOARD_TOURS_EDIT_TAG_TITLE; ?></a>
     </h1>
     <?php $this->renderFeedbackMessages(); ?>
     <table class="form-table">
         <tbody>
-            <tr class="country-name-wrap">
+            <tr class="tag-name-wrap">
                 <th>
                     <label for="name"><?php echo NAME_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->countryBO->name)) {
-                        echo htmlspecialchars($this->countryBO->name);
+                    if (isset($this->tagBO->name)) {
+                        echo htmlspecialchars($this->tagBO->name);
                     }
 
                     ?>" id="name" name="name">
                 </td>
             </tr>
-            <tr class="country-slug-wrap">
+            <tr class="tag-slug-wrap">
                 <th>
                     <label for="slug"><?php echo SLUG_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->countryBO->slug)) {
-                        echo htmlspecialchars($this->countryBO->slug);
+                    if (isset($this->tagBO->slug)) {
+                        echo htmlspecialchars($this->tagBO->slug);
                     }
 
                     ?>" id="slug" name="slug">
                 </td>
             </tr>
             
-            <tr class="country-parent-wrap">
+            <tr class="tag-parent-wrap">
                 <th>
                     <label for="parent"><?php echo SLUG_TITLE; ?></label>
                 </th>
@@ -56,14 +56,14 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                 </td>
             </tr>
             
-            <tr class="country-description-wrap">
+            <tr class="tag-description-wrap">
                 <th>
                     <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->countryBO->description)) {
-                        echo htmlspecialchars($this->countryBO->description);
+                    if (isset($this->tagBO->description)) {
+                        echo htmlspecialchars($this->tagBO->description);
                     }
 
                     ?>" id="description" name="description">
@@ -76,9 +76,9 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
 
     <script>
         function getEditCountryPage(element) {
-            var country = jQuery(element).attr("country");
+            var tag = jQuery(element).attr("tag");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_COUNTRY_EDIT_INFO; ?>" + country + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_TAG_EDIT_INFO; ?>" + tag + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -87,10 +87,10 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                 location = url;
             }
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_COUNTRY_EDIT_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_TAG_EDIT_INFO; ?>",
                 type: "POST",
                 data: {
-                    country: country
+                    tag: tag
                 },
                 success: function (data, textStatus, jqXHR)
                 {

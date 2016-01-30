@@ -1,5 +1,5 @@
 <?php
-if (isset($this->countryBO) && $this->countryBO != NULL) {
+if (isset($this->destinationBO) && $this->destinationBO != NULL) {
 
     ?>
     <style>
@@ -8,44 +8,44 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo PROFILE_OF_TITLE . " " . COUNTRY_TITLE; ?> "<strong><?php
-            if (isset($this->countryBO->name)) {
-                echo $this->countryBO->name;
+        <?php echo PROFILE_OF_TITLE . " " . DESTINATION_TITLE; ?> "<strong><?php
+            if (isset($this->destinationBO->name)) {
+                echo $this->destinationBO->name;
             }
             ?></strong>"
-        <a class="page-title-action" href="#" country="<?php echo $this->countryBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->countryBO->name); ?>" onclick="getEditCountryPage(this)"><?php echo DASHBOARD_TOURS_EDIT_COUNTRY_TITLE; ?></a>
+        <a class="page-title-action" href="#" destination="<?php echo $this->destinationBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->destinationBO->name); ?>" onclick="getEditDestinationPage(this)"><?php echo DASHBOARD_TOURS_EDIT_DESTINATION_TITLE; ?></a>
     </h1>
     <?php $this->renderFeedbackMessages(); ?>
     <table class="form-table">
         <tbody>
-            <tr class="country-name-wrap">
+            <tr class="destination-name-wrap">
                 <th>
                     <label for="name"><?php echo NAME_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->countryBO->name)) {
-                        echo htmlspecialchars($this->countryBO->name);
+                    if (isset($this->destinationBO->name)) {
+                        echo htmlspecialchars($this->destinationBO->name);
                     }
 
                     ?>" id="name" name="name">
                 </td>
             </tr>
-            <tr class="country-slug-wrap">
+            <tr class="destination-slug-wrap">
                 <th>
                     <label for="slug"><?php echo SLUG_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->countryBO->slug)) {
-                        echo htmlspecialchars($this->countryBO->slug);
+                    if (isset($this->destinationBO->slug)) {
+                        echo htmlspecialchars($this->destinationBO->slug);
                     }
 
                     ?>" id="slug" name="slug">
                 </td>
             </tr>
             
-            <tr class="country-parent-wrap">
+            <tr class="destination-parent-wrap">
                 <th>
                     <label for="parent"><?php echo SLUG_TITLE; ?></label>
                 </th>
@@ -56,14 +56,14 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                 </td>
             </tr>
             
-            <tr class="country-description-wrap">
+            <tr class="destination-description-wrap">
                 <th>
                     <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->countryBO->description)) {
-                        echo htmlspecialchars($this->countryBO->description);
+                    if (isset($this->destinationBO->description)) {
+                        echo htmlspecialchars($this->destinationBO->description);
                     }
 
                     ?>" id="description" name="description">
@@ -75,10 +75,10 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
     </table>
 
     <script>
-        function getEditCountryPage(element) {
-            var country = jQuery(element).attr("country");
+        function getEditDestinationPage(element) {
+            var destination = jQuery(element).attr("destination");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_COUNTRY_EDIT_INFO; ?>" + country + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>" + destination + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -87,10 +87,10 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                 location = url;
             }
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_COUNTRY_EDIT_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>",
                 type: "POST",
                 data: {
-                    country: country
+                    destination: destination
                 },
                 success: function (data, textStatus, jqXHR)
                 {
