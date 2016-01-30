@@ -66,7 +66,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     ?>" maxlength="3" id="users_per_page" name="users_per_page" class="screen-per-page" max="999" min="1" step="1">
                 </fieldset>
                 <input type="hidden" value="adv_setting" name="adv_setting">
-                <p class="submit"><input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button button-primary" id="screen-options-apply" name="screen-options-apply"></p>            
+                <p class="submit"><input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button button-primary"></p>            
             </form>
         </div>
     </div>
@@ -86,7 +86,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <h1>
         <?php echo DASHBOARD_USERS_TITLE; ?> 
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo DASHBOARD_TOURS_ADD_NEW_TITLE; ?></a>
+        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <?php $this->renderFeedbackMessages(); ?>
@@ -329,7 +329,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
                         ?>
                         <th class="manage-column column-email <?php
-                        if (!(isset($role_show) && $role_show)) {
+                        if (!(isset($email_show) && $email_show)) {
                             echo " hidden";
                         }
 
@@ -346,7 +346,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
 
                     <th class="manage-column column-role  <?php
-                    if (!(isset($email_show) && $email_show)) {
+                    if (!(isset($role_show) && $role_show)) {
                         echo " hidden";
                     }
 
@@ -615,185 +615,191 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
         ?>
     </div>
-<?php }
+<?php
+}
+if (!(isset($this->ajax) && $this->ajax)) {
 
-?>
+    ?>
 
-<script>
-    jQuery("#adv-settings").submit(function (e) {
-        e.preventDefault(); //STOP default action
-        var postData = jQuery(this).serializeArray();
-        var postDataSearch = jQuery("#form-user-edit").serializeArray();
-        for (var i = 0; i < postDataSearch.length; i++) {
-            if (postDataSearch[i].name == "type") {
-                postDataSearch[i].value == "";
-            } else if (postDataSearch[i].name == "action") {
-                postDataSearch[i].value == "-1";
-            } else if (postDataSearch[i].name == "new_role") {
-                postDataSearch[i].value == "";
-            } else if (postDataSearch[i].name == "action2") {
-                postDataSearch[i].value == "-1";
-            } else if (postDataSearch[i].name == "new_role2") {
-                postDataSearch[i].value == "";
+    <script>
+        jQuery("#adv-settings").submit(function (e) {
+            e.preventDefault(); //STOP default action
+            var postData = jQuery(this).serializeArray();
+            var postDataSearch = jQuery("#form-user-edit").serializeArray();
+            for (var i = 0; i < postDataSearch.length; i++) {
+                if (postDataSearch[i].name == "type") {
+                    postDataSearch[i].value == "";
+                } else if (postDataSearch[i].name == "action") {
+                    postDataSearch[i].value == "-1";
+                } else if (postDataSearch[i].name == "new_role") {
+                    postDataSearch[i].value == "";
+                } else if (postDataSearch[i].name == "action2") {
+                    postDataSearch[i].value == "-1";
+                } else if (postDataSearch[i].name == "new_role2") {
+                    postDataSearch[i].value == "";
+                }
+                postData[postData.length] = postDataSearch[i];
             }
-            postData[postData.length] = postDataSearch[i];
-        }
-        searchUser(postData);
-    });
-
-    jQuery("#form-user-edit").submit(function (e) {
-        e.preventDefault(); //STOP default action
-        var postData = jQuery(this).serializeArray();
-        searchUser(postData);
-    });
-
-    function searchUser(postData) {
-        jQuery.ajax({
-            url: "",
-            type: "POST",
-            data: postData,
-            success: function (data, textStatus, jqXHR)
-            {
-                jQuery(".wrap2").html(data);
-                //data: return data from server
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                //if fails      
-            }
+            searchUser(postData);
         });
-    }
 
-    function filterRole(element) {
-        var role = jQuery(element).attr("role");
-        jQuery('#form-user-edit input[name="role"]').val(role);
-        var postData = jQuery("#form-user-edit").serializeArray();
-        //        var formURL = jQuery(this).attr("action");
-        searchUser(postData);
-    }
-
-    function filterOrderBy(element) {
-        var orderby = jQuery(element).attr("orderby");
-        var order = jQuery(element).attr("order");
-        if (order == "asc") {
-            order = "desc";
-        } else {
-            order = "asc";
-        }
-        jQuery('#form-user-edit input[name="orderby"]').val(orderby);
-        jQuery('#form-user-edit input[name="order"]').val(order);
-        var postData = jQuery("#form-user-edit").serializeArray();
-        //        var formURL = jQuery(this).attr("action");
-        searchUser(postData);
-    }
-
-    function filterPage(element) {
-        var page = jQuery(element).attr("page");
-        jQuery('#form-user-edit input[name="page"]').val(page);
-        var postData = jQuery("#form-user-edit").serializeArray();
-        //        var formURL = jQuery(this).attr("action");
-        searchUser(postData);
-    }
-
-    function getEditUserPage(element) {
-        var user_id = jQuery(element).attr("user");
-        var name = jQuery(element).attr("name");
-        var url = "<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>" + user_id + "/" + name;
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, url);
-        } else if (window.history && window.history.pushState) {
-            window.history.pushState({}, null, url);
-        } else {
-            location = url;
-        }
-        jQuery.ajax({
-            url: "<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>",
-            type: "POST",
-            data: {
-                user: user_id
-            },
-            success: function (data, textStatus, jqXHR)
-            {
-                jQuery(".wrap").html(data);
-                //data: return data from server
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                //if fails      
-            }
+        jQuery("#form-user-edit").submit(function (e) {
+            e.preventDefault(); //STOP default action
+            var postData = jQuery(this).serializeArray();
+            searchUser(postData);
         });
-    }
-    function getUserInfoPage(element) {
-        var user = jQuery(element).attr("user");
-        var name = jQuery(element).attr("name");
-        var url = "<?php echo URL . CONTEXT_PATH_USER_INFO; ?>" + user + "/" + name;
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, url);
-        } else if (window.history && window.history.pushState) {
-            window.history.pushState({}, null, url);
-        } else {
-            location = url;
+
+        function searchUser(postData) {
+            jQuery.ajax({
+                url: "",
+                type: "POST",
+                data: postData,
+                success: function (data, textStatus, jqXHR)
+                {
+                    jQuery(".wrap2").html(data);
+                    //data: return data from server
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    //if fails      
+                }
+            });
         }
 
-        jQuery.ajax({
-            url: "<?php echo URL . CONTEXT_PATH_USER_INFO; ?>",
-            type: "POST",
-            data: {
-                user: user
-            },
-            success: function (data, textStatus, jqXHR)
-            {
-                jQuery(".wrap").html(data);
-                //data: return data from server
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                //if fails      
-            }
-        });
-    }
-
-    function deleteUser(element) {
-        var user = jQuery(element).attr("user");
-        var name = jQuery(element).attr("name");
-        if (confirm('<?php echo CONFIRM_DELETE_USER; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
-            jQuery("#cb-select-all-1").prop('checked', false);
-            jQuery("#cb-select-all-2").prop('checked', false);
-            jQuery("input[name='users[]'][type=checkbox]").prop('checked', false);
-            jQuery("input[name='users[]'][type=checkbox][value='" + user + "']").prop('checked', true);
-
-            jQuery('#form-user-edit select[name="action"] option').removeAttr('selected');
-            jQuery('#form-user-edit select[name="action2"] option').removeAttr('selected');
-            jQuery('#form-user-edit select[name="new_role"] option').removeAttr('selected');
-            jQuery('#form-user-edit select[name="new_role2"] option').removeAttr('selected');
-            jQuery('#form-user-edit select[name="action"] option[value="delete"]').attr('selected', true);
-            jQuery('#form-user-edit input[name="type"]').val('action');
+        function filterRole(element) {
+            var role = jQuery(element).attr("role");
+            jQuery('#form-user-edit input[name="role"]').val(role);
             var postData = jQuery("#form-user-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
             searchUser(postData);
-
-        }
-    }
-
-    function applyAction(type) {
-        jQuery('#form-user-edit input[name="type"]').val(type);
-        var postData = jQuery("#form-user-edit").serializeArray();
-        //        var formURL = jQuery(this).attr("action");
-        searchUser(postData);
-    }
-
-    function checkAll(element) {
-        if (jQuery(element).prop('checked')) {
-            jQuery("#cb-select-all-1").prop('checked', true);
-            jQuery("#cb-select-all-2").prop('checked', true);
-            jQuery("input[name='users[]'][type=checkbox]").prop('checked', true);
-        } else {
-            jQuery("#cb-select-all-1").prop('checked', false);
-            jQuery("#cb-select-all-2").prop('checked', false);
-            jQuery("input[name='users[]'][type=checkbox]").prop('checked', false);
         }
 
-    }
+        function filterOrderBy(element) {
+            var orderby = jQuery(element).attr("orderby");
+            var order = jQuery(element).attr("order");
+            if (order == "asc") {
+                order = "desc";
+            } else {
+                order = "asc";
+            }
+            jQuery('#form-user-edit input[name="orderby"]').val(orderby);
+            jQuery('#form-user-edit input[name="order"]').val(order);
+            var postData = jQuery("#form-user-edit").serializeArray();
+            //        var formURL = jQuery(this).attr("action");
+            searchUser(postData);
+        }
 
-</script>
+        function filterPage(element) {
+            var page = jQuery(element).attr("page");
+            jQuery('#form-user-edit input[name="page"]').val(page);
+            var postData = jQuery("#form-user-edit").serializeArray();
+            //        var formURL = jQuery(this).attr("action");
+            searchUser(postData);
+        }
+
+        function getEditUserPage(element) {
+            var user_id = jQuery(element).attr("user");
+            var name = jQuery(element).attr("name");
+            var url = "<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>" + user_id + "/" + name;
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, url);
+            } else if (window.history && window.history.pushState) {
+                window.history.pushState({}, null, url);
+            } else {
+                location = url;
+            }
+            jQuery.ajax({
+                url: "<?php echo URL . CONTEXT_PATH_USER_EDIT_INFO; ?>",
+                type: "POST",
+                data: {
+                    user: user_id
+                },
+                success: function (data, textStatus, jqXHR)
+                {
+                    jQuery(".wrap").html(data);
+                    //data: return data from server
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    //if fails      
+                }
+            });
+        }
+        function getUserInfoPage(element) {
+            var user = jQuery(element).attr("user");
+            var name = jQuery(element).attr("name");
+            var url = "<?php echo URL . CONTEXT_PATH_USER_INFO; ?>" + user + "/" + name;
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, url);
+            } else if (window.history && window.history.pushState) {
+                window.history.pushState({}, null, url);
+            } else {
+                location = url;
+            }
+
+            jQuery.ajax({
+                url: "<?php echo URL . CONTEXT_PATH_USER_INFO; ?>",
+                type: "POST",
+                data: {
+                    user: user
+                },
+                success: function (data, textStatus, jqXHR)
+                {
+                    jQuery(".wrap").html(data);
+                    //data: return data from server
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    //if fails      
+                }
+            });
+        }
+
+        function deleteUser(element) {
+            var user = jQuery(element).attr("user");
+            var name = jQuery(element).attr("name");
+            if (confirm('<?php echo CONFIRM_DELETE_USER; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
+                jQuery("#cb-select-all-1").prop('checked', false);
+                jQuery("#cb-select-all-2").prop('checked', false);
+                jQuery("input[name='users[]'][type=checkbox]").prop('checked', false);
+                jQuery("input[name='users[]'][type=checkbox][value='" + user + "']").prop('checked', true);
+
+                jQuery('#form-user-edit select[name="action"] option').removeAttr('selected');
+                jQuery('#form-user-edit select[name="action2"] option').removeAttr('selected');
+                jQuery('#form-user-edit select[name="new_role"] option').removeAttr('selected');
+                jQuery('#form-user-edit select[name="new_role2"] option').removeAttr('selected');
+                jQuery('#form-user-edit select[name="action"] option[value="delete"]').attr('selected', true);
+                jQuery('#form-user-edit input[name="type"]').val('action');
+                var postData = jQuery("#form-user-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchUser(postData);
+
+            }
+        }
+
+        function applyAction(type) {
+            jQuery('#form-user-edit input[name="type"]').val(type);
+            var postData = jQuery("#form-user-edit").serializeArray();
+            //        var formURL = jQuery(this).attr("action");
+            searchUser(postData);
+        }
+
+        function checkAll(element) {
+            if (jQuery(element).prop('checked')) {
+                jQuery("#cb-select-all-1").prop('checked', true);
+                jQuery("#cb-select-all-2").prop('checked', true);
+                jQuery("input[name='users[]'][type=checkbox]").prop('checked', true);
+            } else {
+                jQuery("#cb-select-all-1").prop('checked', false);
+                jQuery("#cb-select-all-2").prop('checked', false);
+                jQuery("input[name='users[]'][type=checkbox]").prop('checked', false);
+            }
+
+        }
+
+    </script>
+    <?php
+}
+
+?>
 <br class="clear">

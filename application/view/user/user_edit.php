@@ -8,7 +8,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo PROFILE_OF_USER; ?> <strong><?php
+        <?php echo PROFILE_OF_TITLE; ?> <strong><?php
             if (isset($this->userBO->user_login) && $this->userBO->user_id != Session::get('user_id')) {
                 echo $this->userBO->user_login;
             } else {
@@ -16,7 +16,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             }
 
             ?></strong>
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo DASHBOARD_TOURS_ADD_NEW_TITLE; ?></a>
+        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <div id="message_notice">
@@ -348,16 +348,14 @@ if (isset($this->userBO) && $this->userBO != NULL) {
         window.scrollTo(0, 0);
 
         function getDoc(frame) {
-            var doc = null;
-            // IE8 cascading access check
+            var doc = null;             // IE8 cascading access check
             try {
                 if (frame.contentWindow) {
                     doc = frame.contentWindow.document;
                 }
             } catch (err) {
             }
-            if (doc) { // successful getting content
-                return doc;
+            if (doc) { // successful getting content                 return doc;
             }
             try { // simply checking may throw in ie8 under ssl or mismatched protocol
                 doc = frame.contentDocument ? frame.contentDocument : frame.document;
@@ -383,7 +381,6 @@ if (isset($this->userBO) && $this->userBO != NULL) {
                     "</div>";
             window.scrollTo(0, 0);
         }
-
         function validateFormEditUser() {
             if (jQuery('#form-your-profile input[name="email"]').val() == "") {
                 noticeError("<?php echo ERROR_EMAIL_IS_EMPTY; ?>");
@@ -396,6 +393,7 @@ if (isset($this->userBO) && $this->userBO != NULL) {
             if (!validateFormEditUser()) {
                 return;
             }
+            var name = jQuery('#form-your-profile input[name="user_login"]').val();
 
             if (confirm('<?php echo CONFIRM_EDIT_INFO_USER; ?>' + name + '<?php echo CONFIRM_EDIT_INFO_CANCEL_OK; ?>')) {
                 var formObj = jQuery(this);
@@ -556,7 +554,6 @@ if (isset($this->userBO) && $this->userBO != NULL) {
     }
 
     ?>
-
         jQuery("#button-hide-password").click(function () {
             jQuery("#button-generate-password").hide();
             jQuery("#area-generate-password").show();

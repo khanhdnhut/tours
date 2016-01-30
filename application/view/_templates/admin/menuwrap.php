@@ -108,7 +108,7 @@
                                             echo "current";
                                         }
 
-                                        ?>" href="<?php echo URL . CONTEXT_PATH_TOUR_ADD_NEW; ?>"><?php echo DASHBOARD_TOURS_ADD_NEW_TITLE; ?></a></li>
+                                        ?>" href="<?php echo URL . CONTEXT_PATH_TOUR_ADD_NEW; ?>"><?php echo ADD_NEW_TITLE; ?></a></li>
                                     <?php
                                     if (in_array(Auth::getCapability(), array(
                                             CAPABILITY_EDITOR,

@@ -17,7 +17,7 @@
                     <p class="des">
                         Hanoi - Sapa - Halong Bay - Hue - Hoi An - My Son - Ho Chi Minh city - Can Tho - Cu Chi tunnels</p>
                     <p>
-                        This trip is a great combination between visiting the highlights of the country from North to South like: Hanoi, Halong bay, Hue, Hoian, Saigon while have great...</p>
+                        This trip is a great combination between visiting the highlights of the user from North to South like: Hanoi, Halong bay, Hue, Hoian, Saigon while have great...</p>
                     <p class="des">
                         Price from:<span class="priceold"> $1142/pax</span> <span class="pricenew"> $1042/pax</span></p>
                     <div class="ja-typo-blocktours">
@@ -31,12 +31,12 @@
         <div class="item column-2">
             <div class="contentpaneopen">
                 <h2 class="contentheading">
-<a href="/multi-country-tours/vietnam-and-cambodia-highlights-10-days.html">
+<a href="/multi-user-tours/vietnam-and-cambodia-highlights-10-days.html">
 			Vietnam and Cambodia Highlights - 10 Days</a>
 </h2>
                 <div class="content-article clearfix">
                     <p>
-                        <a href="/multi-country-tours/vietnam-and-cambodia-highlights-10-days.html"><img src="<?php echo PUBLIC_IMG . "tour/"; ?>Vietnam-and-Cambodia-Highlights.jpg" class="img-tour" alt="Vietnam and Cambodia Highlights"></a>
+                        <a href="/multi-user-tours/vietnam-and-cambodia-highlights-10-days.html"><img src="<?php echo PUBLIC_IMG . "tour/"; ?>Vietnam-and-Cambodia-Highlights.jpg" class="img-tour" alt="Vietnam and Cambodia Highlights"></a>
                     </p>
                     <p class="des">
                         Hanoi - Halong bay - Nha Trang - Ho Chi Minh city - Mekong Delta - Siem Reap - Angkor Wat</p>
@@ -46,7 +46,7 @@
                         Price from:<span class="priceold"> $1140/pax</span> <span class="pricenew"> $1040/pax</span></p>
                     <div class="ja-typo-blocktours">
                         <div class="ja-typo-blockct clearfix">
-                            <a id="typo-79" href="/multi-country-tours/vietnam-and-cambodia-highlights-10-days.html" class="ja-typo-btn btn-orange ja-typo-btn-sm btn-sm-orange"><span>VIEW TRIP</span></a></div>
+                            <a id="typo-79" href="/multi-user-tours/vietnam-and-cambodia-highlights-10-days.html" class="ja-typo-btn btn-orange ja-typo-btn-sm btn-sm-orange"><span>VIEW TRIP</span></a></div>
                     </div>
                 </div>
                 <div class="item-separator"></div>
@@ -58,12 +58,12 @@
         <div class="item column-1">
             <div class="contentpaneopen">
                 <h2 class="contentheading">
-<a href="/multi-country-tours/a-glimpse-of-indochina-tour-9-days.html">
+<a href="/multi-user-tours/a-glimpse-of-indochina-tour-9-days.html">
 			A Glimpse of Indochina Tour - 9 days</a>
 </h2>
                 <div class="content-article clearfix">
                     <p>
-                        <a href="/multi-country-tours/a-glimpse-of-indochina-tour-9-days.html"><img src="<?php echo PUBLIC_IMG . "tour/"; ?>A-Glimpse-of-Indochina-Tour-9-days.jpg" class="img-tour" alt="A Glimpse of Indochina Tour"></a>
+                        <a href="/multi-user-tours/a-glimpse-of-indochina-tour-9-days.html"><img src="<?php echo PUBLIC_IMG . "tour/"; ?>A-Glimpse-of-Indochina-Tour-9-days.jpg" class="img-tour" alt="A Glimpse of Indochina Tour"></a>
                     </p>
                     <p class="des">
                         Hanoi - Halong bay - Luang Prabang - Kuangsi fall - Siem Reap - Angkor wat</p>
@@ -73,7 +73,7 @@
                         Price from:<span class="priceold"> $1078/pax</span> <span class="pricenew"> $978/pax</span></p>
                     <div class="ja-typo-blocktours">
                         <div class="ja-typo-blockct clearfix">
-                            <a id="typo-79" href="/multi-country-tours/a-glimpse-of-indochina-tour-9-days.html" class="ja-typo-btn btn-orange ja-typo-btn-sm btn-sm-orange"><span>VIEW TRIP</span></a></div>
+                            <a id="typo-79" href="/multi-user-tours/a-glimpse-of-indochina-tour-9-days.html" class="ja-typo-btn btn-orange ja-typo-btn-sm btn-sm-orange"><span>VIEW TRIP</span></a></div>
                     </div>
                 </div>
                 <div class="item-separator"></div>
@@ -133,12 +133,12 @@
         <div class="item column-2">
             <div class="contentpaneopen">
                 <h2 class="contentheading">
-<a href="/multi-country-tours/best-of-vietnam-and-cambodia-14-days.html">
+<a href="/multi-user-tours/best-of-vietnam-and-cambodia-14-days.html">
 			Best of Vietnam and Cambodia - 14 days</a>
 </h2>
                 <div class="content-article clearfix">
                     <p>
-                        <a href="/multi-country-tours/best-of-vietnam-and-cambodia-14-days.html"><img src="<?php echo PUBLIC_IMG . "tour/"; ?>Best-of-Vietnam-and-Cambodia.jpg" class="img-tour" alt="Best of Vietnam and Cambodia"></a>
+                        <a href="/multi-user-tours/best-of-vietnam-and-cambodia-14-days.html"><img src="<?php echo PUBLIC_IMG . "tour/"; ?>Best-of-Vietnam-and-Cambodia.jpg" class="img-tour" alt="Best of Vietnam and Cambodia"></a>
                     </p>
                     <p class="des">
                         Hanoi - Sapa - Halong bay - Hoi An - Hue - Ho Chi Minh city - Cu Chi tunnels - Siem Reap - Angkor wat</p>
@@ -148,7 +148,7 @@
                         Price from:<span class="priceold"> $1400/pax</span> <span class="pricenew"> $1328/pax</span></p>
                     <div class="ja-typo-blocktours">
                         <div class="ja-typo-blockct clearfix">
-                            <a id="typo-79" href="/multi-country-tours/best-of-vietnam-and-cambodia-14-days.html" class="ja-typo-btn btn-orange ja-typo-btn-sm btn-sm-orange"><span>VIEW TRIP</span></a></div>
+                            <a id="typo-79" href="/multi-user-tours/best-of-vietnam-and-cambodia-14-days.html" class="ja-typo-btn btn-orange ja-typo-btn-sm btn-sm-orange"><span>VIEW TRIP</span></a></div>
                     </div>
                 </div>
                 <div class="item-separator"></div>

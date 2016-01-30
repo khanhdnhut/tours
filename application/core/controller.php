@@ -10,9 +10,6 @@ class Controller
 
     public $db = null;
 
-    /* @var null Model Object */
-    public $model = null;
-
     /* @var null View Object */
     public $view = null;
 

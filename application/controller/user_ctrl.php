@@ -31,10 +31,10 @@ class UserCtrl extends Controller
             //Thực hiện đăng nhập
             // run the login() method in the login-model, put the result in $login_successful (true or false)
             Model::autoloadModel('User');
-            $this->model = new UserModel($this->db);
+            $model = new UserModel($this->db);
 
-            if ($this->model->loginValidate()) {
-                if ($this->model->login($_POST['log'])) {
+            if ($model->loginValidate()) {
+                if ($model->login($_POST['log'])) {
                     header('location: ' . URL . CONTEXT_PATH_ADMIN);
                 } else {
                     $this->view->renderAdmin(RENDER_VIEW_USER_LOGIN, TRUE);
@@ -48,8 +48,8 @@ class UserCtrl extends Controller
     public function logout()
     {
         Model::autoloadModel('User');
-        $this->model = new UserModel($this->db);
-        $this->model->logout();
+        $model = new UserModel($this->db);
+        $model->logout();
         // redirect user to base URL
         header('location: ' . URL . CONTEXT_PATH_USER_LOGIN);
     }
@@ -58,7 +58,7 @@ class UserCtrl extends Controller
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('user');
-            $this->model = new UserModel($this->db);
+            $model = new UserModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['action']) && $_POST['action'] == "addNew") {
                 $this->para->action = $_POST['action'];
@@ -103,7 +103,7 @@ class UserCtrl extends Controller
                 if (isset($_POST['pw_weak'])) {
                     $this->para->pw_weak = $_POST['pw_weak'];
                 }
-                $result = $this->model->addNewUser($this->para);
+                $result = $model->addNewUser($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
@@ -123,7 +123,7 @@ class UserCtrl extends Controller
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('user');
-            $this->model = new UserModel($this->db);
+            $model = new UserModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['user'])) {
                 $this->para->user_id = $_POST['user'];
@@ -172,16 +172,16 @@ class UserCtrl extends Controller
                     if (isset($_POST['pw_weak'])) {
                         $this->para->pw_weak = $_POST['pw_weak'];
                     }
-                    $result = $this->model->updateInfoUser($this->para);
+                    $result = $model->updateInfoUser($this->para);
                     if (!$result) {
                         $this->view->para = $this->para;
                     } else {
                         $update_success = TRUE;
                     }
                 }
-                $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
+                $this->view->userBO = $model->getUserByUserId($this->para->user_id);
                 if (Session::get('user_id') == $this->para->user_id && isset($update_success) && $update_success) {
-                    $this->model->setNewSessionUser($this->view->userBO);
+                    $model->setNewSessionUser($this->view->userBO);
                 }
                 if (isset($user_id) && !is_null($user_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_USER_EDIT);
@@ -200,7 +200,7 @@ class UserCtrl extends Controller
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('User');
-            $this->model = new UserModel($this->db);
+            $model = new UserModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['user'])) {
                 $this->para->user_id = $_POST['user'];
@@ -209,7 +209,7 @@ class UserCtrl extends Controller
             }
 
             if (isset($this->para->user_id)) {
-                $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
+                $this->view->userBO = $model->getUserByUserId($this->para->user_id);
                 if (isset($user_id) && !is_null($user_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_USER_INFO);
                 } else {
@@ -227,12 +227,12 @@ class UserCtrl extends Controller
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('User');
-            $this->model = new UserModel($this->db);
+            $model = new UserModel($this->db);
             $this->para = new stdClass();
             $this->para->user_id = Session::get('user_id');
 
             if (isset($this->para->user_id)) {
-                $this->view->userBO = $this->model->getUserByUserId($this->para->user_id);
+                $this->view->userBO = $model->getUserByUserId($this->para->user_id);
                 $this->view->renderAdmin(RENDER_VIEW_USER_INFO);
             } else {
                 header('location: ' . URL . CONTEXT_PATH_USER_EDIT);
@@ -243,10 +243,10 @@ class UserCtrl extends Controller
     }
 
     public function index()
-    {        
+    {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('User');
-            $this->model = new UserModel($this->db);
+            $model = new UserModel($this->db);
             $this->para = new stdClass();
 
             if (isset($_POST['type'])) {
@@ -303,24 +303,23 @@ class UserCtrl extends Controller
             }
 
             if (isset($this->para->adv_setting) && $this->para->adv_setting == "adv_setting") {
-                $this->model->changeAdvSetting($this->para);
+                $model->changeAdvSetting($this->para);
             }
 
             if (isset($this->para->type) && in_array($this->para->type, array("action", "action2", "new_role", "new_role2")) && isset($this->para->users)) {
                 if (in_array($this->para->type, array("action", "action2"))) {
-                    $this->model->executeAction($this->para);
+                    $model->executeAction($this->para);
                 } else {
-                    $this->model->changeRole($this->para);
+                    $model->changeRole($this->para);
                 }
             }
 
-            $this->model->prepareIndexPage($this->view, $this->para);
+            $model->prepareIndexPage($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {
-                $this->view->ajax = true;
+                $this->view->ajax = TRUE;
                 $this->view->renderAdmin(RENDER_VIEW_USER_INDEX, TRUE);
             } else {
-                $this->view->ajax = false;
                 $this->view->renderAdmin(RENDER_VIEW_USER_INDEX);
             }
         } else {

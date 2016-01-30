@@ -23,7 +23,7 @@ class CountryCtrl extends Controller
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('country');
-            $this->model = new CountryModel($this->db);
+            $model = new CountryModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['action']) && $_POST['action'] == "addNew") {
                 $this->para->action = $_POST['action'];
@@ -40,11 +40,14 @@ class CountryCtrl extends Controller
                 if (isset($_POST['parent'])) {
                     $this->para->parent = $_POST['parent'];
                 }
-                $result = $this->model->addNewCountry($this->para);
+                $result = $model->addNewCountry($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
             }
+
+            $this->view->parentList = new SplDoublyLinkedList();
+            $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("country")), -1);
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
                 $this->view->renderAdmin(RENDER_VIEW_COUNTRY_ADD_NEW, TRUE);
@@ -56,19 +59,19 @@ class CountryCtrl extends Controller
         }
     }
 
-    public function editInfo($country_id = NULL)
+    public function editInfo($term_taxonomy_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('country');
-            $this->model = new CountryModel($this->db);
+            $model = new CountryModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['country'])) {
-                $this->para->country_id = $_POST['country'];
-            } elseif (isset($country_id) && !is_null($country_id)) {
-                $this->para->country_id = $country_id;
+                $this->para->term_taxonomy_id = $_POST['country'];
+            } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+                $this->para->term_taxonomy_id = $term_taxonomy_id;
             }
 
-            if (isset($this->para->country_id)) {
+            if (isset($this->para->term_taxonomy_id)) {
                 if (isset($_POST['action']) && $_POST['action'] == "update") {
                     $this->para->action = $_POST['action'];
 
@@ -84,15 +87,20 @@ class CountryCtrl extends Controller
                     if (isset($_POST['parent'])) {
                         $this->para->parent = $_POST['parent'];
                     }
-                    $result = $this->model->updateInfoCountry($this->para);
+
+                    $result = $model->updateInfoCountry($this->para);
                     if (!$result) {
                         $this->view->para = $this->para;
                     } else {
                         $update_success = TRUE;
                     }
                 }
-                $this->view->countryBO = $this->model->getCountryByCountryId($this->para->country_id);
-                if (isset($country_id) && !is_null($country_id)) {
+                $this->view->countryBO = $model->getTerm($this->para->term_taxonomy_id);
+
+                $this->view->parentList = new SplDoublyLinkedList();
+                $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("country")), -1);
+
+                if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_COUNTRY_EDIT);
                 } else {
                     $this->view->renderAdmin(RENDER_VIEW_COUNTRY_EDIT, TRUE);
@@ -105,21 +113,21 @@ class CountryCtrl extends Controller
         }
     }
 
-    public function info($country_id = NULL)
+    public function info($term_taxonomy_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('country');
-            $this->model = new CountryModel($this->db);
+            $model = new CountryModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['country'])) {
-                $this->para->country_id = $_POST['country'];
-            } elseif (isset($country_id) && !is_null($country_id)) {
-                $this->para->country_id = $country_id;
+                $this->para->term_taxonomy_id = $_POST['country'];
+            } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+                $this->para->term_taxonomy_id = $term_taxonomy_id;
             }
 
-            if (isset($this->para->country_id)) {
-                $this->view->countryBO = $this->model->getCountryByCountryId($this->para->country_id);
-                if (isset($country_id) && !is_null($country_id)) {
+            if (isset($this->para->term_taxonomy_id)) {
+                $this->view->countryBO = $model->getTerm($this->para->term_taxonomy_id);
+                if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INFO);
                 } else {
                     $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INFO, TRUE);
@@ -136,7 +144,7 @@ class CountryCtrl extends Controller
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('country');
-            $this->model = new CountryModel($this->db);
+            $model = new CountryModel($this->db);
             $this->para = new stdClass();
 
             if (isset($_POST['type'])) {
@@ -157,8 +165,8 @@ class CountryCtrl extends Controller
             if (isset($_POST['paged'])) {
                 $this->para->paged = $_POST['paged'];
             }
-            if (isset($_POST['countrys'])) {
-                $this->para->countrys = $_POST['countrys'];
+            if (isset($_POST['countries'])) {
+                $this->para->countries = $_POST['countries'];
             }
             if (isset($_POST['action'])) {
                 $this->para->action = $_POST['action'];
@@ -175,28 +183,27 @@ class CountryCtrl extends Controller
             if (isset($_POST['tours_show'])) {
                 $this->para->tours_show = $_POST['tours_show'];
             }
-            if (isset($_POST['edit_country_per_page'])) {
-                $this->para->edit_country_per_page = $_POST['edit_country_per_page'];
+            if (isset($_POST['countries_per_page'])) {
+                $this->para->countries_per_page = $_POST['countries_per_page'];
             }
             if (isset($_POST['adv_setting'])) {
                 $this->para->adv_setting = $_POST['adv_setting'];
             }
 
             if (isset($this->para->adv_setting) && $this->para->adv_setting == "adv_setting") {
-                $this->model->changeAdvSetting($this->para);
+                $model->changeAdvSetting($this->para);
             }
 
-            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->countrys)) {
-                $this->model->executeAction($this->para);
+            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->countries)) {
+                $model->executeAction($this->para);
             }
 
-            $this->model->prepareIndexPage($this->view, $this->para);
+            $model->searchCountry($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {
-                $this->view->ajax = true;
+                $this->view->ajax = TRUE;
                 $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INDEX, TRUE);
             } else {
-                $this->view->ajax = false;
                 $this->view->renderAdmin(RENDER_VIEW_COUNTRY_INDEX);
             }
         } else {

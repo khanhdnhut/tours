@@ -10,7 +10,5 @@ class CountryBO extends TaxonomyBO
 {
 
     public $taxonomy = "country";
-    public $edit_country_per_page = null;
-    public $manage_country_columns_show = null;
 
 }

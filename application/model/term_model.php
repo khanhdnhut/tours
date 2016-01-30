@@ -60,38 +60,40 @@ class TermModel extends Model
         return NULL;
     }
 
-    public function updateTerm(TermBO $termBO)
+    public function updateTerm($termBO)
     {
-        try {
-            $sql = "UPDATE " . TABLE_TERMS . " ";
-            $set = "SET ";
-            $where = " WHERE " . TB_TERMS_COL_TERM_ID . " = :term_id;";
+        if (is_a($termBO, "TermBO")) {
+            try {
+                $sql = "UPDATE " . TABLE_TERMS . " ";
+                $set = "SET ";
+                $where = " WHERE " . TB_TERMS_COL_TERM_ID . " = :term_id;";
 
-            $para_array = [];
-            $para_array[":term_id"] = $termBO->term_id;
+                $para_array = [];
+                $para_array[":term_id"] = $termBO->term_id;
 
-            if (isset($termBO->name)) {
-                $set .= " " . TB_TERMS_COL_NAME . " = :name,";
-                $para_array[":name"] = $termBO->name;
-            }
-            if (isset($termBO->slug) && $termBO->slug != "") {
-                $set .= " " . TB_TERMS_COL_SLUG . " = :slug,";
-                $para_array[":slug"] = $termBO->slug;
-            }
-            if (isset($termBO->term_group)) {
-                $set .= " " . TB_TERMS_COL_TERM_GROUP . " = :term_group,";
-                $para_array[":term_group"] = $termBO->term_group;
-            }
+                if (isset($termBO->name)) {
+                    $set .= " " . TB_TERMS_COL_NAME . " = :name,";
+                    $para_array[":name"] = $termBO->name;
+                }
+                if (isset($termBO->slug) && $termBO->slug != "") {
+                    $set .= " " . TB_TERMS_COL_SLUG . " = :slug,";
+                    $para_array[":slug"] = $termBO->slug;
+                }
+                if (isset($termBO->term_group)) {
+                    $set .= " " . TB_TERMS_COL_TERM_GROUP . " = :term_group,";
+                    $para_array[":term_group"] = $termBO->term_group;
+                }
 
-            if (count($para_array) != 0) {
-                $set = substr($set, 0, strlen($set) - 1);
-                $sql .= $set . $where;
-                $sth = $this->db->prepare($sql);
-                $sth->execute($para_array);
-                return TRUE;
+                if (count($para_array) != 0) {
+                    $set = substr($set, 0, strlen($set) - 1);
+                    $sql .= $set . $where;
+                    $sth = $this->db->prepare($sql);
+                    $sth->execute($para_array);
+                    return TRUE;
+                }
+            } catch (Exception $e) {
+                
             }
-        } catch (Exception $e) {
-            
         }
         return FALSE;
     }
@@ -163,7 +165,7 @@ class TermModel extends Model
             $this->autoloadBO('term');
             $termBO = new TermBO();
             $termBO->setTermInfo($result);
-            $termMetaInfoArray = $this->getTermMetaInfo($result->ID);
+            $termMetaInfoArray = $this->getTermMetaInfo($result->term_id);
             $termBO->setTermMetaInfo($termMetaInfoArray);
             return $termBO;
         } catch (Exception $e) {

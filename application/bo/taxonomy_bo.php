@@ -11,21 +11,21 @@ class TaxonomyBO extends TermBO
 
     public function setTaxonomyInfo($termInfo)
     {
-        if (!is_null($$termInfo)) {
-            if (isset($$termInfo->term_taxonomy_id)) {
-                $this->term_taxonomy_id = $$termInfo->term_taxonomy_id;
+        if (!is_null($termInfo)) {
+            if (isset($termInfo->term_taxonomy_id)) {
+                $this->term_taxonomy_id = $termInfo->term_taxonomy_id;
             }
-            if (isset($$termInfo->taxonomy)) {
-                $this->taxonomy = $$termInfo->taxonomy;
+            if (isset($termInfo->taxonomy)) {
+                $this->taxonomy = $termInfo->taxonomy;
             }
-            if (isset($$termInfo->description)) {
-                $this->description = $$termInfo->description;
+            if (isset($termInfo->description)) {
+                $this->description = $termInfo->description;
             }
-            if (isset($$termInfo->parent)) {
-                $this->parent = $$termInfo->parent;
+            if (isset($termInfo->parent)) {
+                $this->parent = $termInfo->parent;
             }
-            if (isset($$termInfo->count)) {
-                $this->count = $$termInfo->count;
+            if (isset($termInfo->count)) {
+                $this->count = $termInfo->count;
             }
         }
     }

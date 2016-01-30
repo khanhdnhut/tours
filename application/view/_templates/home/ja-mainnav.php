@@ -234,7 +234,7 @@
                                                 </a>
                                             </li>
                                             <li class="mega last">
-                                                <a title="Multi-Country Tours" id="menu1264" class="mega last" href="/multi-country-tours.html">
+                                                <a title="Multi-Country Tours" id="menu1264" class="mega last" href="/multi-user-tours.html">
                                                     <span class="menu-title">Multi-Country Tours</span>
                                                 </a>
                                             </li>

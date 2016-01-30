@@ -26,13 +26,13 @@ class CountryModel extends Model
         return true;
     }
 
-    public function login($country_login)
+    public function login($user_login)
     {
         $sth = $this->db->prepare("SELECT *
-                                   FROM   " . TABLE_COUNTRYS . "
-                                   WHERE  " . TB_COUNTRYS_COL_COUNTRY_LOGIN . " = :country_login");
+                                   FROM   " . TABLE_USERS . "
+                                   WHERE  " . TB_USERS_COL_COUNTRY_LOGIN . " = :user_login");
 
-        $sth->execute(array(':country_login' => $country_login));
+        $sth->execute(array(':user_login' => $user_login));
         $count = $sth->rowCount();
         if ($count != 1) {
             $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
@@ -40,29 +40,29 @@ class CountryModel extends Model
         }
         // fetch one row (we only have one result)
         $result = $sth->fetch();
-        if (hash('sha1', $_POST['pwd']) == $result->country_pass) {
-            if ($result->country_status == COUNTRY_STATUS_ACTIVE) {
-                $this->autoloadBO('country');
-                $countryBO = new CountryBO();
-                $countryBO->setCountryInfo($result);
-                $countryMetaInfoArray = $this->getMetaInfoCountry($result->ID);
-                $countryBO->setCountryMetaInfo($countryMetaInfoArray);
-                //write country info into session
+        if (hash('sha1', $_POST['pwd']) == $result->user_pass) {
+            if ($result->user_status == COUNTRY_STATUS_ACTIVE) {
+                $this->autoloadBO('user');
+                $userBO = new CountryBO();
+                $userBO->setCountryInfo($result);
+                $userMetaInfoArray = $this->getMetaInfoCountry($result->ID);
+                $userBO->setCountryMetaInfo($userMetaInfoArray);
+                //write user info into session
                 Session::init();
-                Session::set('countryInfo', json_encode($countryBO));
-                Session::set('country_id', $result->ID);
-                Session::set('country_logged_in', true);
+                Session::set('userInfo', json_encode($userBO));
+                Session::set('user_id', $result->ID);
+                Session::set('user_logged_in', true);
                 if (isset($_POST['rememberme']) && $_POST['rememberme'] == 'forever') {
                     $this->saveCookieLogin();
                 }
                 return true;
-            } elseif ($result->country_status == COUNTRY_STATUS_NOT_ACTIVE) {
+            } elseif ($result->user_status == COUNTRY_STATUS_NOT_ACTIVE) {
                 $_SESSION["fb_error"][] = ERR_COUNTRY_NOT_ACTIVE;
                 return false;
-            } elseif ($result->country_status == COUNTRY_STATUS_BLOCKED) {
+            } elseif ($result->user_status == COUNTRY_STATUS_BLOCKED) {
                 $_SESSION["fb_error"][] = ERR_COUNTRY_BLOCKED;
                 return false;
-            } elseif ($result->country_status == COUNTRY_STATUS_DELETED) {
+            } elseif ($result->user_status == COUNTRY_STATUS_DELETED) {
                 $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
                 return false;
             }
@@ -78,12 +78,12 @@ class CountryModel extends Model
             $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_COUNTRY;
             return false;
         }
-        if (!isset($para->country_id)) {
+        if (!isset($para->user_id)) {
             $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_COUNTRY;
             return false;
         } else {
             try {
-                $para->country_id = (int) $para->country_id;
+                $para->user_id = (int) $para->user_id;
             } catch (Exception $e) {
                 $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_COUNTRY;
                 return false;
@@ -130,8 +130,8 @@ class CountryModel extends Model
             $_SESSION["fb_error"][] = ERROR_ROLE_OF_COUNTRY;
             return false;
         }
-        if (isset($para->country_login) && $para->country_login != "") {
-            if ($this->hasCountryWithCountryLogin($para->country_login)) {
+        if (isset($para->user_login) && $para->user_login != "") {
+            if ($this->hasCountryWithCountryLogin($para->user_login)) {
                 $_SESSION["fb_error"][] = ERROR_COUNTRY_EXISTED;
                 return false;
             }
@@ -203,38 +203,38 @@ class CountryModel extends Model
     {
         try {
             if ($this->validateUpdateInfoCountry($para)) {
-                BO::autoloadBO("country");
-                $countryBO = new CountryBO();
+                BO::autoloadBO("user");
+                $userBO = new CountryBO();
 
-                if (isset($para->country_id)) {
-                    $countryBO->country_id = $para->country_id;
+                if (isset($para->user_id)) {
+                    $userBO->user_id = $para->user_id;
                 }
                 if (isset($para->role)) {
-                    $countryBO->wp_capabilities = $para->role;
+                    $userBO->wp_capabilities = $para->role;
                 }
                 if (isset($para->first_name)) {
-                    $countryBO->first_name = $para->first_name;
+                    $userBO->first_name = $para->first_name;
                 }
                 if (isset($para->last_name)) {
-                    $countryBO->last_name = $para->last_name;
+                    $userBO->last_name = $para->last_name;
                 }
                 if (isset($para->nickname)) {
-                    $countryBO->nickname = $para->nickname;
+                    $userBO->nickname = $para->nickname;
                 }
                 if (isset($para->display_name)) {
-                    $countryBO->display_name = $para->display_name;
+                    $userBO->display_name = $para->display_name;
                 }
                 if (isset($para->email)) {
-                    $countryBO->country_email = $para->email;
+                    $userBO->user_email = $para->email;
                 }
                 if (isset($para->url)) {
-                    $countryBO->country_url = $para->url;
+                    $userBO->user_url = $para->url;
                 }
                 if (isset($para->description)) {
-                    $countryBO->description = $para->description;
+                    $userBO->description = $para->description;
                 }
                 if (isset($para->pass1_text)) {
-                    $countryBO->country_pass = $para->pass1_text;
+                    $userBO->user_pass = $para->pass1_text;
                 }
 
                 $this->db->beginTransaction();
@@ -248,16 +248,16 @@ class CountryModel extends Model
 
                     if (!is_null($avatar_array_id) && is_array($avatar_array_id) && sizeof($avatar_array_id) != 0) {
                         $avatar_id = $avatar_array_id[0];
-                        $countryBO->avatar = $avatar_id;
+                        $userBO->avatar = $avatar_id;
                         $is_change_avatar = true;
-                        $countryOld = $this->getCountryByCountryId($para->country_id);
-                        $avatar_old = $countryOld->avatar;
+                        $userOld = $this->getCountryByCountryId($para->user_id);
+                        $avatar_old = $userOld->avatar;
                     } else {
                         $_SESSION["fb_error"][] = ERROR_UPDATE_AVATAR_FAILED;
                     }
                 }
 
-                if ($this->updateCountry($countryBO)) {
+                if ($this->updateCountry($userBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = UPDATE_COUNTRY_SUCCESS;
                     if (isset($is_change_avatar) && $is_change_avatar && isset($imageModel) && isset($avatar_old)) {
@@ -282,38 +282,38 @@ class CountryModel extends Model
     {
         try {
             if ($this->validateAddNewCountry($para)) {
-                BO::autoloadBO("country");
-                $countryBO = new CountryBO();
+                BO::autoloadBO("user");
+                $userBO = new CountryBO();
 
-                if (isset($para->country_login)) {
-                    $countryBO->country_login = $para->country_login;
+                if (isset($para->user_login)) {
+                    $userBO->user_login = $para->user_login;
                 }
                 if (isset($para->role)) {
-                    $countryBO->wp_capabilities = $para->role;
+                    $userBO->wp_capabilities = $para->role;
                 }
                 if (isset($para->first_name)) {
-                    $countryBO->first_name = $para->first_name;
+                    $userBO->first_name = $para->first_name;
                 }
                 if (isset($para->last_name)) {
-                    $countryBO->last_name = $para->last_name;
+                    $userBO->last_name = $para->last_name;
                 }
                 if (isset($para->nickname)) {
-                    $countryBO->nickname = $para->nickname;
+                    $userBO->nickname = $para->nickname;
                 }
                 if (isset($para->display_name)) {
-                    $countryBO->display_name = $para->display_name;
+                    $userBO->display_name = $para->display_name;
                 }
                 if (isset($para->email)) {
-                    $countryBO->country_email = $para->email;
+                    $userBO->user_email = $para->email;
                 }
                 if (isset($para->url)) {
-                    $countryBO->country_url = $para->url;
+                    $userBO->user_url = $para->url;
                 }
                 if (isset($para->description)) {
-                    $countryBO->description = $para->description;
+                    $userBO->description = $para->description;
                 }
                 if (isset($para->pass1_text)) {
-                    $countryBO->country_pass = $para->pass1_text;
+                    $userBO->user_pass = $para->pass1_text;
                 }
 
                 $this->db->beginTransaction();
@@ -326,13 +326,13 @@ class CountryModel extends Model
 
                     if (!is_null($avatar_array_id) && is_array($avatar_array_id) && sizeof($avatar_array_id) != 0) {
                         $avatar_id = $avatar_array_id[0];
-                        $countryBO->avatar = $avatar_id;
+                        $userBO->avatar = $avatar_id;
                     } else {
                         $_SESSION["fb_error"][] = ERROR_UPLOAD_AVATAR_FAILED;
                     }
                 }
 
-                if ($this->addCountryIntoDB($countryBO)) {
+                if ($this->addCountryIntoDB($userBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = ADD_COUNTRY_SUCCESS;
                     return TRUE;
@@ -350,13 +350,13 @@ class CountryModel extends Model
         return FALSE;
     }
 
-    public function getCountryMeta($country_id, $meta_key)
+    public function getCountryMeta($user_id, $meta_key)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_COUNTRYMETA . "
-                                   WHERE  " . TB_COUNTRYMETA_COL_COUNTRY_ID . " = :country_id AND " . TB_COUNTRYMETA_COL_META_KEY . " = :meta_key; ");
+                                   WHERE  " . TB_COUNTRYMETA_COL_COUNTRY_ID . " = :user_id AND " . TB_COUNTRYMETA_COL_META_KEY . " = :meta_key; ");
 
-        $sth->execute(array(':country_id' => $country_id, ':meta_key' => $meta_key));
+        $sth->execute(array(':user_id' => $user_id, ':meta_key' => $meta_key));
         $count = $sth->rowCount();
         if ($count != 1) {
             return NULL;
@@ -366,16 +366,16 @@ class CountryModel extends Model
         return $result->meta_value;
     }
 
-    public function setCountryMeta($country_id, $meta_key, $meta_value)
+    public function setCountryMeta($user_id, $meta_key, $meta_value)
     {
         try {
-            if (!is_null($this->getCountryMeta($country_id, $meta_key))) {
+            if (!is_null($this->getCountryMeta($user_id, $meta_key))) {
                 //update
                 $sql = "UPDATE " . TABLE_COUNTRYMETA . " 
                     SET " . TB_COUNTRYMETA_COL_META_VALUE . " = :meta_value
-                    WHERE " . TB_COUNTRYMETA_COL_COUNTRY_ID . " = :country_id AND " . TB_COUNTRYMETA_COL_META_KEY . " = :meta_key;";
+                    WHERE " . TB_COUNTRYMETA_COL_COUNTRY_ID . " = :user_id AND " . TB_COUNTRYMETA_COL_META_KEY . " = :meta_key;";
                 $sth = $this->db->prepare($sql);
-                $sth->execute(array(':meta_value' => $meta_value, ':country_id' => $country_id, ':meta_key' => $meta_key));
+                $sth->execute(array(':meta_value' => $meta_value, ':user_id' => $user_id, ':meta_key' => $meta_key));
                 $count = $sth->rowCount();
                 if ($count != 1) {
                     return false;
@@ -386,9 +386,9 @@ class CountryModel extends Model
                                 (" . TB_COUNTRYMETA_COL_COUNTRY_ID . ",
                                  " . TB_COUNTRYMETA_COL_META_KEY . ",
                                  " . TB_COUNTRYMETA_COL_META_VALUE . ")
-                    VALUES (:country_id, :meta_key, :meta_value);";
+                    VALUES (:user_id, :meta_key, :meta_value);";
                 $sth = $this->db->prepare($sql);
-                $sth->execute(array(':meta_value' => $meta_value, ':country_id' => $country_id, ':meta_key' => $meta_key));
+                $sth->execute(array(':meta_value' => $meta_value, ':user_id' => $user_id, ':meta_key' => $meta_key));
                 $count = $sth->rowCount();
                 if ($count != 1) {
                     return false;
@@ -400,52 +400,52 @@ class CountryModel extends Model
         return true;
     }
 
-    public function updateCountry($countryBO)
+    public function updateCountry($userBO)
     {
-        if (is_a($countryBO, "CountryBO")) {
-            if (isset($countryBO->country_id)) {
-                $sql = "UPDATE " . TABLE_COUNTRYS . " ";
+        if (is_a($userBO, "CountryBO")) {
+            if (isset($userBO->user_id)) {
+                $sql = "UPDATE " . TABLE_USERS . " ";
                 $set = "SET ";
-                $where = " WHERE " . TB_COUNTRYS_COL_ID . " = :country_id;";
+                $where = " WHERE " . TB_USERS_COL_ID . " = :user_id;";
 
                 $para_array = [];
-                $para_array[":country_id"] = $countryBO->country_id;
+                $para_array[":user_id"] = $userBO->user_id;
 
-                if (isset($countryBO->country_login)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_LOGIN . " = :country_login,";
-                    $para_array[":country_login"] = $countryBO->country_login;
+                if (isset($userBO->user_login)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_LOGIN . " = :user_login,";
+                    $para_array[":user_login"] = $userBO->user_login;
                 }
-                if (isset($countryBO->country_pass) && $countryBO->country_pass != "") {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_PASS . " = :country_pass,";
-                    $para_array[":country_pass"] = hash('sha1', $countryBO->country_pass);
+                if (isset($userBO->user_pass) && $userBO->user_pass != "") {
+                    $set .= " " . TB_USERS_COL_COUNTRY_PASS . " = :user_pass,";
+                    $para_array[":user_pass"] = hash('sha1', $userBO->user_pass);
                 }
-                if (isset($countryBO->country_nicename)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_NICENAME . " = :country_nicename,";
-                    $para_array[":country_nicename"] = $countryBO->country_nicename;
+                if (isset($userBO->user_nicename)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_NICENAME . " = :user_nicename,";
+                    $para_array[":user_nicename"] = $userBO->user_nicename;
                 }
-                if (isset($countryBO->country_email)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_EMAIL . " = :country_email,";
-                    $para_array[":country_email"] = $countryBO->country_email;
+                if (isset($userBO->user_email)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_EMAIL . " = :user_email,";
+                    $para_array[":user_email"] = $userBO->user_email;
                 }
-                if (isset($countryBO->country_url)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_URL . " = :country_url,";
-                    $para_array[":country_url"] = $countryBO->country_url;
+                if (isset($userBO->user_url)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_URL . " = :user_url,";
+                    $para_array[":user_url"] = $userBO->user_url;
                 }
-                if (isset($countryBO->country_registered)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_REGISTERED . " = :country_registered,";
-                    $para_array[":country_registered"] = $countryBO->country_registered;
+                if (isset($userBO->user_registered)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_REGISTERED . " = :user_registered,";
+                    $para_array[":user_registered"] = $userBO->user_registered;
                 }
-                if (isset($countryBO->country_activation_key)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_ACTIVATION_KEY . " = :country_activation_key,";
-                    $para_array[":country_activation_key"] = $countryBO->country_activation_key;
+                if (isset($userBO->user_activation_key)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_ACTIVATION_KEY . " = :user_activation_key,";
+                    $para_array[":user_activation_key"] = $userBO->user_activation_key;
                 }
-                if (isset($countryBO->country_status)) {
-                    $set .= " " . TB_COUNTRYS_COL_COUNTRY_STATUS . " = :country_status,";
-                    $para_array[":country_status"] = $countryBO->country_status;
+                if (isset($userBO->user_status)) {
+                    $set .= " " . TB_USERS_COL_COUNTRY_STATUS . " = :user_status,";
+                    $para_array[":user_status"] = $userBO->user_status;
                 }
-                if (isset($countryBO->display_name)) {
-                    $set .= " " . TB_COUNTRYS_COL_DISPLAY_NAME . " = :display_name,";
-                    $para_array[":display_name"] = $countryBO->display_name;
+                if (isset($userBO->display_name)) {
+                    $set .= " " . TB_USERS_COL_DISPLAY_NAME . " = :display_name,";
+                    $para_array[":display_name"] = $userBO->display_name;
                 }
 
                 if (count($para_array) != 0) {
@@ -457,24 +457,24 @@ class CountryModel extends Model
 //                    if ($count == 1) {
 //                        
 //                    }
-                    $country_id = $countryBO->country_id;
-                    if (isset($countryBO->first_name) && $countryBO->first_name != NULL) {
-                        $this->setCountryMeta($country_id, "first_name", $countryBO->first_name);
+                    $user_id = $userBO->user_id;
+                    if (isset($userBO->first_name) && $userBO->first_name != NULL) {
+                        $this->setCountryMeta($user_id, "first_name", $userBO->first_name);
                     }
-                    if (isset($countryBO->last_name) && $countryBO->last_name != NULL) {
-                        $this->setCountryMeta($country_id, "last_name", $countryBO->last_name);
+                    if (isset($userBO->last_name) && $userBO->last_name != NULL) {
+                        $this->setCountryMeta($user_id, "last_name", $userBO->last_name);
                     }
-                    if (isset($countryBO->description) && $countryBO->description != NULL) {
-                        $this->setCountryMeta($country_id, "description", $countryBO->description);
+                    if (isset($userBO->description) && $userBO->description != NULL) {
+                        $this->setCountryMeta($user_id, "description", $userBO->description);
                     }
-                    if (isset($countryBO->avatar) && $countryBO->avatar != NULL) {
-                        $this->setCountryMeta($country_id, "avatar", $countryBO->avatar);
+                    if (isset($userBO->avatar) && $userBO->avatar != NULL) {
+                        $this->setCountryMeta($user_id, "avatar", $userBO->avatar);
                     }
-                    if (isset($countryBO->wp_capabilities) && $countryBO->wp_capabilities != NULL) {
-                        $this->setCountryMeta($country_id, "wp_capabilities", $countryBO->wp_capabilities);
+                    if (isset($userBO->wp_capabilities) && $userBO->wp_capabilities != NULL) {
+                        $this->setCountryMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
                     }
-                    if (isset($countryBO->session_tokens) && $countryBO->session_tokens != NULL) {
-                        $this->setCountryMeta($country_id, "session_tokens", $countryBO->session_tokens);
+                    if (isset($userBO->session_tokens) && $userBO->session_tokens != NULL) {
+                        $this->setCountryMeta($user_id, "session_tokens", $userBO->session_tokens);
                     }
                     return true;
                 }
@@ -483,60 +483,60 @@ class CountryModel extends Model
         return false;
     }
 
-    public function addCountryIntoDB($countryBO)
+    public function addCountryIntoDB($userBO)
     {
         try {
-            if (is_a($countryBO, "CountryBO")) {
-                $sql = "INSERT INTO " . TABLE_COUNTRYS . " ";
+            if (is_a($userBO, "CountryBO")) {
+                $sql = "INSERT INTO " . TABLE_USERS . " ";
                 $column = " ( ";
                 $value = " VALUES ( ";
 
                 $para_array = [];
 
-                if (isset($countryBO->country_login)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_LOGIN . ",";
-                    $value .= " :country_login,";
-                    $para_array[":country_login"] = $countryBO->country_login;
+                if (isset($userBO->user_login)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_LOGIN . ",";
+                    $value .= " :user_login,";
+                    $para_array[":user_login"] = $userBO->user_login;
                 }
-                if (isset($countryBO->country_pass) && $countryBO->country_pass != "") {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_PASS . ",";
-                    $value .= " :country_pass,";
-                    $para_array[":country_pass"] = hash('sha1', $countryBO->country_pass);
+                if (isset($userBO->user_pass) && $userBO->user_pass != "") {
+                    $column .= " " . TB_USERS_COL_COUNTRY_PASS . ",";
+                    $value .= " :user_pass,";
+                    $para_array[":user_pass"] = hash('sha1', $userBO->user_pass);
                 }
-                if (isset($countryBO->country_nicename)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_NICENAME . ",";
-                    $value .= " :country_nicename,";
-                    $para_array[":country_nicename"] = $countryBO->country_nicename;
+                if (isset($userBO->user_nicename)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_NICENAME . ",";
+                    $value .= " :user_nicename,";
+                    $para_array[":user_nicename"] = $userBO->user_nicename;
                 }
-                if (isset($countryBO->country_email)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_EMAIL . ",";
-                    $value .= " :country_email,";
-                    $para_array[":country_email"] = $countryBO->country_email;
+                if (isset($userBO->user_email)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_EMAIL . ",";
+                    $value .= " :user_email,";
+                    $para_array[":user_email"] = $userBO->user_email;
                 }
-                if (isset($countryBO->country_url)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_URL . ",";
-                    $value .= " :country_url,";
-                    $para_array[":country_url"] = $countryBO->country_url;
+                if (isset($userBO->user_url)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_URL . ",";
+                    $value .= " :user_url,";
+                    $para_array[":user_url"] = $userBO->user_url;
                 }
-                if (isset($countryBO->country_registered)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_REGISTERED . ",";
-                    $value .= " :country_registered,";
-                    $para_array[":country_registered"] = $countryBO->country_registered;
+                if (isset($userBO->user_registered)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_REGISTERED . ",";
+                    $value .= " :user_registered,";
+                    $para_array[":user_registered"] = $userBO->user_registered;
                 }
-                if (isset($countryBO->country_activation_key)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_ACTIVATION_KEY . ",";
-                    $value .= " :country_activation_key,";
-                    $para_array[":country_activation_key"] = $countryBO->country_activation_key;
+                if (isset($userBO->user_activation_key)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_ACTIVATION_KEY . ",";
+                    $value .= " :user_activation_key,";
+                    $para_array[":user_activation_key"] = $userBO->user_activation_key;
                 }
-                if (isset($countryBO->country_status)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_STATUS . ",";
-                    $value .= " :country_status,";
-                    $para_array[":country_status"] = $countryBO->country_status;
+                if (isset($userBO->user_status)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_STATUS . ",";
+                    $value .= " :user_status,";
+                    $para_array[":user_status"] = $userBO->user_status;
                 }
-                if (isset($countryBO->display_name)) {
-                    $column .= " " . TB_COUNTRYS_COL_DISPLAY_NAME . ",";
+                if (isset($userBO->display_name)) {
+                    $column .= " " . TB_USERS_COL_DISPLAY_NAME . ",";
                     $value .= " :display_name,";
-                    $para_array[":display_name"] = $countryBO->display_name;
+                    $para_array[":display_name"] = $userBO->display_name;
                 }
 
                 if (count($para_array) != 0) {
@@ -547,24 +547,24 @@ class CountryModel extends Model
                     $sth->execute($para_array);
                     $count = $sth->rowCount();
                     if ($count > 0) {
-                        $country_id = $this->db->lastInsertId();
-                        if (isset($countryBO->first_name) && $countryBO->first_name != NULL) {
-                            $this->setCountryMeta($country_id, "first_name", $countryBO->first_name);
+                        $user_id = $this->db->lastInsertId();
+                        if (isset($userBO->first_name) && $userBO->first_name != NULL) {
+                            $this->setCountryMeta($user_id, "first_name", $userBO->first_name);
                         }
-                        if (isset($countryBO->last_name) && $countryBO->last_name != NULL) {
-                            $this->setCountryMeta($country_id, "last_name", $countryBO->last_name);
+                        if (isset($userBO->last_name) && $userBO->last_name != NULL) {
+                            $this->setCountryMeta($user_id, "last_name", $userBO->last_name);
                         }
-                        if (isset($countryBO->description) && $countryBO->description != NULL) {
-                            $this->setCountryMeta($country_id, "description", $countryBO->description);
+                        if (isset($userBO->description) && $userBO->description != NULL) {
+                            $this->setCountryMeta($user_id, "description", $userBO->description);
                         }
-                        if (isset($countryBO->avatar) && $countryBO->avatar != NULL) {
-                            $this->setCountryMeta($country_id, "avatar", $countryBO->avatar);
+                        if (isset($userBO->avatar) && $userBO->avatar != NULL) {
+                            $this->setCountryMeta($user_id, "avatar", $userBO->avatar);
                         }
-                        if (isset($countryBO->wp_capabilities) && $countryBO->wp_capabilities != NULL) {
-                            $this->setCountryMeta($country_id, "wp_capabilities", $countryBO->wp_capabilities);
+                        if (isset($userBO->wp_capabilities) && $userBO->wp_capabilities != NULL) {
+                            $this->setCountryMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
                         }
-                        if (isset($countryBO->session_tokens) && $countryBO->session_tokens != NULL) {
-                            $this->setCountryMeta($country_id, "session_tokens", $countryBO->session_tokens);
+                        if (isset($userBO->session_tokens) && $userBO->session_tokens != NULL) {
+                            $this->setCountryMeta($user_id, "session_tokens", $userBO->session_tokens);
                         }
                         return true;
                     }
@@ -576,55 +576,55 @@ class CountryModel extends Model
         return false;
     }
 
-    public function insertCountry($countryBO)
+    public function insertCountry($userBO)
     {
         try {
-            if (is_a($countryBO, "CountryBO")) {
+            if (is_a($userBO, "CountryBO")) {
 
                 //insert
-                $sql = "INSERT INTO " . TABLE_COUNTRYS . " ";
+                $sql = "INSERT INTO " . TABLE_USERS . " ";
                 $column = " ( ";
                 $value = " VALUES ( ";
                 $para_array = [];
-                if (isset($countryBO->country_pass)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_PASS . ",";
-                    $value .= " :country_pass,";
-                    $para_array[":country_pass"] = hash('sha1', $countryBO->country_pass);
+                if (isset($userBO->user_pass)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_PASS . ",";
+                    $value .= " :user_pass,";
+                    $para_array[":user_pass"] = hash('sha1', $userBO->user_pass);
                 }
-                if (isset($countryBO->country_nicename)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_NICENAME . ",";
-                    $value .= " :country_nicename,";
-                    $para_array[":country_nicename"] = $countryBO->country_nicename;
+                if (isset($userBO->user_nicename)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_NICENAME . ",";
+                    $value .= " :user_nicename,";
+                    $para_array[":user_nicename"] = $userBO->user_nicename;
                 }
-                if (isset($countryBO->country_email)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_EMAIL . ",";
-                    $value .= " :country_email,";
-                    $para_array[":country_email"] = $countryBO->country_email;
+                if (isset($userBO->user_email)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_EMAIL . ",";
+                    $value .= " :user_email,";
+                    $para_array[":user_email"] = $userBO->user_email;
                 }
-                if (isset($countryBO->country_url)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_URL . ",";
-                    $value .= " :country_url,";
-                    $para_array[":country_url"] = $countryBO->country_url;
+                if (isset($userBO->user_url)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_URL . ",";
+                    $value .= " :user_url,";
+                    $para_array[":user_url"] = $userBO->user_url;
                 }
-                if (isset($countryBO->country_registered)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_REGISTERED . ",";
-                    $value .= " :country_registered,";
-                    $para_array[":country_registered"] = $countryBO->country_registered;
+                if (isset($userBO->user_registered)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_REGISTERED . ",";
+                    $value .= " :user_registered,";
+                    $para_array[":user_registered"] = $userBO->user_registered;
                 }
-                if (isset($countryBO->country_activation_key)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_ACTIVATION_KEY . ",";
-                    $value .= " :country_activation_key,";
-                    $para_array[":country_activation_key"] = $countryBO->country_activation_key;
+                if (isset($userBO->user_activation_key)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_ACTIVATION_KEY . ",";
+                    $value .= " :user_activation_key,";
+                    $para_array[":user_activation_key"] = $userBO->user_activation_key;
                 }
-                if (isset($countryBO->country_status)) {
-                    $column .= " " . TB_COUNTRYS_COL_COUNTRY_STATUS . ",";
-                    $value .= " :country_status,";
-                    $para_array[":country_status"] = $countryBO->country_status;
+                if (isset($userBO->user_status)) {
+                    $column .= " " . TB_USERS_COL_COUNTRY_STATUS . ",";
+                    $value .= " :user_status,";
+                    $para_array[":user_status"] = $userBO->user_status;
                 }
-                if (isset($countryBO->display_name)) {
-                    $column .= " " . TB_COUNTRYS_COL_DISPLAY_NAME . ",";
+                if (isset($userBO->display_name)) {
+                    $column .= " " . TB_USERS_COL_DISPLAY_NAME . ",";
                     $value .= " :display_name,";
-                    $para_array[":display_name"] = $countryBO->display_name;
+                    $para_array[":display_name"] = $userBO->display_name;
                 }
 
                 if (count($para_array) != 0) {
@@ -637,27 +637,27 @@ class CountryModel extends Model
                     $sth->execute($para_array);
                     $count = $sth->rowCount();
                     if ($count == 1) {
-                        $country_id = $this->db->lastInsertId();
+                        $user_id = $this->db->lastInsertId();
 
-                        if (isset($countryBO->first_name)) {
-                            $this->setCountryMeta($country_id, "first_name", $countryBO->first_name);
+                        if (isset($userBO->first_name)) {
+                            $this->setCountryMeta($user_id, "first_name", $userBO->first_name);
                         }
-                        if (isset($countryBO->last_name)) {
-                            $this->setCountryMeta($country_id, "last_name", $countryBO->last_name);
+                        if (isset($userBO->last_name)) {
+                            $this->setCountryMeta($user_id, "last_name", $userBO->last_name);
                         }
-                        if (isset($countryBO->description)) {
-                            $this->setCountryMeta($country_id, "description", $countryBO->description);
+                        if (isset($userBO->description)) {
+                            $this->setCountryMeta($user_id, "description", $userBO->description);
                         }
-                        if (isset($countryBO->avatar)) {
-                            $this->setCountryMeta($country_id, "avatar", $countryBO->avatar);
+                        if (isset($userBO->avatar)) {
+                            $this->setCountryMeta($user_id, "avatar", $userBO->avatar);
                         }
-                        if (isset($countryBO->wp_capabilities)) {
-                            $this->setCountryMeta($country_id, "wp_capabilities", $countryBO->wp_capabilities);
+                        if (isset($userBO->wp_capabilities)) {
+                            $this->setCountryMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
                         }
-                        if (isset($countryBO->session_tokens)) {
-                            $this->setCountryMeta($country_id, "session_tokens", $countryBO->session_tokens);
+                        if (isset($userBO->session_tokens)) {
+                            $this->setCountryMeta($user_id, "session_tokens", $userBO->session_tokens);
                         }
-                        return $country_id;
+                        return $user_id;
                     }
                 }
             }
@@ -667,13 +667,13 @@ class CountryModel extends Model
         return NULL;
     }
 
-    public function getCountryByCountryId($country_id)
+    public function getCountryByCountryId($user_id)
     {
         $sth = $this->db->prepare("SELECT *
-                                   FROM   " . TABLE_COUNTRYS . "
-                                   WHERE  " . TB_COUNTRYS_COL_ID . " = :country_id");
+                                   FROM   " . TABLE_USERS . "
+                                   WHERE  " . TB_USERS_COL_ID . " = :user_id");
 
-        $sth->execute(array(':country_id' => $country_id));
+        $sth->execute(array(':user_id' => $user_id));
         $count = $sth->rowCount();
         if ($count != 1) {
             $_SESSION["fb_error"][] = ERR_COUNTRY_INFO_NOT_FOUND;
@@ -681,24 +681,24 @@ class CountryModel extends Model
         }
         // fetch one row (we only have one result)
         $result = $sth->fetch();
-        if ($result->country_status != COUNTRY_STATUS_DELETED) {
-            $this->autoloadBO('country');
-            $countryBO = new CountryBO();
-            $countryBO->setCountryInfo($result);
-            $countryMetaInfoArray = $this->getMetaInfoCountry($result->ID);
-            $countryBO->setCountryMetaInfo($countryMetaInfoArray);
-            return $countryBO;
+        if ($result->user_status != COUNTRY_STATUS_DELETED) {
+            $this->autoloadBO('user');
+            $userBO = new CountryBO();
+            $userBO->setCountryInfo($result);
+            $userMetaInfoArray = $this->getMetaInfoCountry($result->ID);
+            $userBO->setCountryMetaInfo($userMetaInfoArray);
+            return $userBO;
         }
         return null;
     }
 
-    public function hasCountryWithCountryLogin($country_login)
+    public function hasCountryWithCountryLogin($user_login)
     {
         $sth = $this->db->prepare("SELECT *
-                                   FROM   " . TABLE_COUNTRYS . "
-                                   WHERE  " . TB_COUNTRYS_COL_COUNTRY_LOGIN . " = :country_login");
+                                   FROM   " . TABLE_USERS . "
+                                   WHERE  " . TB_USERS_COL_COUNTRY_LOGIN . " = :user_login");
 
-        $sth->execute(array(':country_login' => $country_login));
+        $sth->execute(array(':user_login' => $user_login));
         $count = $sth->rowCount();
         if ($count != 0) {
             return true;
@@ -706,36 +706,36 @@ class CountryModel extends Model
         return false;
     }
 
-    public function getMetaInfoCountry($country_id)
+    public function getMetaInfoCountry($user_id)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_COUNTRYMETA . "
-                                   WHERE  " . TB_COUNTRYMETA_COL_COUNTRY_ID . " = :country_id");
+                                   WHERE  " . TB_COUNTRYMETA_COL_COUNTRY_ID . " = :user_id");
 
-        $sth->execute(array(':country_id' => $country_id));
+        $sth->execute(array(':user_id' => $user_id));
         $count = $sth->rowCount();
         if ($count > 0) {
-            $countryMetaInfoArray = $sth->fetchAll();
-            foreach ($countryMetaInfoArray as $countryMeta) {
-                if (isset($countryMeta->meta_key) && $countryMeta->meta_key == "manage_countrys_columns_show") {
+            $userMetaInfoArray = $sth->fetchAll();
+            foreach ($userMetaInfoArray as $userMeta) {
+                if (isset($userMeta->meta_key) && $userMeta->meta_key == "manage_countries_columns_show") {
                     try {
-                        $countryMeta->meta_value = json_decode($countryMeta->meta_value);
+                        $userMeta->meta_value = json_decode($userMeta->meta_value);
                     } catch (Exception $e) {
-                        $countryMeta->meta_value = NULL;
+                        $userMeta->meta_value = NULL;
                     }
                 }
-                if (isset($countryMeta->meta_key) && $countryMeta->meta_key == "avatar") {
+                if (isset($userMeta->meta_key) && $userMeta->meta_key == "avatar") {
                     Model::autoloadModel('image');
                     $imageModel = new ImageModel($this->db);
                     $avatar_object = new stdClass();
-                    $avatar_object->umeta_id = $countryMeta->umeta_id;
-                    $avatar_object->country_id = $countryMeta->country_id;
+                    $avatar_object->umeta_id = $userMeta->umeta_id;
+                    $avatar_object->user_id = $userMeta->user_id;
                     $avatar_object->meta_key = 'avatar_object';
-                    $avatar_object->meta_value = $imageModel->getPost($countryMeta->meta_value);
-                    $countryMetaInfoArray[] = $avatar_object;
+                    $avatar_object->meta_value = $imageModel->getPost($userMeta->meta_value);
+                    $userMetaInfoArray[] = $avatar_object;
                 }
             }
-            return $countryMetaInfoArray;
+            return $userMetaInfoArray;
         } else {
             $_SESSION["fb_error"][] = ERR_LOGIN_FAILED;
             return false;
@@ -759,31 +759,31 @@ class CountryModel extends Model
         Session::destroy();
     }
 
-    public function updateCountrysPerPages($countrys_per_page)
+    public function updateCountriesPerPages($countries_per_page)
     {
-        $country_id = Session::get("country_id");
-        $meta_key = "countrys_per_page";
-        $meta_value = $countrys_per_page;
-        $this->setCountryMeta($country_id, $meta_key, $meta_value);
+        $user_id = Session::get("user_id");
+        $meta_key = "countries_per_page";
+        $meta_value = $countries_per_page;
+        $this->setCountryMeta($user_id, $meta_key, $meta_value);
     }
 
     public function updateShowHideColumn($email_show, $role_show, $tours_show)
     {
-        $country_id = Session::get("country_id");
-        $meta_key = "manage_countrys_columns_show";
+        $user_id = Session::get("user_id");
+        $meta_key = "manage_countries_columns_show";
         $meta_value = new stdClass();
         $meta_value->email_show = $email_show;
         $meta_value->role_show = $role_show;
         $meta_value->tours_show = $tours_show;
         $meta_value = json_encode($meta_value);
-        $this->setCountryMeta($country_id, $meta_key, $meta_value);
+        $this->setCountryMeta($user_id, $meta_key, $meta_value);
     }
 
     public function changeAdvSetting($para)
     {
         $action = NULL;
-        if (isset($para->countrys_per_page) && is_numeric($para->countrys_per_page)) {
-            $this->updateCountrysPerPages($para->countrys_per_page);
+        if (isset($para->countries_per_page) && is_numeric($para->countries_per_page)) {
+            $this->updateCountriesPerPages($para->countries_per_page);
         }
         $email_show = false;
         $role_show = false;
@@ -798,8 +798,8 @@ class CountryModel extends Model
             $tours_show = true;
         }
         $this->updateShowHideColumn($email_show, $role_show, $tours_show);
-        $countryBO = $this->getCountryByCountryId(Session::get("country_id"));
-        $this->setNewSessionCountry($countryBO);
+        $userBO = $this->getCountryByCountryId(Session::get("user_id"));
+        $this->setNewSessionCountry($userBO);
     }
 
     public function executeAction($para)
@@ -825,51 +825,51 @@ class CountryModel extends Model
         }
     }
 
-    public function setNewSessionCountry($countryBO)
+    public function setNewSessionCountry($userBO)
     {
-        if (is_a($countryBO, "CountryBO") && isset($countryBO->country_id) && Session::get('country_id') == $countryBO->country_id) {
+        if (is_a($userBO, "CountryBO") && isset($userBO->user_id) && Session::get('user_id') == $userBO->user_id) {
             Session::init();
-            Session::set('countryInfo', json_encode($countryBO));
-            Session::set('country_id', $countryBO->country_id);
-            Session::set('country_logged_in', true);
+            Session::set('userInfo', json_encode($userBO));
+            Session::set('user_id', $userBO->user_id);
+            Session::set('user_logged_in', true);
         }
     }
 
     public function executeActionDelete($para)
     {
-        if (isset($para->countrys) && is_array($para->countrys)) {
-            foreach ($para->countrys as $country_id) {
+        if (isset($para->countries) && is_array($para->countries)) {
+            foreach ($para->countries as $user_id) {
                 try {
-                    $country_id = (int) $country_id;
+                    $user_id = (int) $user_id;
                 } catch (Exception $ex) {
                     return;
                 }
-                if (!is_int($country_id)) {
+                if (!is_int($user_id)) {
                     return;
                 }
             }
-            $country_ids = join(',', $para->countrys);
+            $user_ids = join(',', $para->countries);
 
-            $countryBO = json_decode(Session::get('countryInfo'));
-            $country_id = $countryBO->country_id;
+            $userBO = json_decode(Session::get('userInfo'));
+            $user_id = $userBO->user_id;
 
-            if (in_array("1", $para->countrys)) {
-                $country_delete = $this->getCountryByCountryId("1");
-                if (!is_null($country_delete)) {
-                    $_SESSION["fb_error"][] = ERROR_DELETE_COUNTRY_NOT_PERMISSION . " <strong>" . $country_delete->country_login . "</strong>";
+            if (in_array("1", $para->countries)) {
+                $user_delete = $this->getCountryByCountryId("1");
+                if (!is_null($user_delete)) {
+                    $_SESSION["fb_error"][] = ERROR_DELETE_COUNTRY_NOT_PERMISSION . " <strong>" . $user_delete->user_login . "</strong>";
                 } else {
                     $_SESSION["fb_error"][] = ERR_COUNTRY_INFO_NOT_FOUND;
                 }
             }
-            if (in_array($country_id, $para->countrys) && $country_id != "1") {
-                $_SESSION["fb_error"][] = ERROR_DELETE_COUNTRY_NOT_PERMISSION . " <strong>" . $countryBO->country_login . "</strong>";
+            if (in_array($user_id, $para->countries) && $user_id != "1") {
+                $_SESSION["fb_error"][] = ERROR_DELETE_COUNTRY_NOT_PERMISSION . " <strong>" . $userBO->user_login . "</strong>";
             }
 
-            $sql = "UPDATE " . TABLE_COUNTRYS . " 
-                    SET " . TB_COUNTRYS_COL_COUNTRY_STATUS . " = " . COUNTRY_STATUS_DELETED . "
-                    WHERE " . TB_COUNTRYS_COL_ID . " IN (" . $country_ids . ")
-                    AND " . TB_COUNTRYS_COL_ID . " != 1
-                    AND " . TB_COUNTRYS_COL_ID . " != " . $country_id . " ;";
+            $sql = "UPDATE " . TABLE_USERS . " 
+                    SET " . TB_USERS_COL_COUNTRY_STATUS . " = " . COUNTRY_STATUS_DELETED . "
+                    WHERE " . TB_USERS_COL_ID . " IN (" . $user_ids . ")
+                    AND " . TB_USERS_COL_ID . " != 1
+                    AND " . TB_USERS_COL_ID . " != " . $user_id . " ;";
 
             $sth = $this->db->prepare($sql);
             $sth->execute();
@@ -878,27 +878,27 @@ class CountryModel extends Model
 
     public function executeChangeRole($para, $role)
     {
-        if (isset($para->countrys) && is_array($para->countrys) &&
+        if (isset($para->countries) && is_array($para->countries) &&
             in_array($role, array(CAPABILITY_ADMINISTRATOR, CAPABILITY_EDITOR,
                 CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_SUBSCRIBER))) {
-            foreach ($para->countrys as $country_id) {
+            foreach ($para->countries as $user_id) {
                 try {
-                    $country_id = (int) $country_id;
+                    $user_id = (int) $user_id;
                 } catch (Exception $ex) {
                     return;
                 }
-                if (!is_int($country_id)) {
+                if (!is_int($user_id)) {
                     return;
                 }
             }
-            $country_ids = join(',', $para->countrys);
-            $country_id = Session::get('country_id');
+            $user_ids = join(',', $para->countries);
+            $user_id = Session::get('user_id');
 
             $sql = "UPDATE " . TABLE_COUNTRYMETA . " 
                     SET " . TB_COUNTRYMETA_COL_META_VALUE . " = '" . $role . "'
-                    WHERE " . TB_COUNTRYMETA_COL_COUNTRY_ID . " IN (" . $country_ids . ")
+                    WHERE " . TB_COUNTRYMETA_COL_COUNTRY_ID . " IN (" . $user_ids . ")
                     AND " . TB_COUNTRYMETA_COL_COUNTRY_ID . " != 1
-                    AND " . TB_COUNTRYMETA_COL_COUNTRY_ID . " != " . $country_id . ";
+                    AND " . TB_COUNTRYMETA_COL_COUNTRY_ID . " != " . $user_id . ";
                     AND " . TB_COUNTRYMETA_COL_META_KEY . " = '" . WP_CAPABILITIES . "' ;";
 
             $sth = $this->db->prepare($sql);
@@ -931,16 +931,16 @@ class CountryModel extends Model
             $paraSQL = [];
             $sqlSelectAll = "SELECT u.* ";
             $sqlSelectCount = "SELECT COUNT(*) as countCountry ";
-            //para: orderby, order, page, s, paged, countrys, new_role, new_role2, action, action2
-            $sqlFrom = " FROM " . TABLE_COUNTRYS . " AS u, " . TABLE_COUNTRYMETA . " AS m ";
-            $sqlWhere = " WHERE m." . TB_COUNTRYMETA_COL_COUNTRY_ID . " = u." . TB_COUNTRYS_COL_ID . " 
+            //para: orderby, order, page, s, paged, countries, new_role, new_role2, action, action2
+            $sqlFrom = " FROM " . TABLE_USERS . " AS u, " . TABLE_COUNTRYMETA . " AS m ";
+            $sqlWhere = " WHERE m." . TB_COUNTRYMETA_COL_COUNTRY_ID . " = u." . TB_USERS_COL_ID . " 
             AND m." . TB_COUNTRYMETA_COL_META_KEY . " = '" . WP_CAPABILITIES . "'
-            AND country_status != " . COUNTRY_STATUS_DELETED;
+            AND user_status != " . COUNTRY_STATUS_DELETED;
 
             if (isset($para->s) && strlen(trim($para->s)) > 0) {
-                $sqlWhere .= "  AND (u." . TB_COUNTRYS_COL_COUNTRY_LOGIN . " like :s OR
-                                u." . TB_COUNTRYS_COL_DISPLAY_NAME . " like :s OR
-                                u." . TB_COUNTRYS_COL_COUNTRY_EMAIL . " like :s ) ";
+                $sqlWhere .= "  AND (u." . TB_USERS_COL_COUNTRY_LOGIN . " like :s OR
+                                u." . TB_USERS_COL_DISPLAY_NAME . " like :s OR
+                                u." . TB_USERS_COL_COUNTRY_EMAIL . " like :s ) ";
                 $paraSQL[':s'] = "%" . $para->s . "%";
                 $view->s = $para->s;
             }
@@ -951,15 +951,15 @@ class CountryModel extends Model
             if (isset($para->orderby) && in_array($para->orderby, array("login", "name", "email"))) {
                 switch ($para->orderby) {
                     case "login":
-                        $para->orderby = TB_COUNTRYS_COL_COUNTRY_LOGIN;
+                        $para->orderby = TB_USERS_COL_COUNTRY_LOGIN;
                         $view->orderby = "login";
                         break;
                     case "name":
-                        $para->orderby = TB_COUNTRYS_COL_DISPLAY_NAME;
+                        $para->orderby = TB_USERS_COL_DISPLAY_NAME;
                         $view->orderby = "name";
                         break;
                     case "email":
-                        $para->orderby = TB_COUNTRYS_COL_COUNTRY_EMAIL;
+                        $para->orderby = TB_USERS_COL_COUNTRY_EMAIL;
                         $view->orderby = "email";
                         break;
                 }
@@ -972,11 +972,11 @@ class CountryModel extends Model
                 }
                 $sqlOrderby = " ORDER BY u." . $para->orderby . " " . $para->order;
             } else {
-                $sqlOrderby = " ORDER BY u." . TB_COUNTRYS_COL_COUNTRY_LOGIN . " ASC";
+                $sqlOrderby = " ORDER BY u." . TB_USERS_COL_COUNTRY_LOGIN . " ASC";
             }
 
             $view->count = array(
-                FILTER_COUNTRYS_LIST_ALL_TITLE => 0,
+                FILTER_USERS_LIST_ALL_TITLE => 0,
                 CAPABILITY_ADMINISTRATOR => 0,
                 CAPABILITY_SUBSCRIBER => 0,
                 CAPABILITY_CONTRIBUTOR => 0,
@@ -994,7 +994,7 @@ class CountryModel extends Model
 
             $sqlLimit = "";
             if ($countCountry > 0) {
-                $view->count[FILTER_COUNTRYS_LIST_ALL_TITLE] = $countCountry;
+                $view->count[FILTER_USERS_LIST_ALL_TITLE] = $countCountry;
 
                 $sqlCountAdmin = $sqlSelectCount . $sqlFrom . $sqlWhere . " AND m." . TB_COUNTRYMETA_COL_META_VALUE . " = '" . CAPABILITY_ADMINISTRATOR . "'";
                 $sth = $this->db->prepare($sqlCountAdmin);
@@ -1020,29 +1020,29 @@ class CountryModel extends Model
                 $sth = $this->db->prepare($sqlCountAdmin);
                 $sth->execute($paraSQL);
                 $view->count[CAPABILITY_SUBSCRIBER] = (int) $sth->fetch()->countCountry;
-                $countryLoginBO = json_decode(Session::get("countryInfo"));
+                $userLoginBO = json_decode(Session::get("userInfo"));
 
-                $countrys_per_page = COUNTRYS_PER_PAGE_DEFAULT;
-                if ($countryLoginBO != NULL) {
-                    if (isset($countryLoginBO->countrys_per_page) && is_numeric($countryLoginBO->countrys_per_page)) {
-                        $countrys_per_page = (int) $countryLoginBO->countrys_per_page;
+                $countries_per_page = USERS_PER_PAGE_DEFAULT;
+                if ($userLoginBO != NULL) {
+                    if (isset($userLoginBO->countries_per_page) && is_numeric($userLoginBO->countries_per_page)) {
+                        $countries_per_page = (int) $userLoginBO->countries_per_page;
                     }
                 }
 
-                if (!isset($countrys_per_page)) {
+                if (!isset($countries_per_page)) {
                     if (!isset($_SESSION['options'])) {
                         $_SESSION['options'] = new stdClass();
-                        $_SESSION['options']->countrys_per_page = COUNTRYS_PER_PAGE_DEFAULT;
-                        $countrys_per_page = COUNTRYS_PER_PAGE_DEFAULT;
-                    } elseif (!isset($_SESSION['options']->countrys_per_page)) {
-                        $_SESSION['options']->countrys_per_page = COUNTRYS_PER_PAGE_DEFAULT;
-                        $countrys_per_page = COUNTRYS_PER_PAGE_DEFAULT;
+                        $_SESSION['options']->countries_per_page = USERS_PER_PAGE_DEFAULT;
+                        $countries_per_page = USERS_PER_PAGE_DEFAULT;
+                    } elseif (!isset($_SESSION['options']->countries_per_page)) {
+                        $_SESSION['options']->countries_per_page = USERS_PER_PAGE_DEFAULT;
+                        $countries_per_page = USERS_PER_PAGE_DEFAULT;
                     }
                 }
 
 
 
-                $view->count[NUMBER_SEARCH_COUNTRY] = $view->count[FILTER_COUNTRYS_LIST_ALL_TITLE];
+                $view->count[NUMBER_SEARCH_COUNTRY] = $view->count[FILTER_USERS_LIST_ALL_TITLE];
                 $view->role = "-1";
                 if (isset($para->role) && in_array($para->role, array(CAPABILITY_ADMINISTRATOR, CAPABILITY_EDITOR,
                         CAPABILITY_AUTHOR, CAPABILITY_CONTRIBUTOR, CAPABILITY_SUBSCRIBER))) {
@@ -1052,8 +1052,8 @@ class CountryModel extends Model
                 }
 
                 if ($view->count[NUMBER_SEARCH_COUNTRY] > 0) {
-                    $view->pageNumber = floor($view->count[NUMBER_SEARCH_COUNTRY] / $countrys_per_page);
-                    if ($view->count[NUMBER_SEARCH_COUNTRY] % $countrys_per_page != 0) {
+                    $view->pageNumber = floor($view->count[NUMBER_SEARCH_COUNTRY] / $countries_per_page);
+                    if ($view->count[NUMBER_SEARCH_COUNTRY] % $countries_per_page != 0) {
                         $view->pageNumber++;
                     }
 
@@ -1074,37 +1074,37 @@ class CountryModel extends Model
                     }
 
                     $view->page = $page;
-                    $startCountry = ($page - 1) * $countrys_per_page;
-                    $sqlLimit = " LIMIT " . $countrys_per_page . " OFFSET " . $startCountry;
+                    $startCountry = ($page - 1) * $countries_per_page;
+                    $sqlLimit = " LIMIT " . $countries_per_page . " OFFSET " . $startCountry;
 
                     $sqlAll = $sqlSelectAll . $sqlFrom . $sqlWhere . $sqlOrderby . $sqlLimit;
                     $sth = $this->db->prepare($sqlAll);
                     $sth->execute($paraSQL);
                     $count = $sth->rowCount();
                     if ($count > 0) {
-                        $countryList = $sth->fetchAll();
-                        for ($i = 0; $i < sizeof($countryList); $i++) {
-                            $countryInfo = $countryList[$i];
-                            $this->autoloadBO('country');
-                            $countryBO = new CountryBO();
-                            $countryBO->setCountryInfo($countryInfo);
-                            $countryMetaInfoArray = $this->getMetaInfoCountry($countryInfo->ID);
-                            $countryBO->setCountryMetaInfo($countryMetaInfoArray);
-                            $countryList[$i] = $countryBO;
+                        $userList = $sth->fetchAll();
+                        for ($i = 0; $i < sizeof($userList); $i++) {
+                            $userInfo = $userList[$i];
+                            $this->autoloadBO('user');
+                            $userBO = new CountryBO();
+                            $userBO->setCountryInfo($userInfo);
+                            $userMetaInfoArray = $this->getMetaInfoCountry($userInfo->ID);
+                            $userBO->setCountryMetaInfo($userMetaInfoArray);
+                            $userList[$i] = $userBO;
                         }
-                        $view->countryList = $countryList;
+                        $view->userList = $userList;
                     } else {
-                        $view->countryList = NULL;
+                        $view->userList = NULL;
                     }
                 } else {
-                    $view->countryList = NULL;
+                    $view->userList = NULL;
                     $view->page = 0;
                 }
             } else {
-                $view->countryList = NULL;
+                $view->userList = NULL;
             }
         } catch (Exception $e) {
-            $view->countryList = NULL;
+            $view->userList = NULL;
         }
     }
 }

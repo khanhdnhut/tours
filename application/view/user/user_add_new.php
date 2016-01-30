@@ -335,7 +335,7 @@
         if (!validateFormAddNewUser()) {
             return;
         }
-
+        var name = jQuery('#form-your-profile input[name="user_login"]').val();
         if (confirm('<?php echo CONFIRM_EDIT_INFO_USER; ?>' + name + '<?php echo CONFIRM_EDIT_INFO_CANCEL_OK; ?>')) {
             var formObj = jQuery(this);
             var formURL = formObj.attr("action");
