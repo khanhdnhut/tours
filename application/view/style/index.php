@@ -1,19 +1,19 @@
 <?php
 $userBO = json_decode(Session::get("userInfo"));
 
-if (isset($userBO->manage_destinations_columns_show)) {
-    if (isset($userBO->manage_destinations_columns_show->description_show)) {
-        $description_show = $userBO->manage_destinations_columns_show->description_show;
+if (isset($userBO->manage_styles_columns_show)) {
+    if (isset($userBO->manage_styles_columns_show->description_show)) {
+        $description_show = $userBO->manage_styles_columns_show->description_show;
     } else {
         $description_show = true;
     }
-    if (isset($userBO->manage_destinations_columns_show->slug_show)) {
-        $slug_show = $userBO->manage_destinations_columns_show->slug_show;
+    if (isset($userBO->manage_styles_columns_show->slug_show)) {
+        $slug_show = $userBO->manage_styles_columns_show->slug_show;
     } else {
         $slug_show = true;
     }
-    if (isset($userBO->manage_destinations_columns_show->tours_show)) {
-        $tours_show = $userBO->manage_destinations_columns_show->tours_show;
+    if (isset($userBO->manage_styles_columns_show->tours_show)) {
+        $tours_show = $userBO->manage_styles_columns_show->tours_show;
     } else {
         $tours_show = true;
     }
@@ -23,12 +23,12 @@ if (isset($userBO->manage_destinations_columns_show)) {
     $tours_show = true;
 }
 
-if (isset($userBO->destinations_per_page)) {
-    $destinations_per_page = $userBO->destinations_per_page;
-} else if (isset($_SESSION['options']) && isset($_SESSION['options']->destinations_per_page)) {
-    $destinations_per_page = $_SESSION['options']->destinations_per_page;
+if (isset($userBO->styles_per_page)) {
+    $styles_per_page = $userBO->styles_per_page;
+} else if (isset($_SESSION['options']) && isset($_SESSION['options']->styles_per_page)) {
+    $styles_per_page = $_SESSION['options']->styles_per_page;
 } else {
-    $destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
+    $styles_per_page = STYLES_PER_PAGE_DEFAULT;
 }
 
 if (!(isset($this->ajax) && $this->ajax)) {
@@ -55,15 +55,15 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 </fieldset>
                 <fieldset class="screen-options">
                     <legend><?php echo PAGINATION_LABEL; ?></legend>
-                    <label for="destinations_per_page"><?php echo NUMBER_OF_ITEMS_PER_PAGE_DESC; ?></label>
+                    <label for="styles_per_page"><?php echo NUMBER_OF_ITEMS_PER_PAGE_DESC; ?></label>
                     <input type="number" value="<?php
-                    if (isset($destinations_per_page)) {
-                        echo $destinations_per_page;
+                    if (isset($styles_per_page)) {
+                        echo $styles_per_page;
                     } else {
-                        echo DESTINATIONS_PER_PAGE_DEFAULT;
+                        echo STYLES_PER_PAGE_DEFAULT;
                     }
 
-                    ?>" maxlength="3" id="destinations_per_page" name="destinations_per_page" class="screen-per-page" max="999" min="1" step="1">
+                    ?>" maxlength="3" id="styles_per_page" name="styles_per_page" class="screen-per-page" max="999" min="1" step="1">
                 </fieldset>
                 <input type="hidden" value="adv_setting" name="adv_setting">
                 <p class="submit"><input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button button-primary"></p>            
@@ -85,13 +85,13 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
 
     <h1>
-        <?php echo DASHBOARD_DESTINATION_TITLE; ?> 
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_DESTINATION_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
+        <?php echo DASHBOARD_STYLE_TITLE; ?> 
+        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_STYLE_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <?php $this->renderFeedbackMessages(); ?>
 
-        <form id="form-destination-edit" method="post" onsubmit="submitFormDestinationEdit(event)">
+        <form id="form-style-edit" method="post" onsubmit="submitFormStyleEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -108,15 +108,15 @@ if (!(isset($this->ajax) && $this->ajax)) {
         <input type="hidden" value="" name="type"/>
 
         <p class="search-box">
-            <label for="destination-search-input" class="screen-reader-text">
-                <?php echo SEARCH_DESTINATIONS_TITLE; ?>:</label>
+            <label for="style-search-input" class="screen-reader-text">
+                <?php echo SEARCH_STYLES_TITLE; ?>:</label>
             <input type="search" value="<?php
             if (isset($this->s)) {
                 echo htmlspecialchars($this->s);
             }
 
-            ?>" name="s" id="destination-search-input" />
-            <input type="submit" value="<?php echo SEARCH_DESTINATIONS_TITLE; ?>" class="button" id="search-submit" />
+            ?>" name="s" id="style-search-input" />
+            <input type="submit" value="<?php echo SEARCH_STYLES_TITLE; ?>" class="button" id="search-submit" />
         </p>
 
         <div class="tablenav top">
@@ -174,8 +174,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 <br class="clear">
             <?php } ?>        
         </div>
-        <h2 class="screen-reader-text"><?php echo DESTINATIONS_LIST_TITLE; ?></h2>
-        <table class="wp-list-table widefat fixed striped destinations">
+        <h2 class="screen-reader-text"><?php echo STYLES_LIST_TITLE; ?></h2>
+        <table class="wp-list-table widefat fixed striped styles">
             <thead>
                 <tr>
                     <td class="manage-column column-cb check-column" id="cb">
@@ -308,29 +308,29 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 </tr>
             </thead>
 
-            <tbody data-wp-lists="list:destination" id="the-list">
+            <tbody data-wp-lists="list:style" id="the-list">
                 <?php
                 if (!is_null($this->taxonomyList)) {
                     foreach ($this->taxonomyList as $taxonomyInfo) {
 
                         ?>
-                        <tr id="destination-<?php echo $taxonomyInfo->term_taxonomy_id; ?>">
+                        <tr id="style-<?php echo $taxonomyInfo->term_taxonomy_id; ?>">
                             <th class="check-column" scope="row">
-                                <label for="destination_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo htmlspecialchars($taxonomyInfo->name); ?></label>
-                                <input type="checkbox" value="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="author" id="destination_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="destinations[]" >
+                                <label for="style_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo htmlspecialchars($taxonomyInfo->name); ?></label>
+                                <input type="checkbox" value="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="author" id="style_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="styles[]" >
                             </th>
                             <td data-colname="name" class="name column-name has-row-actions column-primary">                                
                                 <strong>
-                                    <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getDestinationInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
+                                    <a href="#" style="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getStyleInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
                                 </strong>
                                 <br>
                                 <div class="row-actions">
                                     <span class="edit">
-                                        <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditDestinationPage(this)"><?php echo EDIT_TITLE; ?>
+                                        <a href="#" style="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditStylePage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
                                     | <span class="delete">
-                                        <a href="#" class="submitdelete" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteDestination(this)"><?php echo DELETE_TITLE; ?>
+                                        <a href="#" class="submitdelete" style="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteStyle(this)"><?php echo DELETE_TITLE; ?>
                                         </a>
                                     </span>
                                 </div>
@@ -564,7 +564,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
         jQuery("#adv-settings").submit(function (e) {
             e.preventDefault(); //STOP default action
             var postData = jQuery(this).serializeArray();
-            var postDataSearch = jQuery("#form-destination-edit").serializeArray();
+            var postDataSearch = jQuery("#form-style-edit").serializeArray();
             for (var i = 0; i < postDataSearch.length; i++) {
                 if (postDataSearch[i].name == "type") {
                     postDataSearch[i].value == "";
@@ -575,27 +575,27 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 }
                 postData[postData.length] = postDataSearch[i];
             }
-            searchDestination(postData);
+            searchStyle(postData);
         });
 
-//        jQuery("#form-destination-edit").submit(function (e) {
+//        jQuery("#form-style-edit").submit(function (e) {
 //            e.preventDefault(); //STOP default action
 //            var postData = jQuery(this).serializeArray();
-//            searchDestination(postData);
+//            searchStyle(postData);
 //        });
 
-        function submitFormDestinationEdit(e) {
+        function submitFormStyleEdit(e) {
             e.preventDefault(); //STOP default action
             try {
-                var postData = jQuery("#form-destination-edit").serializeArray();
-                searchDestination(postData);
+                var postData = jQuery("#form-style-edit").serializeArray();
+                searchStyle(postData);
             } catch (e) {
 
             }
             return false;
         }
 
-        function searchDestination(postData) {
+        function searchStyle(postData) {
             jQuery.ajax({
                 url: "",
                 type: "POST",
@@ -620,25 +620,25 @@ if (!(isset($this->ajax) && $this->ajax)) {
             } else {
                 order = "asc";
             }
-            jQuery('#form-destination-edit input[name="orderby"]').val(orderby);
-            jQuery('#form-destination-edit input[name="order"]').val(order);
-            var postData = jQuery("#form-destination-edit").serializeArray();
+            jQuery('#form-style-edit input[name="orderby"]').val(orderby);
+            jQuery('#form-style-edit input[name="order"]').val(order);
+            var postData = jQuery("#form-style-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            searchStyle(postData);
         }
 
         function filterPage(element) {
             var page = jQuery(element).attr("page");
-            jQuery('#form-destination-edit input[name="page"]').val(page);
-            var postData = jQuery("#form-destination-edit").serializeArray();
+            jQuery('#form-style-edit input[name="page"]').val(page);
+            var postData = jQuery("#form-style-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            searchStyle(postData);
         }
 
-        function getEditDestinationPage(element) {
-            var term_taxonomy_id = jQuery(element).attr("destination");
+        function getEditStylePage(element) {
+            var term_taxonomy_id = jQuery(element).attr("style");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_STYLE_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -647,10 +647,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 location = url;
             }
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_STYLE_EDIT_INFO; ?>",
                 type: "POST",
                 data: {
-                    destination: term_taxonomy_id
+                    style: term_taxonomy_id
                 },
                 success: function (data, textStatus, jqXHR)
                 {
@@ -663,10 +663,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 }
             });
         }
-        function getDestinationInfoPage(element) {
-            var destination = jQuery(element).attr("destination");
+        function getStyleInfoPage(element) {
+            var style = jQuery(element).attr("style");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_INFO; ?>" + destination + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_STYLE_INFO; ?>" + style + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -676,10 +676,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
             }
 
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_STYLE_INFO; ?>",
                 type: "POST",
                 data: {
-                    destination: destination
+                    style: style
                 },
                 success: function (data, textStatus, jqXHR)
                 {
@@ -693,42 +693,42 @@ if (!(isset($this->ajax) && $this->ajax)) {
             });
         }
 
-        function deleteDestination(element) {
-            var destination = jQuery(element).attr("destination");
+        function deleteStyle(element) {
+            var style = jQuery(element).attr("style");
             var name = jQuery(element).attr("name");
-            if (confirm('<?php echo CONFIRM_DELETE_DESTINATION; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
+            if (confirm('<?php echo CONFIRM_DELETE_STYLE; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
                 jQuery("#cb-select-all-1").prop('checked', false);
                 jQuery("#cb-select-all-2").prop('checked', false);
-                jQuery("input[name='destinations[]'][type=checkbox]").prop('checked', false);
-                jQuery("input[name='destinations[]'][type=checkbox][value='" + destination + "']").prop('checked', true);
+                jQuery("input[name='styles[]'][type=checkbox]").prop('checked', false);
+                jQuery("input[name='styles[]'][type=checkbox][value='" + style + "']").prop('checked', true);
 
-                jQuery('#form-destination-edit select[name="action"] option').removeAttr('selected');
-                jQuery('#form-destination-edit select[name="action2"] option').removeAttr('selected');
-                jQuery('#form-destination-edit select[name="action"] option[value="delete"]').attr('selected', true);
-                jQuery('#form-destination-edit input[name="type"]').val('action');
-                var postData = jQuery("#form-destination-edit").serializeArray();
+                jQuery('#form-style-edit select[name="action"] option').removeAttr('selected');
+                jQuery('#form-style-edit select[name="action2"] option').removeAttr('selected');
+                jQuery('#form-style-edit select[name="action"] option[value="delete"]').attr('selected', true);
+                jQuery('#form-style-edit input[name="type"]').val('action');
+                var postData = jQuery("#form-style-edit").serializeArray();
                 //        var formURL = jQuery(this).attr("action");
-                searchDestination(postData);
+                searchStyle(postData);
 
             }
         }
 
         function applyAction(type) {
-            jQuery('#form-destination-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-destination-edit").serializeArray();
+            jQuery('#form-style-edit input[name="type"]').val(type);
+            var postData = jQuery("#form-style-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            searchStyle(postData);
         }
 
         function checkAll(element) {
             if (jQuery(element).prop('checked')) {
                 jQuery("#cb-select-all-1").prop('checked', true);
                 jQuery("#cb-select-all-2").prop('checked', true);
-                jQuery("input[name='destinations[]'][type=checkbox]").prop('checked', true);
+                jQuery("input[name='styles[]'][type=checkbox]").prop('checked', true);
             } else {
                 jQuery("#cb-select-all-1").prop('checked', false);
                 jQuery("#cb-select-all-2").prop('checked', false);
-                jQuery("input[name='destinations[]'][type=checkbox]").prop('checked', false);
+                jQuery("input[name='styles[]'][type=checkbox]").prop('checked', false);
             }
 
         }

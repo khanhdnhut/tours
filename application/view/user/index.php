@@ -143,7 +143,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 <?php echo SUBSCRIBER_TITLE; ?> <span class="count">(<?php echo $this->count[CAPABILITY_SUBSCRIBER]; ?>)</span></a>
         </li>
     </ul>
-    <form id="form-user-edit" method="post">
+    <form id="form-user-edit" method="post"  onsubmit="submitFormUserEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->role)) {
             echo htmlspecialchars($this->role);
@@ -643,12 +643,25 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchUser(postData);
         });
 
-        jQuery("#form-user-edit").submit(function (e) {
+//        jQuery("#form-user-edit").submit(function (e) {
+//            e.preventDefault(); //STOP default action
+//            var postData = jQuery(this).serializeArray();
+//            searchUser(postData);
+//        });
+        
+        
+        function submitFormUserEdit(e) {
             e.preventDefault(); //STOP default action
-            var postData = jQuery(this).serializeArray();
-            searchUser(postData);
-        });
+            try {
+                var postData = jQuery("#form-user-edit").serializeArray();
+                searchUser(postData);
+            } catch (e) {
 
+            }
+            return false;
+        }
+
+        
         function searchUser(postData) {
             jQuery.ajax({
                 url: "",

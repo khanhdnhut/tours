@@ -91,7 +91,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <?php $this->renderFeedbackMessages(); ?>
 
-    <form id="form-country-edit" method="post">
+    <form id="form-country-edit" method="post" onsubmit="submitFormCountryEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -578,11 +578,22 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchCountry(postData);
         });
 
-        jQuery("#form-country-edit").submit(function (e) {
+//        jQuery("#form-country-edit").submit(function (e) {
+//            e.preventDefault(); //STOP default action
+//            var postData = jQuery(this).serializeArray();
+//            searchCountry(postData);
+//        });
+        
+        function submitFormCountryEdit(e) {
             e.preventDefault(); //STOP default action
-            var postData = jQuery(this).serializeArray();
-            searchCountry(postData);
-        });
+            try {
+                var postData = jQuery("#form-country-edit").serializeArray();
+                searchCountry(postData);
+            } catch (e) {
+
+            }
+            return false;
+        }
 
         function searchCountry(postData) {
             jQuery.ajax({

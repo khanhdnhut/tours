@@ -91,7 +91,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <?php $this->renderFeedbackMessages(); ?>
 
-    <form id="form-tag-edit" method="post">
+    <form id="form-tag-edit" method="post"  onsubmit="submitFormTagEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -321,16 +321,16 @@ if (!(isset($this->ajax) && $this->ajax)) {
                             </th>
                             <td data-colname="name" class="name column-name has-row-actions column-primary">                                
                                 <strong>
-                                    <a href="#" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getCountryInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
+                                    <a href="#" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getTagInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
                                 </strong>
                                 <br>
                                 <div class="row-actions">
                                     <span class="edit">
-                                        <a href="#" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditCountryPage(this)"><?php echo EDIT_TITLE; ?>
+                                        <a href="#" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditTagPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
                                         | <span class="delete">
-                                            <a href="#" class="submitdelete" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteCountry(this)"><?php echo DELETE_TITLE; ?>
+                                            <a href="#" class="submitdelete" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteTag(this)"><?php echo DELETE_TITLE; ?>
                                             </a>
                                         </span>
                                 </div>
@@ -575,16 +575,29 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 }
                 postData[postData.length] = postDataSearch[i];
             }
-            searchCountry(postData);
+            searchTag(postData);
         });
 
-        jQuery("#form-tag-edit").submit(function (e) {
+//        jQuery("#form-tag-edit").submit(function (e) {
+//            e.preventDefault(); //STOP default action
+//            var postData = jQuery(this).serializeArray();
+//            searchTag(postData);
+//        });
+        
+        
+        
+        function submitFormTagEdit(e) {
             e.preventDefault(); //STOP default action
-            var postData = jQuery(this).serializeArray();
-            searchCountry(postData);
-        });
+            try {
+                var postData = jQuery("#form-tag-edit").serializeArray();
+                searchTag(postData);
+            } catch (e) {
 
-        function searchCountry(postData) {
+            }
+            return false;
+        }
+
+        function searchTag(postData) {
             jQuery.ajax({
                 url: "",
                 type: "POST",
@@ -613,7 +626,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
             jQuery('#form-tag-edit input[name="order"]').val(order);
             var postData = jQuery("#form-tag-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchCountry(postData);
+            searchTag(postData);
         }
 
         function filterPage(element) {
@@ -621,10 +634,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
             jQuery('#form-tag-edit input[name="page"]').val(page);
             var postData = jQuery("#form-tag-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchCountry(postData);
+            searchTag(postData);
         }
 
-        function getEditCountryPage(element) {
+        function getEditTagPage(element) {
             var term_taxonomy_id = jQuery(element).attr("tag");
             var name = jQuery(element).attr("name");
             var url = "<?php echo URL . CONTEXT_PATH_TAG_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
@@ -652,7 +665,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 }
             });
         }
-        function getCountryInfoPage(element) {
+        function getTagInfoPage(element) {
             var tag = jQuery(element).attr("tag");
             var name = jQuery(element).attr("name");
             var url = "<?php echo URL . CONTEXT_PATH_TAG_INFO; ?>" + tag + "/" + name;
@@ -682,7 +695,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
             });
         }
 
-        function deleteCountry(element) {
+        function deleteTag(element) {
             var tag = jQuery(element).attr("tag");
             var name = jQuery(element).attr("name");
             if (confirm('<?php echo CONFIRM_DELETE_TAG; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
@@ -697,7 +710,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 jQuery('#form-tag-edit input[name="type"]').val('action');
                 var postData = jQuery("#form-tag-edit").serializeArray();
                 //        var formURL = jQuery(this).attr("action");
-                searchCountry(postData);
+                searchTag(postData);
 
             }
         }
@@ -706,7 +719,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
             jQuery('#form-tag-edit input[name="type"]').val(type);
             var postData = jQuery("#form-tag-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchCountry(postData);
+            searchTag(postData);
         }
 
         function checkAll(element) {

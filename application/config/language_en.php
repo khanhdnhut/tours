@@ -365,3 +365,38 @@ define("ADD_DESTINATION_SUCCESS", "Add new destination successed!");
 define("ADD_NEW_DESTINATION_LABEL", "Add New Destination");
 define("LABEL_UPDATE_DESTINATION", "Update Destination");
 define("DESTINATION_TITLE", "destination");
+
+
+/*
+ * Style
+ */
+
+define("DASHBOARD_TOURS_EDIT_STYLE_TITLE", "Edit Style");
+define("DASHBOARD_STYLE_TITLE", "Styles");
+define("DASHBOARD_STYLE_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_ALL_STYLE_TITLE", "All Styles");
+define("RENDER_VIEW_STYLE_INDEX", "style/index");
+define("RENDER_VIEW_STYLE_ADD_NEW", "style/style_add_new");
+define("RENDER_VIEW_STYLE_EDIT", "style/style_edit");
+define("RENDER_VIEW_STYLE_INFO", "style/style_info");
+define("CONTEXT_PATH_STYLE_INDEX", "style/index/");
+define("CONTEXT_PATH_STYLE_ADD_NEW", "style/addNew/");
+define("CONTEXT_PATH_STYLE_EDIT_INFO", "style/editInfo/");
+define("CONTEXT_PATH_STYLE_INFO", "style/info/");
+define("SEARCH_STYLES_TITLE", "Search Styles");
+define("STYLES_LIST_TITLE", "Styles list");
+define("CONFIRM_DELETE_STYLE", "You are about to permanently delete these style: ");
+define("CONFIRM_EDIT_INFO_STYLE", "You are about to permanently edit these style: ");
+define("CONFIRM_ADD_NEW_STYLE", "You are about to permanently add these style: ");
+define("STYLE_NAME_DESC", "The name is how it appears on your site.");
+define("STYLE_PERENT_TITLE", "Parent");
+define("STYLE_PERENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("STYLE_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
+define("STYLE_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
+define("ERROR_UPDATE_INFO_STYLE", "Update profile of style failed!");
+define("ERROR_ADD_NEW_STYLE", "Add new style failed!");
+define("UPDATE_STYLE_SUCCESS", "Update profile of style successed!");
+define("ADD_STYLE_SUCCESS", "Add new style successed!");
+define("ADD_NEW_STYLE_LABEL", "Add New Style");
+define("LABEL_UPDATE_STYLE", "Update Style");
+define("STYLE_TITLE", "style");

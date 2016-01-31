@@ -586,6 +586,56 @@
                                     ?>" href="<?php echo URL . CONTEXT_PATH_COUNTRY_ADD_NEW; ?>"><?php echo DASHBOARD_COUNTRY_ADD_NEW_TITLE; ?></a></li>                                
                             </ul>
                         </li>
+                        <li id="menu-settings" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'style')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-appearance menu-top-last">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'style')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-appearance menu-top-last" href="<?php echo URL . CONTEXT_PATH_STYLE_INDEX; ?>">
+                                <div class="wp-menu-arrow">
+                                    <div></div>
+                                </div>
+                                <div class="wp-menu-image dashicons-before dashicons-admin-appearance">
+                                    <br>
+                                </div>
+                                <div class="wp-menu-name"><?php echo DASHBOARD_STYLE_TITLE; ?></div>
+                            </a>
+                            <ul class="wp-submenu wp-submenu-wrap" style="">
+                                <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_STYLE_TITLE; ?></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_STYLE_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_STYLE_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_STYLE_INDEX; ?>"><?php echo DASHBOARD_ALL_STYLE_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_STYLE_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_STYLE_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_STYLE_ADD_NEW; ?>"><?php echo DASHBOARD_STYLE_ADD_NEW_TITLE; ?></a></li>                                
+                            </ul>
+                        </li>
                                                                    
                         <li id="menu-settings" class="wp-has-submenu <?php
                         if ($this->checkForActiveController($_GET['url'], 'options')) {

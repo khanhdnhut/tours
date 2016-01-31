@@ -717,7 +717,7 @@ class UserModel extends Model
         if ($count > 0) {
             $userMetaInfoArray = $sth->fetchAll();
             foreach ($userMetaInfoArray as $userMeta) {
-                if (isset($userMeta->meta_key) && in_array($userMeta->meta_key, array("manage_users_columns_show", "manage_countries_columns_show"))) {
+                if (isset($userMeta->meta_key) && in_array($userMeta->meta_key, array("manage_users_columns_show", "manage_countries_columns_show", "manage_tags_columns_show", "manage_destinations_columns_show", "manage_styles_columns_show"))) {
                     try {
                         $userMeta->meta_value = json_decode($userMeta->meta_value);
                     } catch (Exception $e) {

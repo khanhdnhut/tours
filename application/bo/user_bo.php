@@ -33,6 +33,10 @@ class UserBO extends BO
     public $manage_countries_columns_show = null;
     public $tags_per_page = null;
     public $manage_tags_columns_show = null;
+    public $destinations_per_page = null;
+    public $manage_destinations_columns_show = null;
+    public $styles_per_page = null;
+    public $manage_styles_columns_show = null;
 
     public function setUserInfo($userInfo)
     {
