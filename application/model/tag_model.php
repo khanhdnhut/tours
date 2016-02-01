@@ -4,7 +4,7 @@ Model::autoloadModel('taxonomy');
 class TagModel extends TaxonomyModel
 {
 
-    public function validateAddNewTag($para)
+    public function validateAddNew($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_ADD_NEW_TAG;
@@ -12,7 +12,7 @@ class TagModel extends TaxonomyModel
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->hasTaxonomyWithName($para->name, "tag")) {
+            if ($this->isExistName($para->name, "tag")) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }
@@ -20,9 +20,9 @@ class TagModel extends TaxonomyModel
             $_SESSION["fb_error"][] = ERROR_NAME_EMPTY;
             return false;
         }
-        
+
         if (isset($para->slug) && $para->slug != "") {
-            if ($this->hasTaxonomyWithSlug($para->slug, "tag")) {
+            if ($this->isExistSlug($para->slug, "tag")) {
                 $_SESSION["fb_error"][] = ERROR_SLUG_EXISTED;
                 return false;
             }
@@ -30,7 +30,7 @@ class TagModel extends TaxonomyModel
             $_SESSION["fb_error"][] = ERROR_SLUG_EMPTY;
             return false;
         }
-        
+
         if (!(isset($para->parent) && $para->parent != "" && is_numeric($para->parent))) {
             $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             return false;
@@ -44,10 +44,10 @@ class TagModel extends TaxonomyModel
         return true;
     }
 
-    public function addNewTag($para)
+    public function addToDatabase($para)
     {
         try {
-            if ($this->validateAddNewTag($para)) {
+            if ($this->validateAddNew($para)) {
                 BO::autoloadBO("tag");
                 $tagBO = new TagBO();
 
@@ -68,7 +68,7 @@ class TagModel extends TaxonomyModel
 
                 $this->db->beginTransaction();
 
-                if ($this->addTaxonomyToDatabase($tagBO)) {
+                if (parent::addToDatabase($tagBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = ADD_TAG_SUCCESS;
                     return TRUE;
@@ -83,7 +83,7 @@ class TagModel extends TaxonomyModel
         return FALSE;
     }
 
-    public function validateUpdateInfoTag($para)
+    public function validateUpdateInfo($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_TAG;
@@ -120,11 +120,11 @@ class TagModel extends TaxonomyModel
         return true;
     }
 
-    public function updateInfoTag($para)
+    public function updateInfo($para)
     {
         try {
-            if ($this->validateUpdateInfoTag($para)) {
-                $tagBO = $this->getTerm($para->term_taxonomy_id);
+            if ($this->validateUpdateInfo($para)) {
+                $tagBO = $this->get($para->term_taxonomy_id);
                 if ($tagBO != NULL) {
                     if (isset($para->name)) {
                         $tagBO->name = $para->name;
@@ -143,7 +143,7 @@ class TagModel extends TaxonomyModel
 
                     $this->db->beginTransaction();
 
-                    if ($this->updateTerm($tagBO)) {
+                    if ($this->update($tagBO)) {
                         $this->db->commit();
                         $_SESSION["fb_success"][] = UPDATE_TAG_SUCCESS;
                         return TRUE;
@@ -159,17 +159,17 @@ class TagModel extends TaxonomyModel
         return FALSE;
     }
 
-    public function updateEditTagPerPages($tags_per_page)
+    public function updateTagsPerPages($tags_per_page)
     {
         $user_id = Session::get("user_id");
         $meta_key = "tags_per_page";
         $meta_value = $tags_per_page;
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userModel->setUserMeta($user_id, $meta_key, $meta_value);
+        $userModel->setMeta($user_id, $meta_key, $meta_value);
     }
 
-    public function updateShowHideColumn($description_show, $slug_show, $tours_show)
+    public function updateColumnsShow($description_show, $slug_show, $tours_show)
     {
         $user_id = Session::get("user_id");
         $meta_key = "manage_tags_columns_show";
@@ -180,14 +180,14 @@ class TagModel extends TaxonomyModel
         $meta_value = json_encode($meta_value);
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userModel->setUserMeta($user_id, $meta_key, $meta_value);
+        $userModel->setMeta($user_id, $meta_key, $meta_value);
     }
 
     public function changeAdvSetting($para)
     {
         $action = NULL;
         if (isset($para->tags_per_page) && is_numeric($para->tags_per_page)) {
-            $this->updateEditTagPerPages($para->tags_per_page);
+            $this->updateTagsPerPages($para->tags_per_page);
         }
         $description_show = false;
         $slug_show = false;
@@ -201,10 +201,10 @@ class TagModel extends TaxonomyModel
         if (isset($para->tours_show) && $para->tours_show == "tours") {
             $tours_show = true;
         }
-        $this->updateShowHideColumn($description_show, $slug_show, $tours_show);
+        $this->updateColumnsShow($description_show, $slug_show, $tours_show);
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userBO = $userModel->getUserByUserId(Session::get("user_id"));
+        $userBO = $userModel->get(Session::get("user_id"));
         $userModel->setNewSessionUser($userBO);
     }
 
@@ -212,7 +212,7 @@ class TagModel extends TaxonomyModel
     {
         if (isset($para->tags) && is_array($para->tags)) {
             foreach ($para->tags as $term_taxonomy_id) {
-                $this->deleteTerm($term_taxonomy_id);
+                $this->delete($term_taxonomy_id);
             }
         }
     }
@@ -240,9 +240,11 @@ class TagModel extends TaxonomyModel
         }
     }
 
-    public function searchTag($view, $para)
+    public function search($view, $para)
     {
         $tags_per_page = TAGS_PER_PAGE_DEFAULT;
+        $taxonomy = "tag";
+
         $userLoginBO = json_decode(Session::get("userInfo"));
         if ($userLoginBO != NULL) {
             if (isset($userLoginBO->tags_per_page) && is_numeric($userLoginBO->tags_per_page)) {
@@ -260,8 +262,9 @@ class TagModel extends TaxonomyModel
                 $tags_per_page = TAGS_PER_PAGE_DEFAULT;
             }
         }
-        
-        $taxonomy = "tag";
-        parent::searchTaxonomy($view, $para, $tags_per_page, $taxonomy);
+
+        $view->taxonomies_per_page = $tags_per_page;
+        $view->taxonomy = $taxonomy;
+        parent::search($view, $para);
     }
 }

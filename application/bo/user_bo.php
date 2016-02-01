@@ -37,6 +37,8 @@ class UserBO extends BO
     public $manage_destinations_columns_show = null;
     public $styles_per_page = null;
     public $manage_styles_columns_show = null;
+    public $types_per_page = null;
+    public $manage_types_columns_show = null;
 
     public function setUserInfo($userInfo)
     {
@@ -80,7 +82,8 @@ class UserBO extends BO
         if (!is_null($userMetaInfoArray) && is_array($userMetaInfoArray) && count($userMetaInfoArray) > 0) {
             foreach ($userMetaInfoArray as $userMeta) {
                 if (isset($userMeta->user_id) && $userMeta->user_id == $this->user_id) {
-                    if (isset($userMeta->meta_key) && isset($userMeta->meta_value) && property_exists("UserBO", $userMeta->meta_key)) {
+//                    if (isset($userMeta->meta_key) && isset($userMeta->meta_value) && property_exists("UserBO", $userMeta->meta_key)) {
+                    if (isset($userMeta->meta_key) && isset($userMeta->meta_value)) {
                         $meta_key = $userMeta->meta_key;
                         $this->$meta_key = $userMeta->meta_value;
 

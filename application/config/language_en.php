@@ -94,9 +94,9 @@ define("CAPABILITY_EDITOR", "editor");
  * Language for: RENDER_VIEW
  */
 
-define("RENDER_VIEW_ERROR_INDEX", "error/index");
+define("RENDER_VIEW_ERROR_INDEX", "error/error_index");
 define("RENDER_VIEW_ERROR_NOTFOUND", "error/notFound");
-define("RENDER_VIEW_HOME_INDEX", "home/index");
+define("RENDER_VIEW_HOME_INDEX", "home/home_index");
 
 
 /*
@@ -162,6 +162,7 @@ define("CONFIRM_EDIT_INFO_CANCEL_OK", ". \\n \"Cancel\" to stop, \"OK\" to edit.
 define("PROFILE_OF_TITLE", "Profile of ");
 define("EDIT_PROFILE_OF_TITLE", "Edit profile of ");
 define("SLUG_TITLE", "Slug");
+define("PARENT_TITLE", "Parent");
 define("DESCRIPTION_TITLE", "Description");
 define("FIRST_NAME_TITLE", "First Name");
 define("LAST_NAME_TITLE", "Last Name");
@@ -210,7 +211,7 @@ define("DASHBOARD_USERS_TITLE", "Users");
 define("DASHBOARD_USERS_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_USERS_YOUR_PROFILE_TITLE", "Your Profile");
 define("DASHBOARD_ALL_USERS_TITLE", "All Users");
-define("RENDER_VIEW_USER_INDEX", "user/index");
+define("RENDER_VIEW_USER_INDEX", "user/user_index");
 define("RENDER_VIEW_USER_ADD_NEW", "user/user_add_new");
 define("RENDER_VIEW_USER_EDIT", "user/user_edit");
 define("RENDER_VIEW_USER_INFO", "user/user_info");
@@ -270,7 +271,7 @@ define("DASHBOARD_TOURS_EDIT_COUNTRY_TITLE", "Edit Country");
 define("DASHBOARD_COUNTRY_TITLE", "Countries");
 define("DASHBOARD_COUNTRY_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_ALL_COUNTRY_TITLE", "All Countries");
-define("RENDER_VIEW_COUNTRY_INDEX", "country/index");
+define("RENDER_VIEW_COUNTRY_INDEX", "country/country_index");
 define("RENDER_VIEW_COUNTRY_ADD_NEW", "country/country_add_new");
 define("RENDER_VIEW_COUNTRY_EDIT", "country/country_edit");
 define("RENDER_VIEW_COUNTRY_INFO", "country/country_info");
@@ -295,6 +296,7 @@ define("ADD_COUNTRY_SUCCESS", "Add new country successed!");
 define("ADD_NEW_COUNTRY_LABEL", "Add New Country");
 define("LABEL_UPDATE_COUNTRY", "Update Country");
 define("COUNTRY_TITLE", "country");
+define("DESTINATION_COUNTRY_TITLE", "Country");
 
 /*
  * Tag
@@ -304,7 +306,7 @@ define("DASHBOARD_TOURS_TAGS_TITLE", "Tags");
 define("DASHBOARD_TAG_TITLE", "Tags");
 define("DASHBOARD_TAG_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_ALL_TAG_TITLE", "All Tags");
-define("RENDER_VIEW_TAG_INDEX", "tag/index");
+define("RENDER_VIEW_TAG_INDEX", "tag/tag_index");
 define("RENDER_VIEW_TAG_ADD_NEW", "tag/tag_add_new");
 define("RENDER_VIEW_TAG_EDIT", "tag/tag_edit");
 define("RENDER_VIEW_TAG_INFO", "tag/tag_info");
@@ -340,7 +342,7 @@ define("DASHBOARD_TOURS_EDIT_DESTINATION_TITLE", "Edit Destination");
 define("DASHBOARD_DESTINATION_TITLE", "Destinations");
 define("DASHBOARD_DESTINATION_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_ALL_DESTINATION_TITLE", "All Destinations");
-define("RENDER_VIEW_DESTINATION_INDEX", "destination/index");
+define("RENDER_VIEW_DESTINATION_INDEX", "destination/destination_index");
 define("RENDER_VIEW_DESTINATION_ADD_NEW", "destination/destination_add_new");
 define("RENDER_VIEW_DESTINATION_EDIT", "destination/destination_edit");
 define("RENDER_VIEW_DESTINATION_INFO", "destination/destination_info");
@@ -375,7 +377,7 @@ define("DASHBOARD_TOURS_EDIT_STYLE_TITLE", "Edit Style");
 define("DASHBOARD_STYLE_TITLE", "Styles");
 define("DASHBOARD_STYLE_ADD_NEW_TITLE", "Add New");
 define("DASHBOARD_ALL_STYLE_TITLE", "All Styles");
-define("RENDER_VIEW_STYLE_INDEX", "style/index");
+define("RENDER_VIEW_STYLE_INDEX", "style/style_index");
 define("RENDER_VIEW_STYLE_ADD_NEW", "style/style_add_new");
 define("RENDER_VIEW_STYLE_EDIT", "style/style_edit");
 define("RENDER_VIEW_STYLE_INFO", "style/style_info");
@@ -400,3 +402,36 @@ define("ADD_STYLE_SUCCESS", "Add new style successed!");
 define("ADD_NEW_STYLE_LABEL", "Add New Style");
 define("LABEL_UPDATE_STYLE", "Update Style");
 define("STYLE_TITLE", "style");
+/*
+ * Type
+ */
+
+define("DASHBOARD_TOURS_EDIT_TYPE_TITLE", "Edit Type");
+define("DASHBOARD_TYPE_TITLE", "Types");
+define("DASHBOARD_TYPE_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_ALL_TYPE_TITLE", "All Types");
+define("RENDER_VIEW_TYPE_INDEX", "type/type_index");
+define("RENDER_VIEW_TYPE_ADD_NEW", "type/type_add_new");
+define("RENDER_VIEW_TYPE_EDIT", "type/type_edit");
+define("RENDER_VIEW_TYPE_INFO", "type/type_info");
+define("CONTEXT_PATH_TYPE_INDEX", "type/index/");
+define("CONTEXT_PATH_TYPE_ADD_NEW", "type/addNew/");
+define("CONTEXT_PATH_TYPE_EDIT_INFO", "type/editInfo/");
+define("CONTEXT_PATH_TYPE_INFO", "type/info/");
+define("SEARCH_TYPES_TITLE", "Search Types");
+define("TYPES_LIST_TITLE", "Types list");
+define("CONFIRM_DELETE_TYPE", "You are about to permanently delete these type: ");
+define("CONFIRM_EDIT_INFO_TYPE", "You are about to permanently edit these type: ");
+define("CONFIRM_ADD_NEW_TYPE", "You are about to permanently add these type: ");
+define("TYPE_NAME_DESC", "The name is how it appears on your site.");
+define("TYPE_PERENT_TITLE", "Parent");
+define("TYPE_PERENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("TYPE_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
+define("TYPE_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
+define("ERROR_UPDATE_INFO_TYPE", "Update profile of type failed!");
+define("ERROR_ADD_NEW_TYPE", "Add new type failed!");
+define("UPDATE_TYPE_SUCCESS", "Update profile of type successed!");
+define("ADD_TYPE_SUCCESS", "Add new type successed!");
+define("ADD_NEW_TYPE_LABEL", "Add New Type");
+define("LABEL_UPDATE_TYPE", "Update Type");
+define("TYPE_TITLE", "type");

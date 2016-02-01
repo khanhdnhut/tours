@@ -103,7 +103,7 @@ class UserCtrl extends Controller
                 if (isset($_POST['pw_weak'])) {
                     $this->para->pw_weak = $_POST['pw_weak'];
                 }
-                $result = $model->addNewUser($this->para);
+                $result = $model->addNew($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
@@ -172,14 +172,14 @@ class UserCtrl extends Controller
                     if (isset($_POST['pw_weak'])) {
                         $this->para->pw_weak = $_POST['pw_weak'];
                     }
-                    $result = $model->updateInfoUser($this->para);
+                    $result = $model->updateInfo($this->para);
                     if (!$result) {
                         $this->view->para = $this->para;
                     } else {
                         $update_success = TRUE;
                     }
                 }
-                $this->view->userBO = $model->getUserByUserId($this->para->user_id);
+                $this->view->userBO = $model->get($this->para->user_id);
                 if (Session::get('user_id') == $this->para->user_id && isset($update_success) && $update_success) {
                     $model->setNewSessionUser($this->view->userBO);
                 }
@@ -209,7 +209,7 @@ class UserCtrl extends Controller
             }
 
             if (isset($this->para->user_id)) {
-                $this->view->userBO = $model->getUserByUserId($this->para->user_id);
+                $this->view->userBO = $model->get($this->para->user_id);
                 if (isset($user_id) && !is_null($user_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_USER_INFO);
                 } else {
@@ -232,7 +232,7 @@ class UserCtrl extends Controller
             $this->para->user_id = Session::get('user_id');
 
             if (isset($this->para->user_id)) {
-                $this->view->userBO = $model->getUserByUserId($this->para->user_id);
+                $this->view->userBO = $model->get($this->para->user_id);
                 $this->view->renderAdmin(RENDER_VIEW_USER_INFO);
             } else {
                 header('location: ' . URL . CONTEXT_PATH_USER_EDIT);
@@ -314,7 +314,7 @@ class UserCtrl extends Controller
                 }
             }
 
-            $model->prepareIndexPage($this->view, $this->para);
+            $model->search($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {
                 $this->view->ajax = TRUE;

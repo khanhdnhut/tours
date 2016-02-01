@@ -4,7 +4,14 @@ Model::autoloadModel('taxonomy');
 class CountryModel extends TaxonomyModel
 {
 
-    public function validateAddNewCountry($para)
+    /**
+     * validateAddNew
+     *
+     * Validate para for add new country
+     *
+     * @param stdClass $para para for add new country
+     */
+    public function validateAddNew($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_ADD_NEW_COUNTRY;
@@ -12,7 +19,7 @@ class CountryModel extends TaxonomyModel
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->hasTaxonomyWithName($para->name, "country")) {
+            if ($this->isExistName($para->name, "country")) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }
@@ -20,9 +27,9 @@ class CountryModel extends TaxonomyModel
             $_SESSION["fb_error"][] = ERROR_NAME_EMPTY;
             return false;
         }
-        
+
         if (isset($para->slug) && $para->slug != "") {
-            if ($this->hasTaxonomyWithSlug($para->slug, "country")) {
+            if ($this->isExistSlug($para->slug, "country")) {
                 $_SESSION["fb_error"][] = ERROR_SLUG_EXISTED;
                 return false;
             }
@@ -30,7 +37,7 @@ class CountryModel extends TaxonomyModel
             $_SESSION["fb_error"][] = ERROR_SLUG_EMPTY;
             return false;
         }
-        
+
         if (!(isset($para->parent) && $para->parent != "" && is_numeric($para->parent))) {
             $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             return false;
@@ -44,10 +51,17 @@ class CountryModel extends TaxonomyModel
         return true;
     }
 
-    public function addNewCountry($para)
+    /**
+     * addToDatabase
+     *
+     * Add new country
+     *
+     * @param stdClass $para para for add new country
+     */
+    public function addToDatabase($para)
     {
         try {
-            if ($this->validateAddNewCountry($para)) {
+            if ($this->validateAddNew($para)) {
                 BO::autoloadBO("country");
                 $countryBO = new CountryBO();
 
@@ -68,7 +82,7 @@ class CountryModel extends TaxonomyModel
 
                 $this->db->beginTransaction();
 
-                if ($this->addTaxonomyToDatabase($countryBO)) {
+                if (parent::addToDatabase($countryBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = ADD_COUNTRY_SUCCESS;
                     return TRUE;
@@ -83,7 +97,14 @@ class CountryModel extends TaxonomyModel
         return FALSE;
     }
 
-    public function validateUpdateInfoCountry($para)
+    /**
+     * validateUpdateInfo
+     *
+     * Validate para for update info of country
+     *
+     * @param stdClass $para para for update info of country
+     */
+    public function validateUpdateInfo($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_COUNTRY;
@@ -120,11 +141,18 @@ class CountryModel extends TaxonomyModel
         return true;
     }
 
-    public function updateInfoCountry($para)
+    /**
+     * updateInfo
+     *
+     * Update info of country
+     *
+     * @param stdClass $para para for update info of country
+     */
+    public function updateInfo($para)
     {
         try {
-            if ($this->validateUpdateInfoCountry($para)) {
-                $countryBO = $this->getTerm($para->term_taxonomy_id);
+            if ($this->validateUpdateInfo($para)) {
+                $countryBO = $this->get($para->term_taxonomy_id);
                 if ($countryBO != NULL) {
                     if (isset($para->name)) {
                         $countryBO->name = $para->name;
@@ -143,7 +171,7 @@ class CountryModel extends TaxonomyModel
 
                     $this->db->beginTransaction();
 
-                    if ($this->updateTerm($countryBO)) {
+                    if ($this->update($countryBO)) {
                         $this->db->commit();
                         $_SESSION["fb_success"][] = UPDATE_COUNTRY_SUCCESS;
                         return TRUE;
@@ -159,17 +187,24 @@ class CountryModel extends TaxonomyModel
         return FALSE;
     }
 
-    public function updateEditCountryPerPages($countries_per_page)
+    /**
+     * updateCountriesPerPages
+     *
+     * Update number countries per page
+     *
+     * @param string $countries_per_page number countries per page
+     */
+    public function updateCountriesPerPages($countries_per_page)
     {
         $user_id = Session::get("user_id");
         $meta_key = "countries_per_page";
         $meta_value = $countries_per_page;
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userModel->setUserMeta($user_id, $meta_key, $meta_value);
+        $userModel->setMeta($user_id, $meta_key, $meta_value);
     }
 
-    public function updateShowHideColumn($description_show, $slug_show, $tours_show)
+    public function updateColumnsShow($description_show, $slug_show, $tours_show)
     {
         $user_id = Session::get("user_id");
         $meta_key = "manage_countries_columns_show";
@@ -180,14 +215,14 @@ class CountryModel extends TaxonomyModel
         $meta_value = json_encode($meta_value);
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userModel->setUserMeta($user_id, $meta_key, $meta_value);
+        $userModel->setMeta($user_id, $meta_key, $meta_value);
     }
 
     public function changeAdvSetting($para)
     {
         $action = NULL;
         if (isset($para->countries_per_page) && is_numeric($para->countries_per_page)) {
-            $this->updateEditCountryPerPages($para->countries_per_page);
+            $this->updateCountriesPerPages($para->countries_per_page);
         }
         $description_show = false;
         $slug_show = false;
@@ -201,10 +236,10 @@ class CountryModel extends TaxonomyModel
         if (isset($para->tours_show) && $para->tours_show == "tours") {
             $tours_show = true;
         }
-        $this->updateShowHideColumn($description_show, $slug_show, $tours_show);
+        $this->updateColumnsShow($description_show, $slug_show, $tours_show);
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userBO = $userModel->getUserByUserId(Session::get("user_id"));
+        $userBO = $userModel->get(Session::get("user_id"));
         $userModel->setNewSessionUser($userBO);
     }
 
@@ -212,7 +247,7 @@ class CountryModel extends TaxonomyModel
     {
         if (isset($para->countries) && is_array($para->countries)) {
             foreach ($para->countries as $term_taxonomy_id) {
-                $this->deleteTerm($term_taxonomy_id);
+                $this->delete($term_taxonomy_id);
             }
         }
     }
@@ -240,9 +275,11 @@ class CountryModel extends TaxonomyModel
         }
     }
 
-    public function searchCountry($view, $para)
+    public function search($view, $para)
     {
         $countries_per_page = COUNTRIES_PER_PAGE_DEFAULT;
+        $taxonomy = "country";
+        
         $userLoginBO = json_decode(Session::get("userInfo"));
         if ($userLoginBO != NULL) {
             if (isset($userLoginBO->countries_per_page) && is_numeric($userLoginBO->countries_per_page)) {
@@ -261,7 +298,9 @@ class CountryModel extends TaxonomyModel
             }
         }
 
-        $taxonomy = "country";
-        parent::searchTaxonomy($view, $para, $countries_per_page, $taxonomy);
+        $view->taxonomies_per_page = $countries_per_page;
+        $view->taxonomy = $taxonomy;
+
+        parent::search($view, $para);
     }
 }

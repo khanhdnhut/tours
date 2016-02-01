@@ -208,7 +208,7 @@ class ImageModel extends AttachmentModel
 
         $imageInfo->attachment_metadata = $attachment_metadata;
 
-        return $this->addAttachmentToDatabase($imageInfo);
+        return $this->addToDatabase($imageInfo);
     }
 
     /**
@@ -358,10 +358,10 @@ class ImageModel extends AttachmentModel
         return false;
     }
 
-    public function deletePost($post_id)
+    public function delete($post_id)
     {
         try {
-            $postBO = $this->getPost($post_id);
+            $postBO = $this->get($post_id);
             if (isset($postBO->attachment_metadata) && isset($postBO->attachment_metadata->sizes)) {
                 if (isset($postBO->attachment_metadata->sizes->slider_thumb) && isset($postBO->attachment_metadata->sizes->slider_thumb->file)) {
                     Utils::deleteFile($postBO->attachment_metadata->sizes->slider_thumb->file);
@@ -382,7 +382,7 @@ class ImageModel extends AttachmentModel
                     Utils::deleteFile($postBO->attachment_metadata->sizes->large->file);
                 }
             }
-            if (parent::deletePost($post_id)) {
+            if (parent::delete($post_id)) {
                 return TRUE;
             }
         } catch (Exception $e) {

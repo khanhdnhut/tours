@@ -3,7 +3,7 @@
 class TermModel extends Model
 {
 
-    public function addTermMetaInfoToDatabase($term_id, $meta_key, $meta_value)
+    public function addMetaInfoToDatabase($term_id, $meta_key, $meta_value)
     {
         try {
             $sql2 = "insert into " . TABLE_TERMMETA . " 
@@ -31,36 +31,39 @@ class TermModel extends Model
         return NULL;
     }
 
-    public function addTermToDatabase(TermBO $termBO)
+    public function addToDatabase($termBO)
     {
-        try {
-            $sql = "insert into " . TABLE_TERMS . " 
+        if (is_a($termBO, "TermBO")) {
+            try {
+                $sql = "insert into " . TABLE_TERMS . " 
                             (" . TB_TERMS_COL_NAME . ",
                              " . TB_TERMS_COL_SLUG . ",
                              " . TB_TERMS_COL_TERM_GROUP . ")
                 values (:name,
                         :slug,
                         :term_group);";
-            $sth = $this->db->prepare($sql);
+                $sth = $this->db->prepare($sql);
 
-            $sth->execute(array(
-                ":name" => $termBO->name,
-                ":slug" => $termBO->slug,
-                ":term_group" => $termBO->term_group
-            ));
+                $sth->execute(array(
+                    ":name" => $termBO->name,
+                    ":slug" => $termBO->slug,
+                    ":term_group" => $termBO->term_group
+                ));
 
-            $count = $sth->rowCount();
-            if ($count > 0) {
-                $term_id = $this->db->lastInsertId();
-                return $term_id;
+                $count = $sth->rowCount();
+                if ($count > 0) {
+                    $term_id = $this->db->lastInsertId();
+                    return $term_id;
+                }
+            } catch (Exception $e) {
+                
             }
-        } catch (Exception $e) {
-            
         }
+
         return NULL;
     }
 
-    public function updateTerm($termBO)
+    public function update($termBO)
     {
         if (is_a($termBO, "TermBO")) {
             try {
@@ -98,7 +101,7 @@ class TermModel extends Model
         return FALSE;
     }
 
-    public function getTermMeta($term_id, $meta_key)
+    public function getMeta($term_id, $meta_key)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_TERMMETA . "
@@ -114,10 +117,10 @@ class TermModel extends Model
         return $result->meta_value;
     }
 
-    public function setTermMeta($term_id, $meta_key, $meta_value)
+    public function setMeta($term_id, $meta_key, $meta_value)
     {
         try {
-            if (!is_null($this->getTermMeta($term_id, $meta_key))) {
+            if (!is_null($this->getMeta($term_id, $meta_key))) {
                 //update
                 $sql = "UPDATE " . TABLE_TERMMETA . " 
                     SET " . TB_TERMMETA_COL_META_VALUE . " = :meta_value
@@ -148,7 +151,7 @@ class TermModel extends Model
         return true;
     }
 
-    public function getTerm($term_id)
+    public function get($term_id)
     {
         try {
             $sth = $this->db->prepare("SELECT *
@@ -165,7 +168,7 @@ class TermModel extends Model
             $this->autoloadBO('term');
             $termBO = new TermBO();
             $termBO->setTermInfo($result);
-            $termMetaInfoArray = $this->getTermMetaInfo($result->term_id);
+            $termMetaInfoArray = $this->getMetaInfo($result->term_id);
             $termBO->setTermMetaInfo($termMetaInfoArray);
             return $termBO;
         } catch (Exception $e) {
@@ -174,7 +177,7 @@ class TermModel extends Model
         return null;
     }
 
-    public function getTermMetaInfo($term_id)
+    public function getMetaInfo($term_id)
     {
         try {
             $sth = $this->db->prepare("SELECT *
@@ -194,7 +197,7 @@ class TermModel extends Model
         return null;
     }
 
-    public function deleteTerm($term_id)
+    public function delete($term_id)
     {
         try {
             $sth = $this->db->prepare("DELETE 
@@ -203,7 +206,7 @@ class TermModel extends Model
             $sth->execute(array(':term_id' => $term_id));
             $count = $sth->rowCount();
             if ($count > 0) {
-                $this->deleteTermMeta($term_id);
+                $this->deleteMeta($term_id);
                 return TRUE;
             } else {
                 return FALSE;
@@ -214,7 +217,7 @@ class TermModel extends Model
         return FALSE;
     }
 
-    public function deleteTermMeta($term_id)
+    public function deleteMeta($term_id)
     {
         try {
             $sth = $this->db->prepare("DELETE 

@@ -1,18 +1,18 @@
 <?php
 Model::autoloadModel('taxonomy');
 
-class StyleModel extends TaxonomyModel
+class TypeModel extends TaxonomyModel
 {
 
     public function validateAddNew($para)
     {
         if ($para == null || !is_object($para)) {
-            $_SESSION["fb_error"][] = ERROR_ADD_NEW_STYLE;
+            $_SESSION["fb_error"][] = ERROR_ADD_NEW_TYPE;
             return false;
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->isExistName($para->name, "style")) {
+            if ($this->isExistName($para->name, "type")) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }
@@ -22,7 +22,7 @@ class StyleModel extends TaxonomyModel
         }
         
         if (isset($para->slug) && $para->slug != "") {
-            if ($this->isExistSlug($para->slug, "style")) {
+            if ($this->isExistSlug($para->slug, "type")) {
                 $_SESSION["fb_error"][] = ERROR_SLUG_EXISTED;
                 return false;
             }
@@ -48,37 +48,37 @@ class StyleModel extends TaxonomyModel
     {
         try {
             if ($this->validateAddNew($para)) {
-                BO::autoloadBO("style");
-                $styleBO = new StyleBO();
+                BO::autoloadBO("type");
+                $typeBO = new TypeBO();
 
                 if (isset($para->name)) {
-                    $styleBO->name = $para->name;
+                    $typeBO->name = $para->name;
                 }
                 if (isset($para->slug)) {
-                    $styleBO->slug = $para->slug;
+                    $typeBO->slug = $para->slug;
                 }
                 if (isset($para->description)) {
-                    $styleBO->description = $para->description;
+                    $typeBO->description = $para->description;
                 }
                 if (isset($para->parent)) {
-                    $styleBO->parent = $para->parent;
+                    $typeBO->parent = $para->parent;
                 }
-                $styleBO->count = 0;
-                $styleBO->term_group = 0;
+                $typeBO->count = 0;
+                $typeBO->term_group = 0;
 
                 $this->db->beginTransaction();
 
-                if (parent::addToDatabase($styleBO)) {
+                if (parent::addToDatabase($typeBO)) {
                     $this->db->commit();
-                    $_SESSION["fb_success"][] = ADD_STYLE_SUCCESS;
+                    $_SESSION["fb_success"][] = ADD_TYPE_SUCCESS;
                     return TRUE;
                 } else {
                     $this->db->rollBack();
-                    $_SESSION["fb_error"][] = ADD_STYLE_SUCCESS;
+                    $_SESSION["fb_error"][] = ADD_TYPE_SUCCESS;
                 }
             }
         } catch (Exception $e) {
-            $_SESSION["fb_error"][] = ERROR_ADD_NEW_STYLE;
+            $_SESSION["fb_error"][] = ERROR_ADD_NEW_TYPE;
         }
         return FALSE;
     }
@@ -86,17 +86,17 @@ class StyleModel extends TaxonomyModel
     public function validateUpdateInfo($para)
     {
         if ($para == null || !is_object($para)) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_STYLE;
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_TYPE;
             return false;
         }
         if (!isset($para->term_taxonomy_id)) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_STYLE;
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_TYPE;
             return false;
         } else {
             try {
                 $para->term_taxonomy_id = (int) $para->term_taxonomy_id;
             } catch (Exception $e) {
-                $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_STYLE;
+                $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_TYPE;
                 return false;
             }
         }
@@ -124,46 +124,46 @@ class StyleModel extends TaxonomyModel
     {
         try {
             if ($this->validateUpdateInfo($para)) {
-                $styleBO = $this->get($para->term_taxonomy_id);
-                if ($styleBO != NULL) {
+                $typeBO = $this->get($para->term_taxonomy_id);
+                if ($typeBO != NULL) {
                     if (isset($para->name)) {
-                        $styleBO->name = $para->name;
+                        $typeBO->name = $para->name;
                     }
                     if (isset($para->slug)) {
-                        $styleBO->slug = $para->slug;
+                        $typeBO->slug = $para->slug;
                     }
                     if (isset($para->description)) {
-                        $styleBO->description = $para->description;
+                        $typeBO->description = $para->description;
                     }
                     if (isset($para->parent)) {
-                        $styleBO->parent = $para->parent;
+                        $typeBO->parent = $para->parent;
                     } else {
-                        $styleBO->parent = 0;
+                        $typeBO->parent = 0;
                     }
 
                     $this->db->beginTransaction();
 
-                    if ($this->update($styleBO)) {
+                    if ($this->update($typeBO)) {
                         $this->db->commit();
-                        $_SESSION["fb_success"][] = UPDATE_STYLE_SUCCESS;
+                        $_SESSION["fb_success"][] = UPDATE_TYPE_SUCCESS;
                         return TRUE;
                     } else {
                         $this->db->rollBack();
-                        $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_STYLE;
+                        $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_TYPE;
                     }
                 }
             }
         } catch (Exception $e) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_STYLE;
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_TYPE;
         }
         return FALSE;
     }
 
-    public function updateStylesPerPages($styles_per_page)
+    public function updateTypesPerPage($types_per_page)
     {
         $user_id = Session::get("user_id");
-        $meta_key = "styles_per_page";
-        $meta_value = $styles_per_page;
+        $meta_key = "types_per_page";
+        $meta_value = $types_per_page;
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
         $userModel->setMeta($user_id, $meta_key, $meta_value);
@@ -172,7 +172,7 @@ class StyleModel extends TaxonomyModel
     public function updateColumnsShow($description_show, $slug_show, $tours_show)
     {
         $user_id = Session::get("user_id");
-        $meta_key = "manage_styles_columns_show";
+        $meta_key = "manage_types_columns_show";
         $meta_value = new stdClass();
         $meta_value->description_show = $description_show;
         $meta_value->slug_show = $slug_show;
@@ -186,8 +186,8 @@ class StyleModel extends TaxonomyModel
     public function changeAdvSetting($para)
     {
         $action = NULL;
-        if (isset($para->styles_per_page) && is_numeric($para->styles_per_page)) {
-            $this->updateStylesPerPages($para->styles_per_page);
+        if (isset($para->types_per_page) && is_numeric($para->types_per_page)) {
+            $this->updateTypesPerPage($para->types_per_page);
         }
         $description_show = false;
         $slug_show = false;
@@ -210,8 +210,8 @@ class StyleModel extends TaxonomyModel
 
     public function executeActionDelete($para)
     {
-        if (isset($para->styles) && is_array($para->styles)) {
-            foreach ($para->styles as $term_taxonomy_id) {
+        if (isset($para->types) && is_array($para->types)) {
+            foreach ($para->types as $term_taxonomy_id) {
                 $this->delete($term_taxonomy_id);
             }
         }
@@ -242,28 +242,29 @@ class StyleModel extends TaxonomyModel
 
     public function search($view, $para)
     {
-        $styles_per_page = STYLES_PER_PAGE_DEFAULT;
-        $taxonomy = "style";  
-                
+        $types_per_page = TYPES_PER_PAGE_DEFAULT;
+        $taxonomy = "type";
+        
         $userLoginBO = json_decode(Session::get("userInfo"));
         if ($userLoginBO != NULL) {
-            if (isset($userLoginBO->styles_per_page) && is_numeric($userLoginBO->styles_per_page)) {
-                $styles_per_page = (int) $userLoginBO->styles_per_page;
+            if (isset($userLoginBO->types_per_page) && is_numeric($userLoginBO->types_per_page)) {
+                $types_per_page = (int) $userLoginBO->types_per_page;
             }
         }
 
-        if (!isset($styles_per_page)) {
+        if (!isset($types_per_page)) {
             if (!isset($_SESSION['options'])) {
                 $_SESSION['options'] = new stdClass();
-                $_SESSION['options']->styles_per_page = STYLES_PER_PAGE_DEFAULT;
-                $styles_per_page = STYLES_PER_PAGE_DEFAULT;
-            } elseif (!isset($_SESSION['options']->styles_per_page)) {
-                $_SESSION['options']->styles_per_page = STYLES_PER_PAGE_DEFAULT;
-                $styles_per_page = STYLES_PER_PAGE_DEFAULT;
+                $_SESSION['options']->types_per_page = TYPES_PER_PAGE_DEFAULT;
+                $types_per_page = TYPES_PER_PAGE_DEFAULT;
+            } elseif (!isset($_SESSION['options']->types_per_page)) {
+                $_SESSION['options']->types_per_page = TYPES_PER_PAGE_DEFAULT;
+                $types_per_page = TYPES_PER_PAGE_DEFAULT;
             }
         }
-      
-        $view->taxonomies_per_page = $styles_per_page;
+
+        
+        $view->taxonomies_per_page = $types_per_page;
         $view->taxonomy = $taxonomy;
         parent::search($view, $para);
     }

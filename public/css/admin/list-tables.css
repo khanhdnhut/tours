@@ -303,7 +303,7 @@ table.fixed {
 
 .fixed .column-rating,
 .fixed .column-visible {
-	width: 8%;
+	/*width: 8%;*/
 }
 
 .fixed .column-posts,
@@ -312,11 +312,11 @@ table.fixed {
 .fixed .column-links,
 .fixed .column-author,
 .fixed .column-format {
-	width: 10%;
+	/*width: 10%;*/
 }
 
 .fixed .column-posts {
-	width: 74px;
+	/*width: 74px;*/
 }
 
 .fixed .column-comment .comment-author {
@@ -328,15 +328,16 @@ table.fixed {
 .fixed .column-tags,
 .fixed .column-rel,
 .fixed .column-role {
-	width: 15%;
+	/*width: 15%;*/
 }
 
 .fixed .column-slug {
-	width: 25%;
+	/*width: 25%;*/
+	/*width: 10%;*/
 }
 
 .fixed .column-locations {
-	width: 35%;
+	/*width: 35%;*/
 }
 
 .fixed .column-comments {

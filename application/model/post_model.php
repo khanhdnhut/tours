@@ -3,7 +3,7 @@
 class PostModel extends Model
 {
 
-    public function addPostMetaInfoToDatabase($post_id, $meta_key, $meta_value)
+    public function addMetaInfoToDatabase($post_id, $meta_key, $meta_value)
     {
         try {
             $sql2 = "insert into " . TABLE_POSTMETA . " 
@@ -31,7 +31,14 @@ class PostModel extends Model
         return NULL;
     }
 
-    public function addPostToDatabase(PostBO $postBO)
+    /**
+     * addToDatabase
+     *
+     * Adds new post to database
+     *
+     * @param PostBO $postBO new post
+     */
+    public function addToDatabase($postBO)
     {
         try {
             $sql = "insert into " . TABLE_POSTS . " 
@@ -99,7 +106,7 @@ class PostModel extends Model
         return NULL;
     }
 
-    public function getPost($post_id)
+    public function get($post_id)
     {
         try {
             $sth = $this->db->prepare("SELECT *
@@ -116,7 +123,7 @@ class PostModel extends Model
             $this->autoloadBO('post');
             $postBO = new PostBO();
             $postBO->setPost($result);
-            $postMetaInfoArray = $this->getPostMetaInfo($result->ID);
+            $postMetaInfoArray = $this->getMetaInfo($result->ID);
             $postBO->setPostMetaInfo($postMetaInfoArray);
             return $postBO;
         } catch (Exception $e) {
@@ -125,7 +132,7 @@ class PostModel extends Model
         return null;
     }
 
-    public function getPostMetaInfo($post_id)
+    public function getMetaInfo($post_id)
     {
         try {
             $sth = $this->db->prepare("SELECT *
@@ -145,7 +152,7 @@ class PostModel extends Model
         return null;
     }
 
-    public function deletePost($post_id)
+    public function delete($post_id)
     {
         try {
             $sth = $this->db->prepare("DELETE 
@@ -154,7 +161,7 @@ class PostModel extends Model
             $sth->execute(array(':post_id' => $post_id));
             $count = $sth->rowCount();
             if ($count > 0) {
-                $this->deletePostMeta($post_id);
+                $this->deleteMeta($post_id);
                 return TRUE;
             } else {
                 return FALSE;
@@ -165,7 +172,7 @@ class PostModel extends Model
         return FALSE;
     }
 
-    public function deletePostMeta($post_id)
+    public function deleteMeta($post_id)
     {
         try {
             $sth = $this->db->prepare("DELETE 

@@ -40,14 +40,14 @@ class DestinationCtrl extends Controller
                 if (isset($_POST['parent'])) {
                     $this->para->parent = $_POST['parent'];
                 }
-                $result = $model->addNewDestination($this->para);
+                $result = $model->addToDatabase($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
             }
 
             $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("country")), -1);
+            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
                 $this->view->renderAdmin(RENDER_VIEW_DESTINATION_ADD_NEW, TRUE);
@@ -88,17 +88,17 @@ class DestinationCtrl extends Controller
                         $this->para->parent = $_POST['parent'];
                     }
 
-                    $result = $model->updateInfoDestination($this->para);
+                    $result = $model->updateInfo($this->para);
                     if (!$result) {
                         $this->view->para = $this->para;
                     } else {
                         $update_success = TRUE;
                     }
                 }
-                $this->view->destinationBO = $model->getTerm($this->para->term_taxonomy_id);
+                $this->view->destinationBO = $model->get($this->para->term_taxonomy_id);
 
                 $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("country")), -1);
+                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_DESTINATION_EDIT);
@@ -126,7 +126,11 @@ class DestinationCtrl extends Controller
             }
 
             if (isset($this->para->term_taxonomy_id)) {
-                $this->view->destinationBO = $model->getTerm($this->para->term_taxonomy_id);
+                $this->view->destinationBO = $model->get($this->para->term_taxonomy_id);
+
+                $this->view->parentList = new SplDoublyLinkedList();
+                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_DESTINATION_INFO);
                 } else {
@@ -193,12 +197,12 @@ class DestinationCtrl extends Controller
             if (isset($this->para->adv_setting) && $this->para->adv_setting == "adv_setting") {
                 $model->changeAdvSetting($this->para);
             }
-            
+
             if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->destinations)) {
                 $model->executeAction($this->para);
             }
 
-            $model->searchDestination($this->view, $this->para);
+            $model->search($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {
                 $this->view->ajax = TRUE;

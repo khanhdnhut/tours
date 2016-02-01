@@ -13,7 +13,7 @@ class TaxonomyModel extends TermModel
         parent::__construct($db);
     }
 
-    public function hasTaxonomyWithName($name, $taxonomy)
+    public function isExistName($name, $taxonomy)
     {
         $sth = $this->db->prepare("SELECT u." . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " " .
             " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m " .
@@ -29,7 +29,7 @@ class TaxonomyModel extends TermModel
         return false;
     }
 
-    public function hasTaxonomyWithSlug($slug, $taxonomy)
+    public function isExistSlug($slug, $taxonomy)
     {
         $sth = $this->db->prepare("SELECT u." . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " " .
             " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m " .
@@ -45,7 +45,7 @@ class TaxonomyModel extends TermModel
         return false;
     }
 
-    public function updateTerm($taxonomyBO)
+    public function update($taxonomyBO)
     {
         if (is_a($taxonomyBO, "TaxonomyBO")) {
             try {
@@ -75,7 +75,7 @@ class TaxonomyModel extends TermModel
                     $sth = $this->db->prepare($sql);
                     $sth->execute($para_array);
 
-                    parent::updateTerm($taxonomyBO);
+                    parent::update($taxonomyBO);
                     return TRUE;
                 }
             } catch (Exception $e) {
@@ -86,13 +86,21 @@ class TaxonomyModel extends TermModel
         return FALSE;
     }
 
-    public function addTaxonomyToDatabase(TaxonomyBO $taxonomyBO)
+    /**
+     * addToDatabase
+     *
+     * Adds new Taxonomy to database
+     *
+     * @param TaxonomyBO $taxonomyBO new taxonomy
+     */
+    public function addToDatabase($taxonomyBO)
     {
-        try {
-            $term_id = $this->addTermToDatabase($taxonomyBO);
-            if (!is_null($term_id)) {
-                try {
-                    $sql = "insert into " . TABLE_TERM_TAXONOMY . " 
+        if (is_a($taxonomyBO, "TaxonomyBO")) {
+            try {
+                $term_id = parent::addToDatabase($taxonomyBO);
+                if (!is_null($term_id)) {
+                    try {
+                        $sql = "insert into " . TABLE_TERM_TAXONOMY . " 
                             (" . TB_TERM_TAXONOMY_COL_COUNT . ",
                              " . TB_TERM_TAXONOMY_COL_DESCRIPTION . ",
                              " . TB_TERM_TAXONOMY_COL_PARENT . ",
@@ -103,32 +111,34 @@ class TaxonomyModel extends TermModel
                         :parent,
                         :taxonomy,
                         :term_id);";
-                    $sth = $this->db->prepare($sql);
+                        $sth = $this->db->prepare($sql);
 
-                    $sth->execute(array(
-                        ":count" => $taxonomyBO->count,
-                        ":description" => $taxonomyBO->description,
-                        ":parent" => $taxonomyBO->parent,
-                        ":taxonomy" => $taxonomyBO->taxonomy,
-                        ":term_id" => $term_id
-                    ));
+                        $sth->execute(array(
+                            ":count" => $taxonomyBO->count,
+                            ":description" => $taxonomyBO->description,
+                            ":parent" => $taxonomyBO->parent,
+                            ":taxonomy" => $taxonomyBO->taxonomy,
+                            ":term_id" => $term_id
+                        ));
 
-                    $count = $sth->rowCount();
-                    if ($count > 0) {
-                        $taxonomy_id = $this->db->lastInsertId();
-                        return $taxonomy_id;
+                        $count = $sth->rowCount();
+                        if ($count > 0) {
+                            $taxonomy_id = $this->db->lastInsertId();
+                            return $taxonomy_id;
+                        }
+                    } catch (Exception $e) {
+                        
                     }
-                } catch (Exception $e) {
-                    
                 }
+            } catch (Exception $e) {
+                
             }
-        } catch (Exception $e) {
-            
         }
+
         return NULL;
     }
 
-    function getAllTaxonomiesSorted($result, $tree, $level)
+    function getAllSorted($result, $tree, $level)
     {
         if ($tree != NULL) {
             if (!is_a($result, "SplDoublyLinkedList")) {
@@ -136,7 +146,7 @@ class TaxonomyModel extends TermModel
             }
             if (is_array($tree)) {
                 foreach ($tree as $value) {
-                    $this->getAllTaxonomiesSorted($result, $value, $level + 1);
+                    $this->getAllSorted($result, $value, $level + 1);
                 }
             } else {
                 if (isset($tree->name)) {
@@ -144,7 +154,7 @@ class TaxonomyModel extends TermModel
                 }
                 $result->push($tree);
                 if (isset($tree->childs) && is_array($tree->childs)) {
-                    $this->getAllTaxonomiesSorted($result, $tree->childs, $level + 1);
+                    $this->getAllSorted($result, $tree->childs, $level + 1);
                 }
             }
         }
@@ -169,7 +179,7 @@ class TaxonomyModel extends TermModel
         return NULL;
     }
 
-    public function getAllTaxonomies($taxonomy)
+    public function getAll($taxonomy)
     {
         try {
             $sth = $this->db->prepare("SELECT u.term_taxonomy_id, u.term_id, "
@@ -188,7 +198,7 @@ class TaxonomyModel extends TermModel
                     $taxonomyBO = new TaxonomyBO();
                     $taxonomyBO->setTaxonomyInfo($taxonomyInfo);
                     $taxonomyBO->setTermInfo($taxonomyInfo);
-                    $taxonomyBO->setTermMetaInfo($this->getTermMetaInfo($taxonomyBO->term_id));
+                    $taxonomyBO->setTermMetaInfo($this->getMetaInfo($taxonomyBO->term_id));
                     $taxonomyList[$i] = $taxonomyBO;
                 }
                 return $taxonomyList;
@@ -199,7 +209,7 @@ class TaxonomyModel extends TermModel
         return null;
     }
 
-    public function getTerm($taxonomy_id)
+    public function get($taxonomy_id)
     {
         try {
             $sth = $this->db->prepare("SELECT *
@@ -216,9 +226,9 @@ class TaxonomyModel extends TermModel
             $taxonomyBO = new TaxonomyBO();
             $taxonomyBO->setTaxonomyInfo($result);
 
-            $termBO = parent::getTerm($result->term_id);
+            $termBO = parent::get($result->term_id);
             $taxonomyBO->setTermInfo($termBO);
-            $termMetaInfoArray = $this->getTermMetaInfo($termBO->term_id);
+            $termMetaInfoArray = $this->getMetaInfo($termBO->term_id);
             $taxonomyBO->setTermMetaInfo($termMetaInfoArray);
             return $taxonomyBO;
         } catch (Exception $e) {
@@ -227,9 +237,9 @@ class TaxonomyModel extends TermModel
         return null;
     }
 
-    public function deleteTerm($taxonomy_id)
+    public function delete($taxonomy_id)
     {
-        $termBO = $this->getTerm($taxonomy_id);
+        $termBO = $this->get($taxonomy_id);
 
         try {
             $sth = $this->db->prepare("DELETE 
@@ -238,7 +248,7 @@ class TaxonomyModel extends TermModel
             $sth->execute(array(':term_taxonomy_id' => $taxonomy_id));
             $count = $sth->rowCount();
             if ($count > 0) {
-                parent::deleteTerm($termBO->term_id);
+                parent::delete($termBO->term_id);
                 return TRUE;
             } else {
                 return FALSE;
@@ -249,7 +259,7 @@ class TaxonomyModel extends TermModel
         return FALSE;
     }
 
-    public function searchTaxonomy($view, $para, $taxonomy_per_page, $taxonomy)
+    public function search($view, $para)
     {
         try {
             $paraSQL = [];
@@ -259,7 +269,7 @@ class TaxonomyModel extends TermModel
             $sqlFrom = " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m ";
             $sqlWhere = " WHERE m." . TB_TERMS_COL_TERM_ID . " = u." . TB_TERM_TAXONOMY_COL_TERM_ID . " AND u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " = :taxonomy ";
 
-            $paraSQL[':taxonomy'] = $taxonomy;
+            $paraSQL[':taxonomy'] = $view->taxonomy;
             if (isset($para->s) && strlen(trim($para->s)) > 0) {
                 $sqlWhere .= "  AND (u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " like :s OR
                                 u." . TB_TERM_TAXONOMY_COL_DESCRIPTION . " like :s OR
@@ -314,8 +324,8 @@ class TaxonomyModel extends TermModel
             if ($countTaxonomy > 0) {
                 $view->count = $countTaxonomy;
 
-                $view->pageNumber = floor($view->count / $taxonomy_per_page);
-                if ($view->count % $taxonomy_per_page != 0) {
+                $view->pageNumber = floor($view->count / $view->taxonomies_per_page);
+                if ($view->count % $view->taxonomies_per_page != 0) {
                     $view->pageNumber++;
                 }
 
@@ -336,8 +346,8 @@ class TaxonomyModel extends TermModel
                 }
 
                 $view->page = $page;
-                $startTaxonomy = ($page - 1) * $taxonomy_per_page;
-                $sqlLimit = " LIMIT " . $taxonomy_per_page . " OFFSET " . $startTaxonomy;
+                $startTaxonomy = ($page - 1) * $view->taxonomies_per_page;
+                $sqlLimit = " LIMIT " . $view->taxonomies_per_page . " OFFSET " . $startTaxonomy;
 
                 $sqlAll = $sqlSelectAll . $sqlFrom . $sqlWhere . $sqlOrderby . $sqlLimit;
                 $sth = $this->db->prepare($sqlAll);
@@ -351,7 +361,7 @@ class TaxonomyModel extends TermModel
                         $taxonomyBO = new TaxonomyBO();
                         $taxonomyBO->setTaxonomyInfo($taxonomyInfo);
                         $taxonomyBO->setTermInfo($taxonomyInfo);
-                        $taxonomyBO->setTermMetaInfo($this->getTermMetaInfo($taxonomyBO->term_id));
+                        $taxonomyBO->setTermMetaInfo($this->getMetaInfo($taxonomyBO->term_id));
                         $taxonomyList[$i] = $taxonomyBO;
                     }
                     $view->taxonomyList = $taxonomyList;

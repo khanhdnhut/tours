@@ -1,4 +1,5 @@
 <?php
+
 class TagCtrl extends Controller
 {
 
@@ -31,14 +32,14 @@ class TagCtrl extends Controller
                 if (isset($_POST['parent'])) {
                     $this->para->parent = $_POST['parent'];
                 }
-                $result = $model->addNewTag($this->para);
+                $result = $model->addToDatabase($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
             }
 
             $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("tag")), -1);
+            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("tag")), -1);
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
                 $this->view->renderAdmin(RENDER_VIEW_TAG_ADD_NEW, TRUE);
@@ -79,17 +80,17 @@ class TagCtrl extends Controller
                         $this->para->parent = $_POST['parent'];
                     }
 
-                    $result = $model->updateInfoTag($this->para);
+                    $result = $model->updateInfo($this->para);
                     if (!$result) {
                         $this->view->para = $this->para;
                     } else {
                         $update_success = TRUE;
                     }
                 }
-                $this->view->tagBO = $model->getTerm($this->para->term_taxonomy_id);
+                $this->view->tagBO = $model->get($this->para->term_taxonomy_id);
 
                 $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllTaxonomiesSorted($this->view->parentList, $model->buildTree($model->getAllTaxonomies("tag")), -1);
+                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("tag")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_TAG_EDIT);
@@ -117,7 +118,10 @@ class TagCtrl extends Controller
             }
 
             if (isset($this->para->term_taxonomy_id)) {
-                $this->view->tagBO = $model->getTerm($this->para->term_taxonomy_id);
+                $this->view->tagBO = $model->get($this->para->term_taxonomy_id);
+                $this->view->parentList = new SplDoublyLinkedList();
+                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("tag")), -1);
+
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_TAG_INFO);
                 } else {
@@ -188,8 +192,8 @@ class TagCtrl extends Controller
             if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->tags)) {
                 $model->executeAction($this->para);
             }
-            
-            $model->searchTag($this->view, $this->para);
+
+            $model->search($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {
                 $this->view->ajax = TRUE;

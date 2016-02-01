@@ -34,7 +34,7 @@ class AdminCtrl extends Controller
             $c = json_encode($b);
 
 
-            $this->view->renderAdmin('admin/index');
+            $this->view->renderAdmin('admin/admin_index');
         }
     }
 }

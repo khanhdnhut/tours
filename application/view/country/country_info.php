@@ -12,6 +12,7 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
             if (isset($this->countryBO->name)) {
                 echo $this->countryBO->name;
             }
+
             ?></strong>"
         <a class="page-title-action" href="#" country="<?php echo $this->countryBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->countryBO->name); ?>" onclick="getEditCountryPage(this)"><?php echo DASHBOARD_TOURS_EDIT_COUNTRY_TITLE; ?></a>
     </h1>
@@ -44,18 +45,51 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                     ?>" id="slug" name="slug">
                 </td>
             </tr>
-            
+
             <tr class="country-parent-wrap">
                 <th>
-                    <label for="parent"><?php echo SLUG_TITLE; ?></label>
+                    <label for="parent"><?php echo PARENT_TITLE; ?></label>
                 </th>
                 <td>
                     <select id="parent" name="parent" disabled="disabled"  >
-                        <option value="-1" selected="selected"><?php echo NONE_TITLE; ?></option>                                                
+                        <?php
+                        if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
+                            $this->parentList->rewind();
+                            foreach ($this->parentList as $value) {
+                                if ($value->term_taxonomy_id != $this->countryBO->term_taxonomy_id &&
+                                    $value->parent != $this->countryBO->term_taxonomy_id) {
+
+                                    ?> 
+                                    <option <?php if ($value->term_taxonomy_id == $this->countryBO->parent) {
+
+                                        ?>
+                                            selected="selected"
+                                        <?php }
+
+                                        ?> value="<?php
+                                        if (isset($value->term_taxonomy_id)) {
+                                            echo $value->term_taxonomy_id;
+                                        }
+
+                                        ?>"><?php
+                                            if (isset($value->name)) {
+                                                echo $value->name;
+                                            }
+
+                                            ?></option>
+                                    <?php
+                                }
+                            }
+                        }
+
+                        ?>
+                        <option value="0" <?php if ($this->countryBO->parent == 0 || $this->countryBO->parent == "0") { ?>
+                                    selected="selected"
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                              
                     </select>
                 </td>
             </tr>
-            
+
             <tr class="country-description-wrap">
                 <th>
                     <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
@@ -70,7 +104,7 @@ if (isset($this->countryBO) && $this->countryBO != NULL) {
                 </td>
             </tr>
 
-            
+
         </tbody>
     </table>
 

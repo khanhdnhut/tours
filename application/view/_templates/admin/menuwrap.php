@@ -143,7 +143,7 @@
                                     ?>
                             </ul>
                         </li>
-                        
+
                         <li id="menu-settings" class="wp-has-submenu <?php
                         if ($this->checkForActiveController($_GET['url'], 'tag')) {
                             echo "wp-has-current-submenu wp-menu-open";
@@ -636,7 +636,57 @@
                                     ?>" href="<?php echo URL . CONTEXT_PATH_STYLE_ADD_NEW; ?>"><?php echo DASHBOARD_STYLE_ADD_NEW_TITLE; ?></a></li>                                
                             </ul>
                         </li>
-                                                                   
+                        <li id="menu-settings" class="wp-has-submenu <?php
+                        if ($this->checkForActiveController($_GET['url'], 'type')) {
+                            echo "wp-has-current-submenu wp-menu-open";
+                        } else {
+                            echo "wp-not-current-submenu";
+                        }
+
+                        ?> menu-top menu-icon-appearance menu-top-last">
+                            <a aria-haspopup="true" class="wp-has-submenu <?php
+                            if ($this->checkForActiveController($_GET['url'], 'type')) {
+                                echo "wp-has-current-submenu wp-menu-open";
+                            } else {
+                                echo "wp-not-current-submenu";
+                            }
+
+                            ?> menu-top menu-icon-appearance menu-top-last" href="<?php echo URL . CONTEXT_PATH_TYPE_INDEX; ?>">
+                                <div class="wp-menu-arrow">
+                                    <div></div>
+                                </div>
+                                <div class="wp-menu-image dashicons-before dashicons-admin-appearance">
+                                    <br>
+                                </div>
+                                <div class="wp-menu-name"><?php echo DASHBOARD_TYPE_TITLE; ?></div>
+                            </a>
+                            <ul class="wp-submenu wp-submenu-wrap" type="">
+                                <li aria-hidden="true" class="wp-submenu-head"><?php echo DASHBOARD_TYPE_TITLE; ?></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TYPE_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TYPE_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_TYPE_INDEX; ?>"><?php echo DASHBOARD_ALL_TYPE_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TYPE_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_TYPE_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_TYPE_ADD_NEW; ?>"><?php echo DASHBOARD_TYPE_ADD_NEW_TITLE; ?></a></li>                                
+                            </ul>
+                        </li>
+
                         <li id="menu-settings" class="wp-has-submenu <?php
                         if ($this->checkForActiveController($_GET['url'], 'options')) {
                             echo "wp-has-current-submenu wp-menu-open";

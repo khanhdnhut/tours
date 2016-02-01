@@ -45,7 +45,7 @@ class UserModel extends Model
                 $this->autoloadBO('user');
                 $userBO = new UserBO();
                 $userBO->setUserInfo($result);
-                $userMetaInfoArray = $this->getMetaInfoUser($result->ID);
+                $userMetaInfoArray = $this->getMetaInfo($result->ID);
                 $userBO->setUserMetaInfo($userMetaInfoArray);
                 //write user info into session
                 Session::init();
@@ -72,7 +72,7 @@ class UserModel extends Model
         }
     }
 
-    public function validateUpdateInfoUser($para)
+    public function validateUpdateInfo($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
@@ -119,7 +119,7 @@ class UserModel extends Model
         return true;
     }
 
-    public function validateAddNewUser($para)
+    public function validateAddNew($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_ADD_NEW_USER;
@@ -131,7 +131,7 @@ class UserModel extends Model
             return false;
         }
         if (isset($para->user_login) && $para->user_login != "") {
-            if ($this->hasUserWithUserLogin($para->user_login)) {
+            if ($this->isExistUserLogin($para->user_login)) {
                 $_SESSION["fb_error"][] = ERROR_USER_EXISTED;
                 return false;
             }
@@ -199,10 +199,10 @@ class UserModel extends Model
         return $resultCheck;
     }
 
-    public function updateInfoUser($para)
+    public function updateInfo($para)
     {
         try {
-            if ($this->validateUpdateInfoUser($para)) {
+            if ($this->validateUpdateInfo($para)) {
                 BO::autoloadBO("user");
                 $userBO = new UserBO();
 
@@ -250,25 +250,25 @@ class UserModel extends Model
                         $avatar_id = $avatar_array_id[0];
                         $userBO->avatar = $avatar_id;
                         $is_change_avatar = true;
-                        $userOld = $this->getUserByUserId($para->user_id);
+                        $userOld = $this->get($para->user_id);
                         $avatar_old = $userOld->avatar;
                     } else {
                         $_SESSION["fb_error"][] = ERROR_UPDATE_AVATAR_FAILED;
                     }
                 }
 
-                if ($this->updateUser($userBO)) {
+                if ($this->update($userBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = UPDATE_USER_SUCCESS;
                     if (isset($is_change_avatar) && $is_change_avatar && isset($imageModel) && isset($avatar_old)) {
-                        $imageModel->deletePost($avatar_old);
+                        $imageModel->delete($avatar_old);
                     }
                     return TRUE;
                 } else {
                     $this->db->rollBack();
                     $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_USER;
                     if ($is_change_avatar && isset($imageModel) && isset($avatar_id)) {
-                        $imageModel->deletePost($avatar_id);
+                        $imageModel->delete($avatar_id);
                     }
                 }
             }
@@ -278,10 +278,10 @@ class UserModel extends Model
         return FALSE;
     }
 
-    public function addNewUser($para)
+    public function addNew($para)
     {
         try {
-            if ($this->validateAddNewUser($para)) {
+            if ($this->validateAddNew($para)) {
                 BO::autoloadBO("user");
                 $userBO = new UserBO();
 
@@ -332,7 +332,7 @@ class UserModel extends Model
                     }
                 }
 
-                if ($this->addUserIntoDB($userBO)) {
+                if ($this->addToDatabase($userBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = ADD_USER_SUCCESS;
                     return TRUE;
@@ -340,7 +340,7 @@ class UserModel extends Model
                     $this->db->rollBack();
                     $_SESSION["fb_error"][] = ADD_USER_SUCCESS;
                     if (isset($is_change_avatar) && $is_change_avatar && isset($imageModel) && isset($avatar_id)) {
-                        $imageModel->deletePost($avatar_id);
+                        $imageModel->delete($avatar_id);
                     }
                 }
             }
@@ -350,7 +350,7 @@ class UserModel extends Model
         return FALSE;
     }
 
-    public function getUserMeta($user_id, $meta_key)
+    public function getMeta($user_id, $meta_key)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_USERMETA . "
@@ -366,10 +366,10 @@ class UserModel extends Model
         return $result->meta_value;
     }
 
-    public function setUserMeta($user_id, $meta_key, $meta_value)
+    public function setMeta($user_id, $meta_key, $meta_value)
     {
         try {
-            if (!is_null($this->getUserMeta($user_id, $meta_key))) {
+            if (!is_null($this->getMeta($user_id, $meta_key))) {
                 //update
                 $sql = "UPDATE " . TABLE_USERMETA . " 
                     SET " . TB_USERMETA_COL_META_VALUE . " = :meta_value
@@ -400,7 +400,7 @@ class UserModel extends Model
         return true;
     }
 
-    public function updateUser($userBO)
+    public function update($userBO)
     {
         if (is_a($userBO, "UserBO")) {
             if (isset($userBO->user_id)) {
@@ -459,22 +459,22 @@ class UserModel extends Model
 //                    }
                     $user_id = $userBO->user_id;
                     if (isset($userBO->first_name) && $userBO->first_name != NULL) {
-                        $this->setUserMeta($user_id, "first_name", $userBO->first_name);
+                        $this->setMeta($user_id, "first_name", $userBO->first_name);
                     }
                     if (isset($userBO->last_name) && $userBO->last_name != NULL) {
-                        $this->setUserMeta($user_id, "last_name", $userBO->last_name);
+                        $this->setMeta($user_id, "last_name", $userBO->last_name);
                     }
                     if (isset($userBO->description) && $userBO->description != NULL) {
-                        $this->setUserMeta($user_id, "description", $userBO->description);
+                        $this->setMeta($user_id, "description", $userBO->description);
                     }
                     if (isset($userBO->avatar) && $userBO->avatar != NULL) {
-                        $this->setUserMeta($user_id, "avatar", $userBO->avatar);
+                        $this->setMeta($user_id, "avatar", $userBO->avatar);
                     }
                     if (isset($userBO->wp_capabilities) && $userBO->wp_capabilities != NULL) {
-                        $this->setUserMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
+                        $this->setMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
                     }
                     if (isset($userBO->session_tokens) && $userBO->session_tokens != NULL) {
-                        $this->setUserMeta($user_id, "session_tokens", $userBO->session_tokens);
+                        $this->setMeta($user_id, "session_tokens", $userBO->session_tokens);
                     }
                     return true;
                 }
@@ -483,7 +483,7 @@ class UserModel extends Model
         return false;
     }
 
-    public function addUserIntoDB($userBO)
+    public function addToDatabase($userBO)
     {
         try {
             if (is_a($userBO, "UserBO")) {
@@ -549,22 +549,22 @@ class UserModel extends Model
                     if ($count > 0) {
                         $user_id = $this->db->lastInsertId();
                         if (isset($userBO->first_name) && $userBO->first_name != NULL) {
-                            $this->setUserMeta($user_id, "first_name", $userBO->first_name);
+                            $this->setMeta($user_id, "first_name", $userBO->first_name);
                         }
                         if (isset($userBO->last_name) && $userBO->last_name != NULL) {
-                            $this->setUserMeta($user_id, "last_name", $userBO->last_name);
+                            $this->setMeta($user_id, "last_name", $userBO->last_name);
                         }
                         if (isset($userBO->description) && $userBO->description != NULL) {
-                            $this->setUserMeta($user_id, "description", $userBO->description);
+                            $this->setMeta($user_id, "description", $userBO->description);
                         }
                         if (isset($userBO->avatar) && $userBO->avatar != NULL) {
-                            $this->setUserMeta($user_id, "avatar", $userBO->avatar);
+                            $this->setMeta($user_id, "avatar", $userBO->avatar);
                         }
                         if (isset($userBO->wp_capabilities) && $userBO->wp_capabilities != NULL) {
-                            $this->setUserMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
+                            $this->setMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
                         }
                         if (isset($userBO->session_tokens) && $userBO->session_tokens != NULL) {
-                            $this->setUserMeta($user_id, "session_tokens", $userBO->session_tokens);
+                            $this->setMeta($user_id, "session_tokens", $userBO->session_tokens);
                         }
                         return true;
                     }
@@ -576,98 +576,7 @@ class UserModel extends Model
         return false;
     }
 
-    public function insertUser($userBO)
-    {
-        try {
-            if (is_a($userBO, "UserBO")) {
-
-                //insert
-                $sql = "INSERT INTO " . TABLE_USERS . " ";
-                $column = " ( ";
-                $value = " VALUES ( ";
-                $para_array = [];
-                if (isset($userBO->user_pass)) {
-                    $column .= " " . TB_USERS_COL_USER_PASS . ",";
-                    $value .= " :user_pass,";
-                    $para_array[":user_pass"] = hash('sha1', $userBO->user_pass);
-                }
-                if (isset($userBO->user_nicename)) {
-                    $column .= " " . TB_USERS_COL_USER_NICENAME . ",";
-                    $value .= " :user_nicename,";
-                    $para_array[":user_nicename"] = $userBO->user_nicename;
-                }
-                if (isset($userBO->user_email)) {
-                    $column .= " " . TB_USERS_COL_USER_EMAIL . ",";
-                    $value .= " :user_email,";
-                    $para_array[":user_email"] = $userBO->user_email;
-                }
-                if (isset($userBO->user_url)) {
-                    $column .= " " . TB_USERS_COL_USER_URL . ",";
-                    $value .= " :user_url,";
-                    $para_array[":user_url"] = $userBO->user_url;
-                }
-                if (isset($userBO->user_registered)) {
-                    $column .= " " . TB_USERS_COL_USER_REGISTERED . ",";
-                    $value .= " :user_registered,";
-                    $para_array[":user_registered"] = $userBO->user_registered;
-                }
-                if (isset($userBO->user_activation_key)) {
-                    $column .= " " . TB_USERS_COL_USER_ACTIVATION_KEY . ",";
-                    $value .= " :user_activation_key,";
-                    $para_array[":user_activation_key"] = $userBO->user_activation_key;
-                }
-                if (isset($userBO->user_status)) {
-                    $column .= " " . TB_USERS_COL_USER_STATUS . ",";
-                    $value .= " :user_status,";
-                    $para_array[":user_status"] = $userBO->user_status;
-                }
-                if (isset($userBO->display_name)) {
-                    $column .= " " . TB_USERS_COL_DISPLAY_NAME . ",";
-                    $value .= " :display_name,";
-                    $para_array[":display_name"] = $userBO->display_name;
-                }
-
-                if (count($para_array) != 0) {
-                    $column = substr($column, 0, strlen($column) - 1) . ") ";
-                    $value = substr($value, 0, strlen($value) - 1) . "); ";
-
-                    $sql .= $column . $value;
-
-                    $sth = $this->db->prepare($sql);
-                    $sth->execute($para_array);
-                    $count = $sth->rowCount();
-                    if ($count == 1) {
-                        $user_id = $this->db->lastInsertId();
-
-                        if (isset($userBO->first_name)) {
-                            $this->setUserMeta($user_id, "first_name", $userBO->first_name);
-                        }
-                        if (isset($userBO->last_name)) {
-                            $this->setUserMeta($user_id, "last_name", $userBO->last_name);
-                        }
-                        if (isset($userBO->description)) {
-                            $this->setUserMeta($user_id, "description", $userBO->description);
-                        }
-                        if (isset($userBO->avatar)) {
-                            $this->setUserMeta($user_id, "avatar", $userBO->avatar);
-                        }
-                        if (isset($userBO->wp_capabilities)) {
-                            $this->setUserMeta($user_id, "wp_capabilities", $userBO->wp_capabilities);
-                        }
-                        if (isset($userBO->session_tokens)) {
-                            $this->setUserMeta($user_id, "session_tokens", $userBO->session_tokens);
-                        }
-                        return $user_id;
-                    }
-                }
-            }
-        } catch (Exception $e) {
-            
-        }
-        return NULL;
-    }
-
-    public function getUserByUserId($user_id)
+    public function get($user_id)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_USERS . "
@@ -685,14 +594,14 @@ class UserModel extends Model
             $this->autoloadBO('user');
             $userBO = new UserBO();
             $userBO->setUserInfo($result);
-            $userMetaInfoArray = $this->getMetaInfoUser($result->ID);
+            $userMetaInfoArray = $this->getMetaInfo($result->ID);
             $userBO->setUserMetaInfo($userMetaInfoArray);
             return $userBO;
         }
         return null;
     }
 
-    public function hasUserWithUserLogin($user_login)
+    public function isExistUserLogin($user_login)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_USERS . "
@@ -706,7 +615,7 @@ class UserModel extends Model
         return false;
     }
 
-    public function getMetaInfoUser($user_id)
+    public function getMetaInfo($user_id)
     {
         $sth = $this->db->prepare("SELECT *
                                    FROM   " . TABLE_USERMETA . "
@@ -717,7 +626,7 @@ class UserModel extends Model
         if ($count > 0) {
             $userMetaInfoArray = $sth->fetchAll();
             foreach ($userMetaInfoArray as $userMeta) {
-                if (isset($userMeta->meta_key) && in_array($userMeta->meta_key, array("manage_users_columns_show", "manage_countries_columns_show", "manage_tags_columns_show", "manage_destinations_columns_show", "manage_styles_columns_show"))) {
+                if (isset($userMeta->meta_key) && in_array($userMeta->meta_key, array("manage_users_columns_show", "manage_countries_columns_show", "manage_tags_columns_show", "manage_destinations_columns_show", "manage_styles_columns_show", "manage_types_columns_show"))) {
                     try {
                         $userMeta->meta_value = json_decode($userMeta->meta_value);
                     } catch (Exception $e) {
@@ -731,7 +640,7 @@ class UserModel extends Model
                     $avatar_object->umeta_id = $userMeta->umeta_id;
                     $avatar_object->user_id = $userMeta->user_id;
                     $avatar_object->meta_key = 'avatar_object';
-                    $avatar_object->meta_value = $imageModel->getPost($userMeta->meta_value);
+                    $avatar_object->meta_value = $imageModel->get($userMeta->meta_value);
                     $userMetaInfoArray[] = $avatar_object;
                 }
             }
@@ -759,15 +668,15 @@ class UserModel extends Model
         Session::destroy();
     }
 
-    public function updateUsersPerPages($users_per_page)
+    public function updateUsersPerPage($users_per_page)
     {
         $user_id = Session::get("user_id");
         $meta_key = "users_per_page";
         $meta_value = $users_per_page;
-        $this->setUserMeta($user_id, $meta_key, $meta_value);
+        $this->setMeta($user_id, $meta_key, $meta_value);
     }
 
-    public function updateShowHideColumn($email_show, $role_show, $tours_show)
+    public function updateColumnsShow($email_show, $role_show, $tours_show)
     {
         $user_id = Session::get("user_id");
         $meta_key = "manage_users_columns_show";
@@ -776,14 +685,14 @@ class UserModel extends Model
         $meta_value->role_show = $role_show;
         $meta_value->tours_show = $tours_show;
         $meta_value = json_encode($meta_value);
-        $this->setUserMeta($user_id, $meta_key, $meta_value);
+        $this->setMeta($user_id, $meta_key, $meta_value);
     }
 
     public function changeAdvSetting($para)
     {
         $action = NULL;
         if (isset($para->users_per_page) && is_numeric($para->users_per_page)) {
-            $this->updateUsersPerPages($para->users_per_page);
+            $this->updateUsersPerPage($para->users_per_page);
         }
         $email_show = false;
         $role_show = false;
@@ -797,8 +706,8 @@ class UserModel extends Model
         if (isset($para->tours_show) && $para->tours_show == "tours") {
             $tours_show = true;
         }
-        $this->updateShowHideColumn($email_show, $role_show, $tours_show);
-        $userBO = $this->getUserByUserId(Session::get("user_id"));
+        $this->updateColumnsShow($email_show, $role_show, $tours_show);
+        $userBO = $this->get(Session::get("user_id"));
         $this->setNewSessionUser($userBO);
     }
 
@@ -854,7 +763,7 @@ class UserModel extends Model
             $user_id = $userBO->user_id;
 
             if (in_array("1", $para->users)) {
-                $user_delete = $this->getUserByUserId("1");
+                $user_delete = $this->get("1");
                 if (!is_null($user_delete)) {
                     $_SESSION["fb_error"][] = ERROR_DELETE_USER_NOT_PERMISSION . " <strong>" . $user_delete->user_login . "</strong>";
                 } else {
@@ -925,7 +834,7 @@ class UserModel extends Model
         }
     }
 
-    public function prepareIndexPage($view, $para)
+    public function search($view, $para)
     {
         try {
             $paraSQL = [];
@@ -1088,7 +997,7 @@ class UserModel extends Model
                             $this->autoloadBO('user');
                             $userBO = new UserBO();
                             $userBO->setUserInfo($userInfo);
-                            $userMetaInfoArray = $this->getMetaInfoUser($userInfo->ID);
+                            $userMetaInfoArray = $this->getMetaInfo($userInfo->ID);
                             $userBO->setUserMetaInfo($userMetaInfoArray);
                             $userList[$i] = $userBO;
                         }

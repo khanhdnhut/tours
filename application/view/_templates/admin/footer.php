@@ -36,6 +36,7 @@
 <script src="<?php echo PUBLIC_JS; ?>includes/jquery/ui/widget.min.js?ver=4.4" type="text/javascript"></script>
 <script src="<?php echo PUBLIC_JS; ?>includes/jquery/ui/mouse.min.js?ver=4.4" type="text/javascript"></script>
 <script src="<?php echo PUBLIC_JS; ?>includes/jquery/ui/sortable.min.js?ver=4.4" type="text/javascript"></script>
+<!--<script src="<?php echo PUBLIC_JS; ?>includes/jquery/ui/tooltip.min.js?ver=4.4" type="text/javascript"></script>-->
 <!--<script src="<?php echo PUBLIC_JS; ?>admin/postbox.js?ver=4.4" type="text/javascript"></script>-->
 <script src="<?php echo PUBLIC_JS; ?>admin/dashboard.js?ver=4.4" type="text/javascript"></script>
 <!--<script src="<?php echo PUBLIC_JS; ?>includes/underscore.js?ver=4.4" type="text/javascript"></script>

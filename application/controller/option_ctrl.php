@@ -23,7 +23,7 @@ class OptionCtrl extends Controller {
      */
     public function index() {
         if(Auth::handleLogin()){
-            $this->view->renderAdmin('option/index');
+            $this->view->renderAdmin('option/option_index');
         }
     }
     

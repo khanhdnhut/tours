@@ -1,5 +1,5 @@
 <?php
-if (isset($this->styleBO) && $this->styleBO != NULL) {
+if (isset($this->typeBO) && $this->typeBO != NULL) {
 
     ?>
     <style>
@@ -8,45 +8,45 @@ if (isset($this->styleBO) && $this->styleBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo PROFILE_OF_TITLE . " " . STYLE_TITLE; ?> "<strong><?php
-            if (isset($this->styleBO->name)) {
-                echo $this->styleBO->name;
+        <?php echo PROFILE_OF_TITLE . " " . TYPE_TITLE; ?> "<strong><?php
+            if (isset($this->typeBO->name)) {
+                echo $this->typeBO->name;
             }
 
             ?></strong>"
-        <a class="page-title-action" href="#" style="<?php echo $this->styleBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->styleBO->name); ?>" onclick="getEditStylePage(this)"><?php echo DASHBOARD_TOURS_EDIT_STYLE_TITLE; ?></a>
+        <a class="page-title-action" href="#" type="<?php echo $this->typeBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->typeBO->name); ?>" onclick="getEditTypePage(this)"><?php echo DASHBOARD_TOURS_EDIT_TYPE_TITLE; ?></a>
     </h1>
     <?php $this->renderFeedbackMessages(); ?>
     <table class="form-table">
         <tbody>
-            <tr class="style-name-wrap">
+            <tr class="type-name-wrap">
                 <th>
                     <label for="name"><?php echo NAME_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->styleBO->name)) {
-                        echo htmlspecialchars($this->styleBO->name);
+                    if (isset($this->typeBO->name)) {
+                        echo htmlspecialchars($this->typeBO->name);
                     }
 
                     ?>" id="name" name="name">
                 </td>
             </tr>
-            <tr class="style-slug-wrap">
+            <tr class="type-slug-wrap">
                 <th>
                     <label for="slug"><?php echo SLUG_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->styleBO->slug)) {
-                        echo htmlspecialchars($this->styleBO->slug);
+                    if (isset($this->typeBO->slug)) {
+                        echo htmlspecialchars($this->typeBO->slug);
                     }
 
                     ?>" id="slug" name="slug">
                 </td>
             </tr>
 
-            <tr class="style-parent-wrap">
+            <tr class="type-parent-wrap">
                 <th>
                     <label for="parent"><?php echo PARENT_TITLE; ?></label>
                 </th>
@@ -56,11 +56,11 @@ if (isset($this->styleBO) && $this->styleBO != NULL) {
                         if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
                             $this->parentList->rewind();
                             foreach ($this->parentList as $value) {
-                                if ($value->term_taxonomy_id != $this->styleBO->term_taxonomy_id &&
-                                    $value->parent != $this->styleBO->term_taxonomy_id) {
+                                if ($value->term_taxonomy_id != $this->typeBO->term_taxonomy_id &&
+                                    $value->parent != $this->typeBO->term_taxonomy_id) {
 
                                     ?> 
-                                    <option <?php if ($value->term_taxonomy_id == $this->styleBO->parent) {
+                                    <option <?php if ($value->term_taxonomy_id == $this->typeBO->parent) {
 
                                         ?>
                                             selected="selected"
@@ -83,21 +83,21 @@ if (isset($this->styleBO) && $this->styleBO != NULL) {
                         }
 
                         ?>
-                        <option value="0" <?php if ($this->styleBO->parent == 0 || $this->styleBO->parent == "0") { ?>
+                        <option value="0" <?php if ($this->typeBO->parent == 0 || $this->typeBO->parent == "0") { ?>
                                     selected="selected"
-                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                          
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                           
                     </select>
                 </td>
             </tr>
 
-            <tr class="style-description-wrap">
+            <tr class="type-description-wrap">
                 <th>
                     <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
                 </th>
                 <td>
                     <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->styleBO->description)) {
-                        echo htmlspecialchars($this->styleBO->description);
+                    if (isset($this->typeBO->description)) {
+                        echo htmlspecialchars($this->typeBO->description);
                     }
 
                     ?>" id="description" name="description">
@@ -109,10 +109,10 @@ if (isset($this->styleBO) && $this->styleBO != NULL) {
     </table>
 
     <script>
-        function getEditStylePage(element) {
-            var style = jQuery(element).attr("style");
+        function getEditTypePage(element) {
+            var type = jQuery(element).attr("type");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_STYLE_EDIT_INFO; ?>" + style + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_TYPE_EDIT_INFO; ?>" + type + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -121,10 +121,10 @@ if (isset($this->styleBO) && $this->styleBO != NULL) {
                 location = url;
             }
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_STYLE_EDIT_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_TYPE_EDIT_INFO; ?>",
                 type: "POST",
                 data: {
-                    style: style
+                    type: type
                 },
                 success: function (data, textStatus, jqXHR)
                 {

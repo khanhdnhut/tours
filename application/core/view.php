@@ -30,7 +30,7 @@ class View
             require VIEW_TEMPLATES_PATH . 'home/header.php';
             require VIEW_TEMPLATES_PATH . 'home/ja-header.php';
             require VIEW_TEMPLATES_PATH . 'home/ja-mainnav.php';
-            if ($filename == 'home/index') {
+            if ($filename == 'home/home_index') {
                 require VIEW_TEMPLATES_PATH . 'home/ja-slideshow.php';
             }
             require VIEW_TEMPLATES_PATH . 'home/ja-container.php';

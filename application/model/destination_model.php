@@ -4,7 +4,7 @@ Model::autoloadModel('taxonomy');
 class DestinationModel extends TaxonomyModel
 {
 
-    public function validateAddNewDestination($para)
+    public function validateAddNew($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_ADD_NEW_DESTINATION;
@@ -12,7 +12,7 @@ class DestinationModel extends TaxonomyModel
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->hasTaxonomyWithName($para->name, "destination")) {
+            if ($this->isExistName($para->name, "destination")) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }
@@ -22,7 +22,7 @@ class DestinationModel extends TaxonomyModel
         }
         
         if (isset($para->slug) && $para->slug != "") {
-            if ($this->hasTaxonomyWithSlug($para->slug, "destination")) {
+            if ($this->isExistSlug($para->slug, "destination")) {
                 $_SESSION["fb_error"][] = ERROR_SLUG_EXISTED;
                 return false;
             }
@@ -44,10 +44,10 @@ class DestinationModel extends TaxonomyModel
         return true;
     }
 
-    public function addNewDestination($para)
+    public function addToDatabase($para)
     {
         try {
-            if ($this->validateAddNewDestination($para)) {
+            if ($this->validateAddNew($para)) {
                 BO::autoloadBO("destination");
                 $destinationBO = new DestinationBO();
 
@@ -68,7 +68,7 @@ class DestinationModel extends TaxonomyModel
 
                 $this->db->beginTransaction();
 
-                if ($this->addTaxonomyToDatabase($destinationBO)) {
+                if (parent::addToDatabase($destinationBO)) {
                     $this->db->commit();
                     $_SESSION["fb_success"][] = ADD_DESTINATION_SUCCESS;
                     return TRUE;
@@ -83,7 +83,7 @@ class DestinationModel extends TaxonomyModel
         return FALSE;
     }
 
-    public function validateUpdateInfoDestination($para)
+    public function validateUpdateInfo($para)
     {
         if ($para == null || !is_object($para)) {
             $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_DESTINATION;
@@ -120,11 +120,11 @@ class DestinationModel extends TaxonomyModel
         return true;
     }
 
-    public function updateInfoDestination($para)
+    public function updateInfo($para)
     {
         try {
-            if ($this->validateUpdateInfoDestination($para)) {
-                $destinationBO = $this->getTerm($para->term_taxonomy_id);
+            if ($this->validateUpdateInfo($para)) {
+                $destinationBO = $this->get($para->term_taxonomy_id);
                 if ($destinationBO != NULL) {
                     if (isset($para->name)) {
                         $destinationBO->name = $para->name;
@@ -143,7 +143,7 @@ class DestinationModel extends TaxonomyModel
 
                     $this->db->beginTransaction();
 
-                    if ($this->updateTerm($destinationBO)) {
+                    if ($this->update($destinationBO)) {
                         $this->db->commit();
                         $_SESSION["fb_success"][] = UPDATE_DESTINATION_SUCCESS;
                         return TRUE;
@@ -159,17 +159,17 @@ class DestinationModel extends TaxonomyModel
         return FALSE;
     }
 
-    public function updateEditDestinationPerPages($destinations_per_page)
+    public function updateDestinationsPerPages($destinations_per_page)
     {
         $user_id = Session::get("user_id");
         $meta_key = "destinations_per_page";
         $meta_value = $destinations_per_page;
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userModel->setUserMeta($user_id, $meta_key, $meta_value);
+        $userModel->setMeta($user_id, $meta_key, $meta_value);
     }
 
-    public function updateShowHideColumn($description_show, $slug_show, $tours_show)
+    public function updateColumnsShow($description_show, $slug_show, $tours_show)
     {
         $user_id = Session::get("user_id");
         $meta_key = "manage_destinations_columns_show";
@@ -180,14 +180,14 @@ class DestinationModel extends TaxonomyModel
         $meta_value = json_encode($meta_value);
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userModel->setUserMeta($user_id, $meta_key, $meta_value);
+        $userModel->setMeta($user_id, $meta_key, $meta_value);
     }
 
     public function changeAdvSetting($para)
     {
         $action = NULL;
         if (isset($para->destinations_per_page) && is_numeric($para->destinations_per_page)) {
-            $this->updateEditDestinationPerPages($para->destinations_per_page);
+            $this->updateDestinationsPerPages($para->destinations_per_page);
         }
         $description_show = false;
         $slug_show = false;
@@ -201,10 +201,10 @@ class DestinationModel extends TaxonomyModel
         if (isset($para->tours_show) && $para->tours_show == "tours") {
             $tours_show = true;
         }
-        $this->updateShowHideColumn($description_show, $slug_show, $tours_show);
+        $this->updateColumnsShow($description_show, $slug_show, $tours_show);
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
-        $userBO = $userModel->getUserByUserId(Session::get("user_id"));
+        $userBO = $userModel->get(Session::get("user_id"));
         $userModel->setNewSessionUser($userBO);
     }
 
@@ -212,7 +212,7 @@ class DestinationModel extends TaxonomyModel
     {
         if (isset($para->destinations) && is_array($para->destinations)) {
             foreach ($para->destinations as $term_taxonomy_id) {
-                $this->deleteTerm($term_taxonomy_id);
+                $this->delete($term_taxonomy_id);
             }
         }
     }
@@ -240,9 +240,11 @@ class DestinationModel extends TaxonomyModel
         }
     }
 
-    public function searchDestination($view, $para)
+    public function search($view, $para)
     {
         $destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
+        $taxonomy = "destination";
+        
         $userLoginBO = json_decode(Session::get("userInfo"));
         if ($userLoginBO != NULL) {
             if (isset($userLoginBO->destinations_per_page) && is_numeric($userLoginBO->destinations_per_page)) {
@@ -261,7 +263,9 @@ class DestinationModel extends TaxonomyModel
             }
         }
 
-        $taxonomy = "destination";
-        parent::searchTaxonomy($view, $para, $destinations_per_page, $taxonomy);
+                
+        $view->taxonomies_per_page = $destinations_per_page;
+        $view->taxonomy = $taxonomy;
+        parent::search($view, $para);
     }
 }

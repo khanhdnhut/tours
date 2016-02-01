@@ -91,7 +91,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <?php $this->renderFeedbackMessages(); ?>
 
-        <form id="form-destination-edit" method="post" onsubmit="submitFormDestinationEdit(event)">
+    <form id="form-destination-edit" method="post" onsubmit="submitFormDestinationEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -187,7 +187,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "name" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
+                        <th title="Name of destination" class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
                             <a href="#" orderby="name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
                                 <span><?php echo NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
@@ -197,7 +197,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-name sortable desc" id="name" scope="col">
+                        <th title="Name of destination" class="manage-column column-name sortable desc" id="name" scope="col">
                             <a href="#" orderby="name" order="desc" onclick="filterOrderBy(this)">
                                 <span><?php echo NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
@@ -209,7 +209,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "description" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-description <?php
+                        <th title="Description of destination" class="manage-column column-description <?php
                         if (!(isset($description_show) && $description_show)) {
                             echo " hidden";
                         }
@@ -224,7 +224,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-description <?php
+                        <th title="Description of destination" class="manage-column column-description <?php
                         if (!(isset($description_show) && $description_show)) {
                             echo " hidden";
                         }
@@ -242,7 +242,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-slug <?php
+                        <th title="Slug of destination" class="manage-column column-slug <?php
                         if (!(isset($slug_show) && $slug_show)) {
                             echo " hidden";
                         }
@@ -257,7 +257,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-slug <?php
+                        <th title="Slug of destination" class="manage-column column-slug <?php
                         if (!(isset($slug_show) && $slug_show)) {
                             echo " hidden";
                         }
@@ -275,7 +275,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-tours <?php
+                        <th title="Count tours of destination" class="manage-column column-tours <?php
                         if (!(isset($tours_show) && $tours_show)) {
                             echo " hidden";
                         }
@@ -290,7 +290,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-tours <?php
+                        <th title="Count tours of destination" class="manage-column column-tours <?php
                         if (!(isset($tours_show) && $tours_show)) {
                             echo " hidden";
                         }
@@ -305,6 +305,14 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     }
 
                     ?>
+
+                    <th title="Activities of destination" class="manage-column column-activities " id="activities" scope="col" title="abc"><?php echo "Activities"; ?></th>
+                    <th title="Attactions of destination" class="manage-column column-attactions " id="attactions" scope="col"><?php echo "Attactions"; ?></th>
+                    <th title="Culinaries of destination" class="manage-column column-culinaries " id="culinaries" scope="col"><?php echo "Culinaries"; ?></th>
+                    <th title="Nightlifes, clubs, cafes of destination" class="manage-column column-clubs " id="clubs" scope="col"><?php echo "Clubs"; ?></th>
+                    <th title="Hotels of destination" class="manage-column column-hotels " id="hotels" scope="col"><?php echo "Hotels"; ?></th>
+                    <th title="Shopping of destination" class="manage-column column-shopping " id="shopping" scope="col"><?php echo "Shopping"; ?></th>
+                    <th title="Flights of destination" class="manage-column column-flights " id="flights" scope="col"><?php echo "Flights"; ?></th>
                 </tr>
             </thead>
 
@@ -359,6 +367,15 @@ if (!(isset($this->ajax) && $this->ajax)) {
                             }
 
                             ?>"><?php echo htmlspecialchars($taxonomyInfo->count); ?></td>
+
+
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
+                            <td data-colname="" class="posts column-tours"><?php echo 1; ?></td>
                         </tr>      
                         <?php
                     }
@@ -497,6 +514,13 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
                     ?>
 
+                    <th title="Activities of destination" class="manage-column column-activities " id="activities" scope="col" title="abc"><?php echo "Activities"; ?></th>
+                    <th title="Attactions of destination" class="manage-column column-attactions " id="attactions" scope="col"><?php echo "Attactions"; ?></th>
+                    <th title="Culinaries of destination" class="manage-column column-culinaries " id="culinaries" scope="col"><?php echo "Culinaries"; ?></th>
+                    <th title="Nightlifes, clubs, cafes of destination" class="manage-column column-clubs " id="clubs" scope="col"><?php echo "Clubs"; ?></th>
+                    <th title="Hotels of destination" class="manage-column column-hotels " id="hotels" scope="col"><?php echo "Hotels"; ?></th>
+                    <th title="Shopping of destination" class="manage-column column-shopping " id="shopping" scope="col"><?php echo "Shopping"; ?></th>
+                    <th title="Flights of destination" class="manage-column column-flights " id="flights" scope="col"><?php echo "Flights"; ?></th>
                 </tr>
             </tfoot>
 
@@ -578,11 +602,11 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchDestination(postData);
         });
 
-//        jQuery("#form-destination-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchDestination(postData);
-//        });
+        //        jQuery("#form-destination-edit").submit(function (e) {
+        //            e.preventDefault(); //STOP default action
+        //            var postData = jQuery(this).serializeArray();
+        //            searchDestination(postData);
+        //        });
 
         function submitFormDestinationEdit(e) {
             e.preventDefault(); //STOP default action
@@ -732,6 +756,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
             }
 
         }
+
+    //        jQuery(function () {
+    //            jQuery(document).tooltip();
+    //        });
 
     </script>
 <?php } ?>

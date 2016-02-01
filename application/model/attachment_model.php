@@ -13,17 +13,24 @@ class AttachmentModel extends PostModel
         parent::__construct($db);
     }
 
-    public function addAttachmentToDatabase(AttachmentBO $attachmentInfo)
+    /**
+     * addToDatabase
+     *
+     * Adds new attachment to database
+     *
+     * @param AttachmentBO $attachmentInfo new attachment
+     */
+    public function addToDatabase($attachmentInfo)
     {
         try {
-            $image_id = $this->addPostToDatabase($attachmentInfo);
+            $image_id = parent::addToDatabase($attachmentInfo);
             if (!is_null($image_id)) {
                 if (isset($attachmentInfo->attachment_metadata)) {
                     $attachment_metadata = json_encode($attachmentInfo->attachment_metadata);
-                    $this->addPostMetaInfoToDatabase($image_id, 'attachment_metadata', $attachment_metadata);
+                    $this->addMetaInfoToDatabase($image_id, 'attachment_metadata', $attachment_metadata);
                 }
                 if (isset($attachmentInfo->attached_file)) {
-                    $this->addPostMetaInfoToDatabase($image_id, 'attached_file', $attachmentInfo->attached_file);
+                    $this->addMetaInfoToDatabase($image_id, 'attached_file', $attachmentInfo->attached_file);
                 }
             }
             return $image_id;
@@ -32,24 +39,39 @@ class AttachmentModel extends PostModel
         }
         return NULL;
     }
-
-    public function getPost($attachment_id)
+    
+    /**
+     * get
+     *
+     * Get info of attachment by id
+     *
+     * @param int $attachment_id ID of attachment
+     */
+    public function get($attachment_id)
     {
-        $attachmentBO = parent::getPost($attachment_id);
+        $attachmentBO = parent::get($attachment_id);
         if (isset($attachmentBO->attachment_metadata) && !is_object($attachmentBO->attachment_metadata)) {
             $attachmentBO->attachment_metadata = json_decode($attachmentBO->attachment_metadata);
         }
         return $attachmentBO;
     }
 
-    public function deletePost($post_id)
+    
+    /**
+     * delete
+     *
+     * Delete attachment by id
+     *
+     * @param int $attachment_id ID of attachment
+     */
+    public function delete($attachment_id)
     {
         try {
-            $postBO = $this->getPost($post_id);
+            $postBO = $this->get($attachment_id);
             if (isset($postBO->attached_file) && $postBO->attached_file != "") {
                 Utils::deleteFile($postBO->attached_file);
             }
-            if (parent::deletePost($post_id)) {
+            if (parent::delete($attachment_id)) {
                 return TRUE;
             }
         } catch (Exception $e) {
