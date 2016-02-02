@@ -1,19 +1,19 @@
 <?php
 $userBO = json_decode(Session::get("userInfo"));
 
-if (isset($userBO->manage_destinations_columns_show)) {
-    if (isset($userBO->manage_destinations_columns_show->description_show)) {
-        $description_show = $userBO->manage_destinations_columns_show->description_show;
+if (isset($userBO->manage_hotels_columns_show)) {
+    if (isset($userBO->manage_hotels_columns_show->description_show)) {
+        $description_show = $userBO->manage_hotels_columns_show->description_show;
     } else {
         $description_show = true;
     }
-    if (isset($userBO->manage_destinations_columns_show->slug_show)) {
-        $slug_show = $userBO->manage_destinations_columns_show->slug_show;
+    if (isset($userBO->manage_hotels_columns_show->slug_show)) {
+        $slug_show = $userBO->manage_hotels_columns_show->slug_show;
     } else {
         $slug_show = true;
     }
-    if (isset($userBO->manage_destinations_columns_show->tours_show)) {
-        $tours_show = $userBO->manage_destinations_columns_show->tours_show;
+    if (isset($userBO->manage_hotels_columns_show->tours_show)) {
+        $tours_show = $userBO->manage_hotels_columns_show->tours_show;
     } else {
         $tours_show = true;
     }
@@ -23,12 +23,12 @@ if (isset($userBO->manage_destinations_columns_show)) {
     $tours_show = true;
 }
 
-if (isset($userBO->destinations_per_page)) {
-    $destinations_per_page = $userBO->destinations_per_page;
-} else if (isset($_SESSION['options']) && isset($_SESSION['options']->destinations_per_page)) {
-    $destinations_per_page = $_SESSION['options']->destinations_per_page;
+if (isset($userBO->hotels_per_page)) {
+    $hotels_per_page = $userBO->hotels_per_page;
+} else if (isset($_SESSION['options']) && isset($_SESSION['options']->hotels_per_page)) {
+    $hotels_per_page = $_SESSION['options']->hotels_per_page;
 } else {
-    $destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
+    $hotels_per_page = HOTELS_PER_PAGE_DEFAULT;
 }
 
 if (!(isset($this->ajax) && $this->ajax)) {
@@ -55,15 +55,15 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 </fieldset>
                 <fieldset class="screen-options">
                     <legend><?php echo PAGINATION_LABEL; ?></legend>
-                    <label for="destinations_per_page"><?php echo NUMBER_OF_ITEMS_PER_PAGE_DESC; ?></label>
+                    <label for="hotels_per_page"><?php echo NUMBER_OF_ITEMS_PER_PAGE_DESC; ?></label>
                     <input type="number" value="<?php
-                    if (isset($destinations_per_page)) {
-                        echo $destinations_per_page;
+                    if (isset($hotels_per_page)) {
+                        echo $hotels_per_page;
                     } else {
-                        echo DESTINATIONS_PER_PAGE_DEFAULT;
+                        echo HOTELS_PER_PAGE_DEFAULT;
                     }
 
-                    ?>" maxlength="3" id="destinations_per_page" name="destinations_per_page" class="screen-per-page" max="999" min="1" step="1">
+                    ?>" maxlength="3" id="hotels_per_page" name="hotels_per_page" class="screen-per-page" max="999" min="1" step="1">
                 </fieldset>
                 <input type="hidden" value="adv_setting" name="adv_setting">
                 <p class="submit"><input type="submit" value="<?php echo APPLY_TITLE; ?>" class="button button-primary"></p>            
@@ -85,13 +85,13 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
 
     <h1>
-        <?php echo DASHBOARD_DESTINATION_TITLE; ?> 
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_DESTINATION_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
+        <?php echo DASHBOARD_HOTEL_TITLE; ?> 
+        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_HOTEL_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <?php $this->renderFeedbackMessages(); ?>
 
-    <form id="form-destination-edit" method="post" onsubmit="submitFormDestinationEdit(event)">
+    <form id="form-hotel-edit" method="post" onsubmit="submitFormHotelEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -108,15 +108,15 @@ if (!(isset($this->ajax) && $this->ajax)) {
         <input type="hidden" value="" name="type"/>
 
         <p class="search-box">
-            <label for="destination-search-input" class="screen-reader-text">
-                <?php echo SEARCH_DESTINATIONS_TITLE; ?>:</label>
+            <label for="hotel-search-input" class="screen-reader-text">
+                <?php echo SEARCH_HOTELS_TITLE; ?>:</label>
             <input type="search" value="<?php
             if (isset($this->s)) {
                 echo htmlspecialchars($this->s);
             }
 
-            ?>" name="s" id="destination-search-input" />
-            <input type="submit" value="<?php echo SEARCH_DESTINATIONS_TITLE; ?>" class="button" id="search-submit" />
+            ?>" name="s" id="hotel-search-input" />
+            <input type="submit" value="<?php echo SEARCH_HOTELS_TITLE; ?>" class="button" id="search-submit" />
         </p>
 
         <div class="tablenav top">
@@ -174,8 +174,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 <br class="clear">
             <?php } ?>        
         </div>
-        <h2 class="screen-reader-text"><?php echo DESTINATIONS_LIST_TITLE; ?></h2>
-        <table class="wp-list-table widefat fixed striped destinations">
+        <h2 class="screen-reader-text"><?php echo HOTELS_LIST_TITLE; ?></h2>
+        <table class="wp-list-table widefat fixed striped hotels">
             <thead>
                 <tr>
                     <td class="manage-column column-cb check-column" id="cb">
@@ -187,7 +187,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "name" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th title="Name of destination" class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
+                        <th class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
                             <a href="#" orderby="name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
                                 <span><?php echo NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
@@ -197,7 +197,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th title="Name of destination" class="manage-column column-name sortable desc" id="name" scope="col">
+                        <th class="manage-column column-name sortable desc" id="name" scope="col">
                             <a href="#" orderby="name" order="desc" onclick="filterOrderBy(this)">
                                 <span><?php echo NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
@@ -209,7 +209,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "description" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th title="Description of destination" class="manage-column column-description <?php
+                        <th class="manage-column column-description <?php
                         if (!(isset($description_show) && $description_show)) {
                             echo " hidden";
                         }
@@ -224,7 +224,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th title="Description of destination" class="manage-column column-description <?php
+                        <th class="manage-column column-description <?php
                         if (!(isset($description_show) && $description_show)) {
                             echo " hidden";
                         }
@@ -242,7 +242,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th title="Slug of destination" class="manage-column column-slug <?php
+                        <th class="manage-column column-slug <?php
                         if (!(isset($slug_show) && $slug_show)) {
                             echo " hidden";
                         }
@@ -257,7 +257,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th title="Slug of destination" class="manage-column column-slug <?php
+                        <th class="manage-column column-slug <?php
                         if (!(isset($slug_show) && $slug_show)) {
                             echo " hidden";
                         }
@@ -275,7 +275,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th title="Count tours of destination" class="manage-column column-tours <?php
+                        <th class="manage-column column-tours <?php
                         if (!(isset($tours_show) && $tours_show)) {
                             echo " hidden";
                         }
@@ -290,7 +290,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th title="Count tours of destination" class="manage-column column-tours <?php
+                        <th class="manage-column column-tours <?php
                         if (!(isset($tours_show) && $tours_show)) {
                             echo " hidden";
                         }
@@ -305,36 +305,34 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     }
 
                     ?>
-
-
                 </tr>
             </thead>
 
-            <tbody data-wp-lists="list:destination" id="the-list">
+            <tbody data-wp-lists="list:hotel" id="the-list">
                 <?php
                 if (!is_null($this->taxonomyList)) {
                     foreach ($this->taxonomyList as $taxonomyInfo) {
 
                         ?>
-                        <tr id="destination-<?php echo $taxonomyInfo->term_taxonomy_id; ?>">
+                        <tr id="hotel-<?php echo $taxonomyInfo->term_taxonomy_id; ?>">
                             <th class="check-column" scope="row">
-                                <label for="destination_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo htmlspecialchars($taxonomyInfo->name); ?></label>
-                                <input type="checkbox" value="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="author" id="destination_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="destinations[]" >
+                                <label for="hotel_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo htmlspecialchars($taxonomyInfo->name); ?></label>
+                                <input type="checkbox" value="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="author" id="hotel_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="hotels[]" >
                             </th>
                             <td data-colname="name" class="name column-name has-row-actions column-primary">                                
                                 <strong>
-                                    <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getDestinationInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
+                                    <a href="#" hotel="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getHotelInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
                                 </strong>
                                 <br>
                                 <div class="row-actions">
                                     <span class="edit">
-                                        <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditDestinationPage(this)"><?php echo EDIT_TITLE; ?>
+                                        <a href="#" hotel="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditHotelPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
-                                    | <span class="delete">
-                                        <a href="#" class="submitdelete" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteDestination(this)"><?php echo DELETE_TITLE; ?>
-                                        </a>
-                                    </span>
+                                        | <span class="delete">
+                                            <a href="#" class="submitdelete" hotel="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteHotel(this)"><?php echo DELETE_TITLE; ?>
+                                            </a>
+                                        </span>
                                 </div>
                                 <button class="toggle-row" type="button">
                                     <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
@@ -361,7 +359,6 @@ if (!(isset($this->ajax) && $this->ajax)) {
                             }
 
                             ?>"><?php echo htmlspecialchars($taxonomyInfo->count); ?></td>
-
                         </tr>      
                         <?php
                     }
@@ -431,8 +428,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-
-
+                    
+                    
                     if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -464,8 +461,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-
-
+                    
+                    
                     if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -499,6 +496,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     }
 
                     ?>
+
                 </tr>
             </tfoot>
 
@@ -566,7 +564,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
         jQuery("#adv-settings").submit(function (e) {
             e.preventDefault(); //STOP default action
             var postData = jQuery(this).serializeArray();
-            var postDataSearch = jQuery("#form-destination-edit").serializeArray();
+            var postDataSearch = jQuery("#form-hotel-edit").serializeArray();
             for (var i = 0; i < postDataSearch.length; i++) {
                 if (postDataSearch[i].name == "type") {
                     postDataSearch[i].value == "";
@@ -577,27 +575,27 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 }
                 postData[postData.length] = postDataSearch[i];
             }
-            searchDestination(postData);
+            searchHotel(postData);
         });
 
-        //        jQuery("#form-destination-edit").submit(function (e) {
-        //            e.preventDefault(); //STOP default action
-        //            var postData = jQuery(this).serializeArray();
-        //            searchDestination(postData);
-        //        });
-
-        function submitFormDestinationEdit(e) {
+//        jQuery("#form-hotel-edit").submit(function (e) {
+//            e.preventDefault(); //STOP default action
+//            var postData = jQuery(this).serializeArray();
+//            searchHotel(postData);
+//        });
+        
+        function submitFormHotelEdit(e) {
             e.preventDefault(); //STOP default action
             try {
-                var postData = jQuery("#form-destination-edit").serializeArray();
-                searchDestination(postData);
+                var postData = jQuery("#form-hotel-edit").serializeArray();
+                searchHotel(postData);
             } catch (e) {
 
             }
             return false;
         }
 
-        function searchDestination(postData) {
+        function searchHotel(postData) {
             jQuery.ajax({
                 url: "",
                 type: "POST",
@@ -622,25 +620,25 @@ if (!(isset($this->ajax) && $this->ajax)) {
             } else {
                 order = "asc";
             }
-            jQuery('#form-destination-edit input[name="orderby"]').val(orderby);
-            jQuery('#form-destination-edit input[name="order"]').val(order);
-            var postData = jQuery("#form-destination-edit").serializeArray();
+            jQuery('#form-hotel-edit input[name="orderby"]').val(orderby);
+            jQuery('#form-hotel-edit input[name="order"]').val(order);
+            var postData = jQuery("#form-hotel-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            searchHotel(postData);
         }
 
         function filterPage(element) {
             var page = jQuery(element).attr("page");
-            jQuery('#form-destination-edit input[name="page"]').val(page);
-            var postData = jQuery("#form-destination-edit").serializeArray();
+            jQuery('#form-hotel-edit input[name="page"]').val(page);
+            var postData = jQuery("#form-hotel-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            searchHotel(postData);
         }
 
-        function getEditDestinationPage(element) {
-            var term_taxonomy_id = jQuery(element).attr("destination");
+        function getEditHotelPage(element) {
+            var term_taxonomy_id = jQuery(element).attr("hotel");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_HOTEL_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -649,10 +647,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 location = url;
             }
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_HOTEL_EDIT_INFO; ?>",
                 type: "POST",
                 data: {
-                    destination: term_taxonomy_id
+                    hotel: term_taxonomy_id
                 },
                 success: function (data, textStatus, jqXHR)
                 {
@@ -665,10 +663,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 }
             });
         }
-        function getDestinationInfoPage(element) {
-            var destination = jQuery(element).attr("destination");
+        function getHotelInfoPage(element) {
+            var hotel = jQuery(element).attr("hotel");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_INFO; ?>" + destination + "/" + name;
+            var url = "<?php echo URL . CONTEXT_PATH_HOTEL_INFO; ?>" + hotel + "/" + name;
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, url);
             } else if (window.history && window.history.pushState) {
@@ -678,10 +676,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
             }
 
             jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_INFO; ?>",
+                url: "<?php echo URL . CONTEXT_PATH_HOTEL_INFO; ?>",
                 type: "POST",
                 data: {
-                    destination: destination
+                    hotel: hotel
                 },
                 success: function (data, textStatus, jqXHR)
                 {
@@ -695,49 +693,45 @@ if (!(isset($this->ajax) && $this->ajax)) {
             });
         }
 
-        function deleteDestination(element) {
-            var destination = jQuery(element).attr("destination");
+        function deleteHotel(element) {
+            var hotel = jQuery(element).attr("hotel");
             var name = jQuery(element).attr("name");
-            if (confirm('<?php echo CONFIRM_DELETE_DESTINATION; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
+            if (confirm('<?php echo CONFIRM_DELETE_HOTEL; ?>' + name + '<?php echo CONFIRM_DELETE_CANCEL_OK; ?>')) {
                 jQuery("#cb-select-all-1").prop('checked', false);
                 jQuery("#cb-select-all-2").prop('checked', false);
-                jQuery("input[name='destinations[]'][type=checkbox]").prop('checked', false);
-                jQuery("input[name='destinations[]'][type=checkbox][value='" + destination + "']").prop('checked', true);
+                jQuery("input[name='hotels[]'][type=checkbox]").prop('checked', false);
+                jQuery("input[name='hotels[]'][type=checkbox][value='" + hotel + "']").prop('checked', true);
 
-                jQuery('#form-destination-edit select[name="action"] option').removeAttr('selected');
-                jQuery('#form-destination-edit select[name="action2"] option').removeAttr('selected');
-                jQuery('#form-destination-edit select[name="action"] option[value="delete"]').attr('selected', true);
-                jQuery('#form-destination-edit input[name="type"]').val('action');
-                var postData = jQuery("#form-destination-edit").serializeArray();
+                jQuery('#form-hotel-edit select[name="action"] option').removeAttr('selected');
+                jQuery('#form-hotel-edit select[name="action2"] option').removeAttr('selected');
+                jQuery('#form-hotel-edit select[name="action"] option[value="delete"]').attr('selected', true);
+                jQuery('#form-hotel-edit input[name="type"]').val('action');
+                var postData = jQuery("#form-hotel-edit").serializeArray();
                 //        var formURL = jQuery(this).attr("action");
-                searchDestination(postData);
+                searchHotel(postData);
 
             }
         }
 
         function applyAction(type) {
-            jQuery('#form-destination-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-destination-edit").serializeArray();
+            jQuery('#form-hotel-edit input[name="type"]').val(type);
+            var postData = jQuery("#form-hotel-edit").serializeArray();
             //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            searchHotel(postData);
         }
 
         function checkAll(element) {
             if (jQuery(element).prop('checked')) {
                 jQuery("#cb-select-all-1").prop('checked', true);
                 jQuery("#cb-select-all-2").prop('checked', true);
-                jQuery("input[name='destinations[]'][type=checkbox]").prop('checked', true);
+                jQuery("input[name='hotels[]'][type=checkbox]").prop('checked', true);
             } else {
                 jQuery("#cb-select-all-1").prop('checked', false);
                 jQuery("#cb-select-all-2").prop('checked', false);
-                jQuery("input[name='destinations[]'][type=checkbox]").prop('checked', false);
+                jQuery("input[name='hotels[]'][type=checkbox]").prop('checked', false);
             }
 
         }
-
-    //        jQuery(function () {
-    //            jQuery(document).tooltip();
-    //        });
 
     </script>
 <?php } ?>

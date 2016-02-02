@@ -269,7 +269,7 @@ define("USER_TITLE", "user");
 
 define("DASHBOARD_TOURS_EDIT_COUNTRY_TITLE", "Edit Country");
 define("DASHBOARD_COUNTRY_TITLE", "Countries");
-define("DASHBOARD_COUNTRY_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_COUNTRY_ADD_NEW_TITLE", "Add New Country");
 define("DASHBOARD_ALL_COUNTRY_TITLE", "All Countries");
 define("RENDER_VIEW_COUNTRY_INDEX", "country/country_index");
 define("RENDER_VIEW_COUNTRY_ADD_NEW", "country/country_add_new");
@@ -299,12 +299,100 @@ define("COUNTRY_TITLE", "country");
 define("DESTINATION_COUNTRY_TITLE", "Country");
 
 /*
+ * City
+ */
+
+define("DASHBOARD_TOURS_EDIT_CITY_TITLE", "Edit City");
+define("DASHBOARD_CITY_TITLE", "Cities");
+define("DASHBOARD_CITY_ADD_NEW_TITLE", "Add New City");
+define("DASHBOARD_ALL_CITY_TITLE", "All Cities");
+define("RENDER_VIEW_CITY_INDEX", "city/city_index");
+define("RENDER_VIEW_CITY_ADD_NEW", "city/city_add_new");
+define("RENDER_VIEW_CITY_EDIT", "city/city_edit");
+define("RENDER_VIEW_CITY_INFO", "city/city_info");
+define("CONTEXT_PATH_CITY_INDEX", "city/index/");
+define("CONTEXT_PATH_CITY_ADD_NEW", "city/addNew/");
+define("CONTEXT_PATH_CITY_EDIT_INFO", "city/editInfo/");
+define("CONTEXT_PATH_CITY_INFO", "city/info/");
+define("SEARCH_CITIES_TITLE", "Search Cities");
+define("CITIES_LIST_TITLE", "Cities list");
+define("CONFIRM_DELETE_CITY", "You are about to permanently delete these city: ");
+define("CONFIRM_EDIT_INFO_CITY", "You are about to permanently edit these city: ");
+define("CONFIRM_ADD_NEW_CITY", "You are about to permanently add these city: ");
+define("CITY_NAME_DESC", "The name is how it appears on your site.");
+define("CITY_PERENT_TITLE", "Parent");
+define("CITY_PERENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("CITY_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
+define("CITY_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
+define("ERROR_UPDATE_INFO_CITY", "Update profile of city failed!");
+define("ERROR_ADD_NEW_CITY", "Add new city failed!");
+define("UPDATE_CITY_SUCCESS", "Update profile of city successed!");
+define("ADD_CITY_SUCCESS", "Add new city successed!");
+define("ADD_NEW_CITY_LABEL", "Add New City");
+define("LABEL_UPDATE_CITY", "Update City");
+define("CITY_TITLE", "city");
+define("DESTINATION_CITY_TITLE", "City");
+
+/*
+ * Hotel
+ */
+
+define("HOTEL_NAME_TITLE", "Name of Hotel");
+define("HOTEL_ADDRESS_TITLE", "Address of Hotel");
+define("HOTEL_ADDRESS_DESC", "Address of Hotel");
+define("HOTEL_NUMBER_OF_ROOMS_TITLE", "Number of rooms");
+define("HOTEL_NUMBER_OF_ROOMS_DESC", "Number of rooms");
+define("HOTEL_STAR_TITLE", "Star of Hotel");
+define("HOTEL_STAR_DESC", "Star of Hotel");
+define("HOTEL_CURRENT_RATING_TITLE", "Current rating of Hotel");
+define("HOTEL_CURRENT_RATING_DESC", "Current rating of Hotel");
+define("HOTEL_VOTE_TIMES_TITLE", "Vote times");
+define("HOTEL_VOTE_TIMES_DESC", "Vote times");
+define("HOTEL_CONTENT_TITLE", "Content");
+define("HOTEL_CONTENT_DESC", "Content");
+define("HOTEL_CITY_TITLE", "City");
+define("HOTEL_CITY_DESC", "City");
+define("HOTEL_TAGS_TITLE", "Tags");
+define("HOTEL_TAGS_DESC", "Tags");
+define("DASHBOARD_TOURS_EDIT_HOTEL_TITLE", "Edit Hotel");
+define("DASHBOARD_HOTEL_TITLE", "Hotels");
+define("DASHBOARD_HOTEL_ADD_NEW_TITLE", "Add New Hotel");
+define("DASHBOARD_ALL_HOTEL_TITLE", "All Hotels");
+define("RENDER_VIEW_HOTEL_INDEX", "hotel/hotel_index");
+define("RENDER_VIEW_HOTEL_ADD_NEW", "hotel/hotel_add_new");
+define("RENDER_VIEW_HOTEL_EDIT", "hotel/hotel_edit");
+define("RENDER_VIEW_HOTEL_INFO", "hotel/hotel_info");
+define("CONTEXT_PATH_HOTEL_INDEX", "hotel/index/");
+define("CONTEXT_PATH_HOTEL_ADD_NEW", "hotel/addNew/");
+define("CONTEXT_PATH_HOTEL_EDIT_INFO", "hotel/editInfo/");
+define("CONTEXT_PATH_HOTEL_INFO", "hotel/info/");
+define("SEARCH_HOTELS_TITLE", "Search Hotels");
+define("HOTELS_LIST_TITLE", "Hotels list");
+define("CONFIRM_DELETE_HOTEL", "You are about to permanently delete these hotel: ");
+define("CONFIRM_EDIT_INFO_HOTEL", "You are about to permanently edit these hotel: ");
+define("CONFIRM_ADD_NEW_HOTEL", "You are about to permanently add these hotel: ");
+define("HOTEL_NAME_DESC", "The name is how it appears on your site.");
+define("HOTEL_PERENT_TITLE", "Parent");
+define("HOTEL_PERENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("HOTEL_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
+define("HOTEL_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
+define("ERROR_UPDATE_INFO_HOTEL", "Update profile of hotel failed!");
+define("ERROR_ADD_NEW_HOTEL", "Add new hotel failed!");
+define("UPDATE_HOTEL_SUCCESS", "Update profile of hotel successed!");
+define("ADD_HOTEL_SUCCESS", "Add new hotel successed!");
+define("ADD_NEW_HOTEL_LABEL", "Add New Hotel");
+define("LABEL_UPDATE_HOTEL", "Update Hotel");
+define("HOTEL_TITLE", "hotel");
+define("DESTINATION_HOTEL_TITLE", "Hotel");
+
+
+/*
  * Tag
  */
 define("DASHBOARD_TOURS_EDIT_TAG_TITLE", "Edit Tag");
 define("DASHBOARD_TOURS_TAGS_TITLE", "Tags");
 define("DASHBOARD_TAG_TITLE", "Tags");
-define("DASHBOARD_TAG_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_TAG_ADD_NEW_TITLE", "Add New Tag");
 define("DASHBOARD_ALL_TAG_TITLE", "All Tags");
 define("RENDER_VIEW_TAG_INDEX", "tag/tag_index");
 define("RENDER_VIEW_TAG_ADD_NEW", "tag/tag_add_new");
@@ -340,7 +428,7 @@ define("TAG_TITLE", "tag");
 
 define("DASHBOARD_TOURS_EDIT_DESTINATION_TITLE", "Edit Destination");
 define("DASHBOARD_DESTINATION_TITLE", "Destinations");
-define("DASHBOARD_DESTINATION_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_DESTINATION_ADD_NEW_TITLE", "Add New Destination");
 define("DASHBOARD_ALL_DESTINATION_TITLE", "All Destinations");
 define("RENDER_VIEW_DESTINATION_INDEX", "destination/destination_index");
 define("RENDER_VIEW_DESTINATION_ADD_NEW", "destination/destination_add_new");
@@ -375,7 +463,7 @@ define("DESTINATION_TITLE", "destination");
 
 define("DASHBOARD_TOURS_EDIT_STYLE_TITLE", "Edit Style");
 define("DASHBOARD_STYLE_TITLE", "Styles");
-define("DASHBOARD_STYLE_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_STYLE_ADD_NEW_TITLE", "Add New Style");
 define("DASHBOARD_ALL_STYLE_TITLE", "All Styles");
 define("RENDER_VIEW_STYLE_INDEX", "style/style_index");
 define("RENDER_VIEW_STYLE_ADD_NEW", "style/style_add_new");
@@ -408,7 +496,7 @@ define("STYLE_TITLE", "style");
 
 define("DASHBOARD_TOURS_EDIT_TYPE_TITLE", "Edit Type");
 define("DASHBOARD_TYPE_TITLE", "Types");
-define("DASHBOARD_TYPE_ADD_NEW_TITLE", "Add New");
+define("DASHBOARD_TYPE_ADD_NEW_TITLE", "Add New Type");
 define("DASHBOARD_ALL_TYPE_TITLE", "All Types");
 define("RENDER_VIEW_TYPE_INDEX", "type/type_index");
 define("RENDER_VIEW_TYPE_ADD_NEW", "type/type_add_new");
@@ -435,3 +523,11 @@ define("ADD_TYPE_SUCCESS", "Add new type successed!");
 define("ADD_NEW_TYPE_LABEL", "Add New Type");
 define("LABEL_UPDATE_TYPE", "Update Type");
 define("TYPE_TITLE", "type");
+
+
+/*
+ * Tour
+ */
+define("DASHBOARD_TOUR_ADD_NEW_TITLE", "Add New Tour");
+
+
