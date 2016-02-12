@@ -205,4 +205,21 @@ class TagCtrl extends Controller
             $this->login();
         }
     }
+    public function searchAjax($str = NULL)
+    {
+            Model::autoloadModel('tag');
+            $model = new TagModel($this->db);
+            $this->para = new stdClass();
+            if (isset($str) && $str != NULL && $str != "") {
+                $this->para->s = $str;
+                $this->view->s = $str;
+            } elseif (isset($_POST['s'])) {
+                $this->para->s = $_POST['s'];
+                $this->view->s = $_POST['s'];
+            }
+            
+            $model->searchAjax($this->view, $this->para);
+            $this->view->renderAdmin(RENDER_SEARCH_TAG_AJAX, TRUE);
+        
+    }
 }

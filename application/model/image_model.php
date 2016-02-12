@@ -3,7 +3,7 @@
 Model::autoloadModel('attachment');
 class ImageModel extends AttachmentModel
 {
-
+    
     public $is_create_thumb = false;
     public $is_slider_thumb = false;
     public $slider_thumb_height;

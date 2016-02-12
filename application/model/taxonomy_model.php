@@ -212,9 +212,12 @@ class TaxonomyModel extends TermModel
     public function get($taxonomy_id)
     {
         try {
-            $sth = $this->db->prepare("SELECT *
-                                   FROM   " . TABLE_TERM_TAXONOMY . "
-                                   WHERE  " . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id");
+            $sth = $this->db->prepare("SELECT u.term_taxonomy_id, u.term_id, "
+                . " u.taxonomy, u.description, u.parent, u.count, m.name, m.slug, m.term_group "
+                . " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m "
+                . " WHERE  u." . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id "
+                . " AND u." . TB_TERM_TAXONOMY_COL_TERM_ID . " = m." . TB_TERMS_COL_TERM_ID . " ");
+
 
             $sth->execute(array(':term_taxonomy_id' => $taxonomy_id));
             $count = $sth->rowCount();
@@ -222,15 +225,46 @@ class TaxonomyModel extends TermModel
                 return null;
             }
             $result = $sth->fetch();
+
             $this->autoloadBO('taxonomy');
             $taxonomyBO = new TaxonomyBO();
             $taxonomyBO->setTaxonomyInfo($result);
-
-            $termBO = parent::get($result->term_id);
-            $taxonomyBO->setTermInfo($termBO);
-            $termMetaInfoArray = $this->getMetaInfo($termBO->term_id);
+            $taxonomyBO->setTermInfo($result);
+            $termMetaInfoArray = $this->getMetaInfo($result->term_id);
             $taxonomyBO->setTermMetaInfo($termMetaInfoArray);
             return $taxonomyBO;
+        } catch (Exception $e) {
+            
+        }
+        return null;
+    }
+
+    public function getRelationship($object_id, $taxonomy)
+    {
+        try {
+            $sth = $this->db->prepare("SELECT u.term_taxonomy_id, u.term_id, "
+                . " u.taxonomy, u.description, u.parent, u.count, m.name, m.slug, m.term_group "
+                . " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m, " . TABLE_TERM_RELATIONSHIPS . " as r "
+                . " WHERE  u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " = :taxonomy "
+                . " AND u." . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = r." . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . " "
+                . " AND u." . TB_TERM_TAXONOMY_COL_TERM_ID . " = m." . TB_TERMS_COL_TERM_ID . " "
+                . " AND r." . TB_TERM_RELATIONSHIPS_COL_OBJECT_ID . " = :object_id");
+
+            $sth->execute(array(':taxonomy' => $taxonomy, ':object_id' => $object_id));
+            $count = $sth->rowCount();
+            if ($count != 0) {
+                $taxonomyList = $sth->fetchAll();
+                for ($i = 0; $i < sizeof($taxonomyList); $i++) {
+                    $taxonomyInfo = $taxonomyList[$i];
+                    $this->autoloadBO('taxonomy');
+                    $taxonomyBO = new TaxonomyBO();
+                    $taxonomyBO->setTaxonomyInfo($taxonomyInfo);
+                    $taxonomyBO->setTermInfo($taxonomyInfo);
+                    $taxonomyBO->setTermMetaInfo($this->getMetaInfo($taxonomyBO->term_id));
+                    $taxonomyList[$i] = $taxonomyBO;
+                }
+                return $taxonomyList;
+            }
         } catch (Exception $e) {
             
         }
@@ -242,9 +276,9 @@ class TaxonomyModel extends TermModel
         $termBO = $this->get($taxonomy_id);
 
         try {
-            $sth = $this->db->prepare("DELETE 
-                                   FROM   " . TABLE_TERM_TAXONOMY . "
-                                   WHERE  " . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id");
+            $sth = $this->db->prepare("DELETE
+FROM " . TABLE_TERM_TAXONOMY . "
+WHERE " . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id");
             $sth->execute(array(':term_taxonomy_id' => $taxonomy_id));
             $count = $sth->rowCount();
             if ($count > 0) {
@@ -271,10 +305,10 @@ class TaxonomyModel extends TermModel
 
             $paraSQL[':taxonomy'] = $view->taxonomy;
             if (isset($para->s) && strlen(trim($para->s)) > 0) {
-                $sqlWhere .= "  AND (u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " like :s OR
-                                u." . TB_TERM_TAXONOMY_COL_DESCRIPTION . " like :s OR
-                                m." . TB_TERMS_COL_SLUG . " like :s OR
-                                m." . TB_TERMS_COL_NAME . " like :s ) ";
+                $sqlWhere .= " AND (u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " like :s OR
+u." . TB_TERM_TAXONOMY_COL_DESCRIPTION . " like :s OR
+m." . TB_TERMS_COL_SLUG . " like :s OR
+m." . TB_TERMS_COL_NAME . " like :s ) ";
                 $paraSQL[':s'] = "%" . $para->s . "%";
                 $view->s = $para->s;
             }

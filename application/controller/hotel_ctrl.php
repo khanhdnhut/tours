@@ -27,27 +27,50 @@ class HotelCtrl extends Controller
             $this->para = new stdClass();
             if (isset($_POST['action']) && $_POST['action'] == "addNew") {
                 $this->para->action = $_POST['action'];
+                if (isset($_POST['post_title'])) {
+                    $this->para->post_title = trim($_POST['post_title']);
+                }
+                if (isset($_POST['address'])) {
+                    $this->para->address = trim($_POST['address']);
+                }
+                if (isset($_POST['number_of_rooms'])) {
+                    $this->para->number_of_rooms = $_POST['number_of_rooms'];
+                }
+                if (isset($_POST['star'])) {
+                    $this->para->star = $_POST['star'];
+                }
+                if (isset($_POST['city_id'])) {
+                    $this->para->city_id = $_POST['city_id'];
+                }
 
-                if (isset($_POST['name'])) {
-                    $this->para->name = $_POST['name'];
+                if (isset($_POST['current_rating'])) {
+                    $this->para->current_rating = $_POST['current_rating'];
                 }
-                if (isset($_POST['slug'])) {
-                    $this->para->slug = $_POST['slug'];
+                if (isset($_POST['vote_times'])) {
+                    $this->para->vote_times = $_POST['vote_times'];
                 }
-                if (isset($_POST['description'])) {
-                    $this->para->description = $_POST['description'];
+                if (isset($_POST['tags'])) {
+                    $this->para->tags = $_POST['tags'];
                 }
-                if (isset($_POST['parent'])) {
-                    $this->para->parent = $_POST['parent'];
+                if (isset($_POST['post_content'])) {
+                    $this->para->post_content = trim($_POST['post_content']);
                 }
+
+                if (isset($_FILES['image']) && isset($_FILES['image']['name']) &&
+                    $_FILES['image']['name'] != '') {
+                    $this->para->image = $_FILES['image'];
+                }
+
                 $result = $model->addToDatabase($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
                 }
             }
 
-            $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("hotel")), -1);
+            $this->view->cityList = new SplDoublyLinkedList();
+            Model::autoloadModel('city');
+            $cityModel = new CityModel($this->db);
+            $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
                 $this->view->renderAdmin(RENDER_VIEW_HOTEL_ADD_NEW, TRUE);
@@ -59,33 +82,54 @@ class HotelCtrl extends Controller
         }
     }
 
-    public function editInfo($term_taxonomy_id = NULL)
+    public function editInfo($post_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('hotel');
             $model = new HotelModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['hotel'])) {
-                $this->para->term_taxonomy_id = $_POST['hotel'];
-            } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                $this->para->term_taxonomy_id = $term_taxonomy_id;
+                $this->para->post_id = $_POST['hotel'];
+            } elseif (isset($post_id) && !is_null($post_id)) {
+                $this->para->post_id = $post_id;
             }
 
-            if (isset($this->para->term_taxonomy_id)) {
+            if (isset($this->para->post_id)) {
                 if (isset($_POST['action']) && $_POST['action'] == "update") {
                     $this->para->action = $_POST['action'];
 
-                    if (isset($_POST['name'])) {
-                        $this->para->name = $_POST['name'];
+                    if (isset($_POST['post_title'])) {
+                        $this->para->post_title = trim($_POST['post_title']);
                     }
-                    if (isset($_POST['slug'])) {
-                        $this->para->slug = $_POST['slug'];
+                    if (isset($_POST['address'])) {
+                        $this->para->address = trim($_POST['address']);
                     }
-                    if (isset($_POST['description'])) {
-                        $this->para->description = $_POST['description'];
+                    if (isset($_POST['number_of_rooms'])) {
+                        $this->para->number_of_rooms = $_POST['number_of_rooms'];
                     }
-                    if (isset($_POST['parent'])) {
-                        $this->para->parent = $_POST['parent'];
+                    if (isset($_POST['star'])) {
+                        $this->para->star = $_POST['star'];
+                    }
+                    if (isset($_POST['city_id'])) {
+                        $this->para->city_id = $_POST['city_id'];
+                    }
+
+                    if (isset($_POST['current_rating'])) {
+                        $this->para->current_rating = $_POST['current_rating'];
+                    }
+                    if (isset($_POST['vote_times'])) {
+                        $this->para->vote_times = $_POST['vote_times'];
+                    }
+                    if (isset($_POST['tags'])) {
+                        $this->para->tags = $_POST['tags'];
+                    }
+                    if (isset($_POST['post_content'])) {
+                        $this->para->post_content = trim($_POST['post_content']);
+                    }
+
+                    if (isset($_FILES['image']) && isset($_FILES['image']['name']) &&
+                        $_FILES['image']['name'] != '') {
+                        $this->para->image = $_FILES['image'];
                     }
 
                     $result = $model->updateInfo($this->para);
@@ -95,12 +139,14 @@ class HotelCtrl extends Controller
                         $update_success = TRUE;
                     }
                 }
-                $this->view->hotelBO = $model->get($this->para->term_taxonomy_id);
+                $this->view->hotelBO = $model->get($this->para->post_id);
 
-                $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("hotel")), -1);
+                $this->view->cityList = new SplDoublyLinkedList();
+                Model::autoloadModel('city');
+                $cityModel = new CityModel($this->db);
+                $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
 
-                if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+                if (isset($post_id) && !is_null($post_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_HOTEL_EDIT);
                 } else {
                     $this->view->renderAdmin(RENDER_VIEW_HOTEL_EDIT, TRUE);
@@ -113,24 +159,28 @@ class HotelCtrl extends Controller
         }
     }
 
-    public function info($term_taxonomy_id = NULL)
+    public function info($post_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
             Model::autoloadModel('hotel');
             $model = new HotelModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['hotel'])) {
-                $this->para->term_taxonomy_id = $_POST['hotel'];
-            } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                $this->para->term_taxonomy_id = $term_taxonomy_id;
+                $this->para->post_id = $_POST['hotel'];
+            } elseif (isset($post_id) && !is_null($post_id)) {
+                $this->para->post_id = $post_id;
             }
 
-            if (isset($this->para->term_taxonomy_id)) {
-                $this->view->hotelBO = $model->get($this->para->term_taxonomy_id);
-                $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("hotel")), -1);
+            if (isset($this->para->post_id)) {
+                $this->view->hotelBO = $model->get($this->para->post_id);
 
-                if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+                $this->view->cityList = new SplDoublyLinkedList();
+                Model::autoloadModel('city');
+                $cityModel = new CityModel($this->db);
+                $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
+
+
+                if (isset($post_id) && !is_null($post_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_HOTEL_INFO);
                 } else {
                     $this->view->renderAdmin(RENDER_VIEW_HOTEL_INFO, TRUE);
@@ -140,6 +190,36 @@ class HotelCtrl extends Controller
             }
         } else {
             $this->login();
+        }
+    }
+
+    public function view($post_id = NULL)
+    {
+        Model::autoloadModel('hotel');
+        $model = new HotelModel($this->db);
+        $this->para = new stdClass();
+        if (isset($_POST['hotel'])) {
+            $this->para->post_id = $_POST['hotel'];
+        } elseif (isset($post_id) && !is_null($post_id)) {
+            $this->para->post_id = $post_id;
+        }
+
+        if (isset($this->para->post_id)) {
+            $this->view->hotelBO = $model->get($this->para->post_id);
+
+            $this->view->cityList = new SplDoublyLinkedList();
+            Model::autoloadModel('city');
+            $cityModel = new CityModel($this->db);
+            $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
+
+
+            if (isset($post_id) && !is_null($post_id)) {
+                $this->view->render(RENDER_VIEW_HOTEL);
+            } else {
+                $this->view->render(RENDER_VIEW_HOTEL, TRUE);
+            }
+        } else {
+            header('location: ' . URL);
         }
     }
 
@@ -177,14 +257,23 @@ class HotelCtrl extends Controller
             if (isset($_POST['action2'])) {
                 $this->para->action2 = $_POST['action2'];
             }
-            if (isset($_POST['description_show'])) {
-                $this->para->description_show = $_POST['description_show'];
+            if (isset($_POST['address_show'])) {
+                $this->para->address_show = $_POST['address_show'];
             }
-            if (isset($_POST['slug_show'])) {
-                $this->para->slug_show = $_POST['slug_show'];
+            if (isset($_POST['city_show'])) {
+                $this->para->city_show = $_POST['city_show'];
             }
-            if (isset($_POST['tours_show'])) {
-                $this->para->tours_show = $_POST['tours_show'];
+            if (isset($_POST['star_show'])) {
+                $this->para->tours_show = $_POST['star_show'];
+            }
+            if (isset($_POST['number_of_rooms_show'])) {
+                $this->para->number_of_rooms_show = $_POST['number_of_rooms_show'];
+            }
+            if (isset($_POST['current_rating'])) {
+                $this->para->current_rating = $_POST['current_rating'];
+            }
+            if (isset($_POST['vote_times'])) {
+                $this->para->vote_times = $_POST['vote_times'];
             }
             if (isset($_POST['hotels_per_page'])) {
                 $this->para->hotels_per_page = $_POST['hotels_per_page'];
@@ -201,8 +290,8 @@ class HotelCtrl extends Controller
                 $model->executeAction($this->para);
             }
 
-            
-            
+
+
             $model->search($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {

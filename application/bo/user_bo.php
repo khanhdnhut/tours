@@ -36,6 +36,7 @@ class UserBO extends BO
     public $hotels_per_page = null;
     public $manage_hotels_columns_show = null;
     public $tags_per_page = null;
+    public $tags_per_page_ajax = null;
     public $manage_tags_columns_show = null;
     public $destinations_per_page = null;
     public $manage_destinations_columns_show = null;

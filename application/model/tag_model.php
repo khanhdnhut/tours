@@ -239,6 +239,33 @@ class TagModel extends TaxonomyModel
             }
         }
     }
+    
+    public function searchAjax($view, $para){
+        $tags_per_page_ajax = TAGS_PER_PAGE_AJAX_DEFAULT;
+        $taxonomy = "tag";
+
+        $userLoginBO = json_decode(Session::get("userInfo"));
+        if ($userLoginBO != NULL) {
+            if (isset($userLoginBO->tags_per_page_ajax) && is_numeric($userLoginBO->tags_per_page_ajax)) {
+                $tags_per_page_ajax = (int) $userLoginBO->tags_per_page_ajax;
+            }
+        }
+
+        if (!isset($tags_per_page_ajax)) {
+            if (!isset($_SESSION['options'])) {
+                $_SESSION['options'] = new stdClass();
+                $_SESSION['options']->tags_per_page_ajax = TAGS_PER_PAGE_AJAX_DEFAULT;
+                $tags_per_page_ajax = TAGS_PER_PAGE_AJAX_DEFAULT;
+            } elseif (!isset($_SESSION['options']->tags_per_page_ajax)) {
+                $_SESSION['options']->tags_per_page_ajax = TAGS_PER_PAGE_AJAX_DEFAULT;
+                $tags_per_page_ajax = TAGS_PER_PAGE_AJAX_DEFAULT;
+            }
+        }
+
+        $view->taxonomies_per_page = $tags_per_page_ajax;
+        $view->taxonomy = $taxonomy;
+        parent::search($view, $para);
+    }
 
     public function search($view, $para)
     {

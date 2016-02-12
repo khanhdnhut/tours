@@ -9,100 +9,194 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
     </style>
     <h1>
         <?php echo PROFILE_OF_TITLE . " " . HOTEL_TITLE; ?> "<strong><?php
-            if (isset($this->hotelBO->name)) {
-                echo $this->hotelBO->name;
+            if (isset($this->hotelBO->post_title)) {
+                echo $this->hotelBO->post_title;
             }
 
             ?></strong>"
-        <a class="page-title-action" href="#" hotel="<?php echo $this->hotelBO->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($this->hotelBO->name); ?>" onclick="getEditHotelPage(this)"><?php echo DASHBOARD_TOURS_EDIT_HOTEL_TITLE; ?></a>
+        <a class="page-title-action" href="#" hotel="<?php echo $this->hotelBO->ID; ?>" name="<?php echo htmlspecialchars($this->hotelBO->post_title); ?>" onclick="getEditHotelPage(this)"><?php echo DASHBOARD_TOURS_EDIT_HOTEL_TITLE; ?></a>
     </h1>
     <?php $this->renderFeedbackMessages(); ?>
     <table class="form-table">
         <tbody>
-            <tr class="hotel-name-wrap">
-                <th>
-                    <label for="name"><?php echo NAME_TITLE; ?></label>
-                </th>
-                <td>
-                    <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->hotelBO->name)) {
-                        echo htmlspecialchars($this->hotelBO->name);
-                    }
+            <tr class="hotel-post-title-wrap">
+                    <th colspan="1">
+                        <label for="post_title"><?php echo HOTEL_NAME_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label>
+                    </th>
+                    <td colspan="3">
+                        <input  disabled="disabled" type="text" class="large-text" value="<?php
+                        if (isset($this->hotelBO->post_title)) {
+                            echo htmlspecialchars($this->hotelBO->post_title);
+                        }
 
-                    ?>" id="name" name="name">
-                </td>
-            </tr>
-            <tr class="hotel-slug-wrap">
-                <th>
-                    <label for="slug"><?php echo SLUG_TITLE; ?></label>
-                </th>
-                <td>
-                    <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->hotelBO->slug)) {
-                        echo htmlspecialchars($this->hotelBO->slug);
-                    }
+                        ?>" id="post_title" name="post_title">
+                    </td>
+                </tr>
 
-                    ?>" id="slug" name="slug">
-                </td>
-            </tr>
+                <tr class="hotel-address-wrap">
+                    <th colspan="1">
+                        <label for="address"><?php echo HOTEL_ADDRESS_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label>
+                    </th>
+                    <td colspan="3">
+                        <input  disabled="disabled" type="text" class="large-text" value="<?php
+                        if (isset($this->hotelBO->address)) {
+                            echo htmlspecialchars($this->hotelBO->address);
+                        }
 
-            <tr class="hotel-parent-wrap">
-                <th>
-                    <label for="parent"><?php echo PARENT_TITLE; ?></label>
-                </th>
-                <td>
-                    <select id="parent" name="parent" disabled="disabled"  >
-                        <?php
-                        if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
-                            $this->parentList->rewind();
-                            foreach ($this->parentList as $value) {
-                                if ($value->term_taxonomy_id != $this->hotelBO->term_taxonomy_id &&
-                                    $value->parent != $this->hotelBO->term_taxonomy_id) {
+                        ?>" id="address" name="address">
+                    </td>
+                </tr>
 
-                                    ?> 
-                                    <option <?php if ($value->term_taxonomy_id == $this->hotelBO->parent) {
+                <tr class="hotel-number-of-rooms-wrap">
+                    <th>
+                        <label for="number_of_rooms"><?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input disabled="disabled" type="number" step="1" min="1" max="999" class="screen-per-page" name="number_of_rooms" id="number_of_rooms" maxlength="3" value="<?php
+                        if (isset($this->hotelBO->number_of_rooms)) {
+                            echo htmlspecialchars($this->hotelBO->number_of_rooms);
+                        }
 
-                                        ?>
-                                            selected="selected"
-                                        <?php }
+                        ?>" style="min-width: 150px;">
+                    </td>
 
-                                        ?> value="<?php
-                                        if (isset($value->term_taxonomy_id)) {
-                                            echo $value->term_taxonomy_id;
-                                        }
+                    <th>
+                        <label for="star"><?php echo HOTEL_STAR_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input disabled="disabled" type="number" step="1" min="0" max="5" class="screen-per-page" name="star" id="star" maxlength="3" value="<?php
+                        if (isset($this->hotelBO->star)) {
+                            echo htmlspecialchars($this->hotelBO->star);
+                        }
 
-                                        ?>"><?php
-                                            if (isset($value->name)) {
-                                                echo $value->name;
+                        ?>" style="min-width: 150px;">
+                    </td>
+
+
+                </tr>
+
+                <tr class="hotel-vote-times-wrap">
+                    <th>
+                        <label for="current_rating"><?php echo HOTEL_CURRENT_RATING_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input disabled="disabled" type="number" step="1" min="0" max="5" class="screen-per-page" name="current_rating" id="current_rating" maxlength="3" value="<?php
+                        if (isset($this->hotelBO->current_rating)) {
+                            echo htmlspecialchars($this->hotelBO->current_rating);
+                        }
+
+                        ?>" style="min-width: 150px;">
+                    </td>
+
+                    <th>
+                        <label for="vote_times"><?php echo HOTEL_VOTE_TIMES_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input disabled="disabled" type="number" step="1" min="0" max="999" class="screen-per-page" name="vote_times" id="vote_times" maxlength="3" value="<?php
+                        if (isset($this->hotelBO->vote_times)) {
+                            echo htmlspecialchars($this->hotelBO->vote_times);
+                        }
+
+                        ?>" style="min-width: 150px;">
+                    </td>
+
+
+                </tr>
+
+                <tr class="hotel-city-id-wrap">
+                    <th colspan="1"><label for="city_id"><?php echo HOTEL_CITY_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></label></th>
+                    <td colspan="3">
+                        <select disabled="disabled" id="city_id" name="city_id"  style="min-width: 150px;">
+                            <?php
+                            if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
+                                $this->cityList->rewind();
+                                foreach ($this->cityList as $value) {
+
+                                    ?>
+                                    <option value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>" <?php
+                                            if (isset($this->hotelBO->city_id) && $this->hotelBO->city_id == $value->term_taxonomy_id) {
+                                                echo "selected='selected'";
                                             }
 
-                                            ?></option>
+                                            ?>><?php
+                                                if (isset($value->name)) {
+                                                    echo $value->name;
+                                                }
+
+                                                ?></option>
                                     <?php
                                 }
                             }
+
+                            ?>
+                            <option value="0" <?php
+                            if (isset($this->hotelBO->city_id) && $this->hotelBO->city_id == 0) {
+                                echo "selected='selected'";
+                            } elseif (!isset($this->hotelBO->city_id)) {
+                                echo "selected='selected'";
+                            }
+
+                            ?>><?php echo NONE_TITLE; ?></option>                                                                        
+                        </select>
+                    </td>
+                </tr>
+
+
+                <tr class="hotel-image-wrap">
+                    <th colspan="1">
+                        <label for="image"><?php echo HOTEL_IMAGE_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></label>
+                    </th>
+                    <td colspan="3">
+                        <img width="96" height="96" class="avatar avatar-96 photo" srcset="<?php
+                        if (isset($this->hotelBO->image_url)) {
+                            echo URL . htmlspecialchars($this->hotelBO->image_url);
+                        } else {
+                            echo URL . AVATAR_DEFAULT;
                         }
 
-                        ?>
-                        <option value="0" <?php if ($this->hotelBO->parent == 0 || $this->hotelBO->parent == "0") { ?>
-                                    selected="selected"
-                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                              
-                    </select>
-                </td>
-            </tr>
+                        ?>" src="<?php
+                             if (isset($this->hotelBO->image_url)) {
+                                 echo URL . htmlspecialchars($this->hotelBO->image_url);
+                             } else {
+                                 echo URL . AVATAR_DEFAULT;
+                             }
 
-            <tr class="hotel-description-wrap">
-                <th>
-                    <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
-                </th>
-                <td>
-                    <input type="text" class="regular-text" disabled="disabled" value="<?php
-                    if (isset($this->hotelBO->description)) {
-                        echo htmlspecialchars($this->hotelBO->description);
-                    }
+                             ?>" alt="">
+                    </td>
+                </tr>
+                <tr class="hotel-post-content-wrap">
+                    <th colspan="1">
+                        <label for="post_content"><?php echo HOTEL_CONTENT_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></label>
+                    </th>
+                    <td colspan="3">
+                        <textarea disabled="disabled" id="post_content" name="post_content" autocomplete="off" style="height: 200px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                            if (isset($this->hotelBO) && isset($this->hotelBO->post_content)) {
+                                echo htmlspecialchars($this->hotelBO->post_content);
+                            }
 
-                    ?>" id="description" name="description">
-                </td>
-            </tr>
+                            ?></textarea>
+                    </td>
+                </tr>
+
+                <tr class="hotel-tags-wrap">   
+                    <th colspan="1">
+                        <label for="tags"><?php echo HOTEL_TAGS_TITLE; ?></label>
+                    </th>
+                    <td colspan="3">
+                        <input disabled="disabled" style="min-width: 200px;" type="text" value="" autocomplete="off" size="16" class="newtag form-input-tip" name="tagInput" id="tags">       
+
+                        <div class="tagchecklist"></div>
+                        <div class="taglist">
+                            <input type="hidden" value="Hà Nội" name="tags[]">
+                            <input type="hidden" value="Sài Gòn" name="tags[]">
+                        </div>
+                    </td>
+                </tr>
 
 
         </tbody>

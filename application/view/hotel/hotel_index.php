@@ -2,25 +2,43 @@
 $userBO = json_decode(Session::get("userInfo"));
 
 if (isset($userBO->manage_hotels_columns_show)) {
-    if (isset($userBO->manage_hotels_columns_show->description_show)) {
-        $description_show = $userBO->manage_hotels_columns_show->description_show;
+    if (isset($userBO->manage_hotels_columns_show->address_show)) {
+        $address_show = $userBO->manage_hotels_columns_show->address_show;
     } else {
-        $description_show = true;
+        $address_show = true;
     }
-    if (isset($userBO->manage_hotels_columns_show->slug_show)) {
-        $slug_show = $userBO->manage_hotels_columns_show->slug_show;
+    if (isset($userBO->manage_hotels_columns_show->city_name_show)) {
+        $city_name_show = $userBO->manage_hotels_columns_show->city_name_show;
     } else {
-        $slug_show = true;
+        $city_name_show = true;
     }
-    if (isset($userBO->manage_hotels_columns_show->tours_show)) {
-        $tours_show = $userBO->manage_hotels_columns_show->tours_show;
+    if (isset($userBO->manage_hotels_columns_show->star_show)) {
+        $star_show = $userBO->manage_hotels_columns_show->star_show;
     } else {
-        $tours_show = true;
+        $star_show = true;
+    }
+    if (isset($userBO->manage_hotels_columns_show->number_of_rooms_show)) {
+        $number_of_rooms_show = $userBO->manage_hotels_columns_show->number_of_rooms_show;
+    } else {
+        $number_of_rooms_show = true;
+    }
+    if (isset($userBO->manage_hotels_columns_show->current_rating_show)) {
+        $current_rating_show = $userBO->manage_hotels_columns_show->current_rating_show;
+    } else {
+        $current_rating_show = true;
+    }
+    if (isset($userBO->manage_hotels_columns_show->vote_times_show)) {
+        $vote_times_show = $userBO->manage_hotels_columns_show->vote_times_show;
+    } else {
+        $vote_times_show = true;
     }
 } else {
-    $description_show = true;
-    $slug_show = true;
-    $tours_show = true;
+    $address_show = true;
+    $city_name_show = true;
+    $star_show = true;
+    $number_of_rooms_show = true;
+    $current_rating_show = true;
+    $vote_times_show = true;
 }
 
 if (isset($userBO->hotels_per_page)) {
@@ -43,15 +61,24 @@ if (!(isset($this->ajax) && $this->ajax)) {
             <form method="post" id="adv-settings" >
                 <fieldset class="metabox-prefs">
                     <legend><?php echo COLUMNS_LABEL; ?></legend>
-                    <label><input type="checkbox" <?php if (isset($description_show) && $description_show) { ?> 
+                    <label><input type="checkbox" <?php if (isset($address_show) && $address_show) { ?> 
                                       checked="checked" <?php } ?>
-                                  value="description" name="description_show" class="hide-column-tog"><?php echo DESCRIPTION_TITLE; ?></label>
-                    <label><input type="checkbox" <?php if (isset($slug_show) && $slug_show) { ?> 
+                                  value="address" name="address_show" class="hide-column-tog"><?php echo HOTEL_ADDRESS_TITLE; ?></label>
+                    <label><input type="checkbox" <?php if (isset($city_name_show) && $city_name_show) { ?> 
                                       checked="checked" <?php } ?>
-                                  value="slug" name="slug_show" class="hide-column-tog"><?php echo SLUG_TITLE; ?></label>
-                    <label><input type="checkbox" <?php if (isset($tours_show) && $tours_show) { ?> 
+                                  value="city" name="city_name_show" class="hide-column-tog"><?php echo HOTEL_CITY_TITLE; ?></label>
+                    <label><input type="checkbox" <?php if (isset($star_show) && $star_show) { ?> 
                                       checked="checked" <?php } ?>
-                                  value="tours" name="tours_show" class="hide-column-tog"><?php echo TOURS_TITLE; ?></label>
+                                  value="star" name="star_show" class="hide-column-tog"><?php echo HOTEL_STAR_TITLE; ?></label>
+                    <label><input type="checkbox" <?php if (isset($number_of_rooms_show) && $number_of_rooms_show) { ?> 
+                                      checked="checked" <?php } ?>
+                                  value="number_of_rooms" name="number_of_rooms_show" class="hide-column-tog"><?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?></label>
+                    <label><input type="checkbox" <?php if (isset($current_rating_show) && $current_rating_show) { ?> 
+                                      checked="checked" <?php } ?>
+                                  value="current_rating" name="current_rating_show" class="hide-column-tog"><?php echo HOTEL_CURRENT_RATING_TITLE; ?></label>
+                    <label><input type="checkbox" <?php if (isset($vote_times_show) && $vote_times_show) { ?> 
+                                      checked="checked" <?php } ?>
+                                  value="vote_times" name="vote_times_show" class="hide-column-tog"><?php echo HOTEL_VOTE_TIMES_TITLE; ?></label>
                 </fieldset>
                 <fieldset class="screen-options">
                     <legend><?php echo PAGINATION_LABEL; ?></legend>
@@ -86,7 +113,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <h1>
         <?php echo DASHBOARD_HOTEL_TITLE; ?> 
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_HOTEL_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
+        <a class="page-title-action" onclick="getAddNewPage(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <?php $this->renderFeedbackMessages(); ?>
@@ -184,12 +211,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     </td>
 
                     <?php
-                    if (isset($this->orderby) && $this->orderby == "name" && in_array($this->order, array('asc', 'desc'))) {
+                    if (isset($this->orderby) && $this->orderby == "post_title" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
-                            <a href="#" orderby="name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo NAME_TITLE; ?></span>
+                        <th class="manage-column column-post_title sorted <?php echo $this->order; ?>" id="post_title" scope="col">
+                            <a href="#" orderby="post_title" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>
@@ -197,26 +224,26 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-name sortable desc" id="name" scope="col">
-                            <a href="#" orderby="name" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo NAME_TITLE; ?></span>
+                        <th class="manage-column column-post_title sortable desc" id="post_title" scope="col">
+                            <a href="#" orderby="post_title" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>
                         <?php
                     }
 
-                    if (isset($this->orderby) && $this->orderby == "description" && in_array($this->order, array('asc', 'desc'))) {
+                    if (isset($this->orderby) && $this->orderby == "address" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-description <?php
-                        if (!(isset($description_show) && $description_show)) {
+                        <th class="manage-column column-address <?php
+                        if (!(isset($address_show) && $address_show)) {
                             echo " hidden";
                         }
 
-                        ?> sorted <?php echo $this->order; ?>" id="description" scope="col">
-                            <a href="#" orderby="description" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo DESCRIPTION_TITLE; ?></span>
+                        ?> sorted <?php echo $this->order; ?>" id="address" scope="col">
+                            <a href="#" orderby="address" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_ADDRESS_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -224,14 +251,14 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-description <?php
-                        if (!(isset($description_show) && $description_show)) {
+                        <th class="manage-column column-address <?php
+                        if (!(isset($address_show) && $address_show)) {
                             echo " hidden";
                         }
 
-                        ?>  sortable desc" id="description" scope="col">
-                            <a href="#" orderby="description" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo DESCRIPTION_TITLE; ?></span>
+                        ?>  sortable desc" id="address" scope="col">
+                            <a href="#" orderby="address" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_ADDRESS_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -239,17 +266,17 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     }
 
 
-                    if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
+                    if (isset($this->orderby) && $this->orderby == "city_name" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-slug <?php
-                        if (!(isset($slug_show) && $slug_show)) {
+                        <th class="manage-column column-city_name <?php
+                        if (!(isset($city_name_show) && $city_name_show)) {
                             echo " hidden";
                         }
 
-                        ?> sorted <?php echo $this->order; ?>" id="slug" scope="col">
-                            <a href="#" orderby="slug" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo SLUG_TITLE; ?></span>
+                        ?> sorted <?php echo $this->order; ?>" id="city_name" scope="col">
+                            <a href="#" orderby="city_name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CITY_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -257,14 +284,78 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-slug <?php
-                        if (!(isset($slug_show) && $slug_show)) {
+                        <th class="manage-column column-city_name <?php
+                        if (!(isset($city_name_show) && $city_name_show)) {
                             echo " hidden";
                         }
 
-                        ?>  sortable desc" id="slug" scope="col">
-                            <a href="#" orderby="slug" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo SLUG_TITLE; ?></span>
+                        ?>  sortable desc" id="city_name" scope="col">
+                            <a href="#" orderby="city_name" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CITY_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    }
+
+                    if (isset($this->orderby) && $this->orderby == "star" && in_array($this->order, array('asc', 'desc'))) {
+
+                        ?>
+                        <th class="manage-column column-star <?php
+                        if (!(isset($star_show) && $star_show)) {
+                            echo " hidden";
+                        }
+
+                        ?> sorted <?php echo $this->order; ?>" id="star" scope="col">
+                            <a href="#" orderby="star" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_STAR_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    } else {
+
+                        ?>
+                        <th class="manage-column column-star <?php
+                        if (!(isset($star_show) && $star_show)) {
+                            echo " hidden";
+                        }
+
+                        ?>  sortable desc" id="star" scope="col">
+                            <a href="#" orderby="star" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_STAR_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    }
+
+                    if (isset($this->orderby) && $this->orderby == "number_of_rooms" && in_array($this->order, array('asc', 'desc'))) {
+
+                        ?>
+                        <th class="manage-column column-number_of_rooms <?php
+                        if (!(isset($number_of_rooms_show) && $number_of_rooms_show)) {
+                            echo " hidden";
+                        }
+
+                        ?> sorted <?php echo $this->order; ?>" id="number_of_rooms" scope="col">
+                            <a href="#" orderby="number_of_rooms" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    } else {
+
+                        ?>
+                        <th class="manage-column column-number_of_rooms <?php
+                        if (!(isset($number_of_rooms_show) && $number_of_rooms_show)) {
+                            echo " hidden";
+                        }
+
+                        ?>  sortable desc" id="number_of_rooms" scope="col">
+                            <a href="#" orderby="number_of_rooms" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -272,17 +363,17 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     }
 
 
-                    if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
+                    if (isset($this->orderby) && $this->orderby == "current_rating" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-tours <?php
-                        if (!(isset($tours_show) && $tours_show)) {
+                        <th class="manage-column column-current_rating <?php
+                        if (!(isset($current_rating_show) && $current_rating_show)) {
                             echo " hidden";
                         }
 
-                        ?> sorted <?php echo $this->order; ?>" id="tours" scope="col">
-                            <a href="#" orderby="tours" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo TOURS_TITLE; ?></span>
+                        ?> sorted <?php echo $this->order; ?>" id="current_rating" scope="col">
+                            <a href="#" orderby="current_rating" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CURRENT_RATING_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -290,14 +381,46 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-tours <?php
-                        if (!(isset($tours_show) && $tours_show)) {
+                        <th class="manage-column column-current_rating <?php
+                        if (!(isset($current_rating_show) && $current_rating_show)) {
                             echo " hidden";
                         }
 
-                        ?>  sortable desc" id="tours" scope="col">
-                            <a href="#" orderby="tours" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo TOURS_TITLE; ?></span>
+                        ?>  sortable desc" id="current_rating" scope="col">
+                            <a href="#" orderby="current_rating" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CURRENT_RATING_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    }
+
+                    if (isset($this->orderby) && $this->orderby == "vote_times" && in_array($this->order, array('asc', 'desc'))) {
+
+                        ?>
+                        <th class="manage-column column-vote_times <?php
+                        if (!(isset($vote_times_show) && $vote_times_show)) {
+                            echo " hidden";
+                        }
+
+                        ?> sorted <?php echo $this->order; ?>" id="vote_times" scope="col">
+                            <a href="#" orderby="vote_times" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_VOTE_TIMES_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    } else {
+
+                        ?>
+                        <th class="manage-column column-vote_times <?php
+                        if (!(isset($vote_times_show) && $vote_times_show)) {
+                            echo " hidden";
+                        }
+
+                        ?>  sortable desc" id="vote_times" scope="col">
+                            <a href="#" orderby="vote_times" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_VOTE_TIMES_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -310,55 +433,97 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
             <tbody data-wp-lists="list:hotel" id="the-list">
                 <?php
-                if (!is_null($this->taxonomyList)) {
-                    foreach ($this->taxonomyList as $taxonomyInfo) {
+                if (!is_null($this->hotelList)) {
+                    foreach ($this->hotelList as $hotelInfo) {
 
                         ?>
-                        <tr id="hotel-<?php echo $taxonomyInfo->term_taxonomy_id; ?>">
+                        <tr id="hotel-<?php echo $hotelInfo->ID; ?>">
                             <th class="check-column" scope="row">
-                                <label for="hotel_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo htmlspecialchars($taxonomyInfo->name); ?></label>
-                                <input type="checkbox" value="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" class="author" id="hotel_<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="hotels[]" >
+                                <label for="hotel_<?php echo $hotelInfo->ID; ?>" class="screen-reader-text"><?php echo SELECT_TITLE; ?> <?php echo htmlspecialchars($hotelInfo->post_title); ?></label>
+                                <input type="checkbox" value="<?php echo $hotelInfo->ID; ?>" class="author" id="hotel_<?php echo $hotelInfo->ID; ?>" name="hotels[]" >
                             </th>
-                            <td data-colname="name" class="name column-name has-row-actions column-primary">                                
+
+                            <td data-colname="<?php echo HOTEL_NAME_TITLE; ?>" class="username column-username has-row-actions column-primary">
+                                <img width="32" height="32" class="image image-32 photo" srcset="<?php
+                                if (isset($hotelInfo->image_url)) {
+                                    echo URL . htmlspecialchars($hotelInfo->image_url);
+                                } else {
+                                    echo URL . AVATAR_DEFAULT;
+                                }
+
+                                ?>" src="<?php
+                                     if (isset($hotelInfo->image_url)) {
+                                         echo URL . htmlspecialchars($hotelInfo->image_url);
+                                     } else {
+                                         echo URL . AVATAR_DEFAULT;
+                                     }
+
+                                     ?>" alt=""> 
                                 <strong>
-                                    <a href="#" hotel="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getHotelInfoPage(this)"><?php echo htmlspecialchars($taxonomyInfo->name); ?></a>
+                                    <a href="#" hotel="<?php echo $hotelInfo->ID; ?>" name="<?php echo htmlspecialchars($hotelInfo->post_name); ?>" onclick="getHotelInfoPage(this)"><?php echo htmlspecialchars($hotelInfo->post_title); ?></a>
                                 </strong>
                                 <br>
                                 <div class="row-actions">
+                                    <span class="view">
+                                        <a href="#" hotel="<?php echo $hotelInfo->ID; ?>" name="<?php echo htmlspecialchars($hotelInfo->post_name); ?>" onclick="viewHotel(this)"><?php echo VIEW_TITLE; ?>
+                                        </a>
+                                    </span> |
                                     <span class="edit">
-                                        <a href="#" hotel="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditHotelPage(this)"><?php echo EDIT_TITLE; ?>
+                                        <a href="#" hotel="<?php echo $hotelInfo->ID; ?>" name="<?php echo htmlspecialchars($hotelInfo->post_name); ?>" onclick="getEditHotelPage(this)"><?php echo EDIT_TITLE; ?>
+                                        </a>
+                                    </span> |
+                                    <span class="delete">
+                                        <a href="#" class="submitdelete" hotel="<?php echo $hotelInfo->ID; ?>" name="<?php echo htmlspecialchars($hotelInfo->post_title); ?>" onclick="deleteHotel(this)"><?php echo DELETE_TITLE; ?>
                                         </a>
                                     </span>
-                                        | <span class="delete">
-                                            <a href="#" class="submitdelete" hotel="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteHotel(this)"><?php echo DELETE_TITLE; ?>
-                                            </a>
-                                        </span>
                                 </div>
                                 <button class="toggle-row" type="button">
                                     <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
                                 </button>
                             </td>
 
-                            <td data-colname="<?php echo EMAIL_TITLE; ?>" class="description column-description <?php
-                            if (!(isset($description_show) && $description_show)) {
+
+                            <td data-colname="<?php echo HOTEL_ADDRESS_TITLE; ?>" class="description column-address <?php
+                            if (!(isset($address_show) && $address_show)) {
                                 echo " hidden ";
                             }
 
-                            ?>"><?php echo htmlspecialchars($taxonomyInfo->description); ?></td>
+                            ?>"><?php echo htmlspecialchars($hotelInfo->address); ?></td>
 
-                            <td data-colname="<?php echo ROLE_TITLE; ?>" class="slug column-slug <?php
-                            if (!(isset($slug_show) && $slug_show)) {
+                            <td data-colname="<?php echo HOTEL_CITY_TITLE; ?>" class="slug column-city <?php
+                            if (!(isset($city_name_show) && $city_name_show)) {
                                 echo " hidden ";
                             }
 
-                            ?>"><?php echo htmlspecialchars($taxonomyInfo->slug); ?></td>
+                            ?>"><?php echo htmlspecialchars($hotelInfo->city_name); ?></td>
 
-                            <td data-colname="<?php echo TOURS_TITLE; ?>" class="posts column-tours <?php
-                            if (!(isset($tours_show) && $tours_show)) {
+                            <td data-colname="<?php echo HOTEL_STAR_TITLE; ?>" class="posts column-star <?php
+                            if (!(isset($star_show) && $star_show)) {
                                 echo " hidden ";
                             }
 
-                            ?>"><?php echo htmlspecialchars($taxonomyInfo->count); ?></td>
+                            ?>"><?php echo htmlspecialchars($hotelInfo->star); ?></td>
+
+                            <td data-colname="<?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?>" class="posts column-number_of_rooms <?php
+                            if (!(isset($number_of_rooms_show) && $number_of_rooms_show)) {
+                                echo " hidden ";
+                            }
+
+                            ?>"><?php echo htmlspecialchars($hotelInfo->number_of_rooms); ?></td>
+
+                            <td data-colname="<?php echo HOTEL_CURRENT_RATING_TITLE; ?>" class="posts column-current_rating <?php
+                            if (!(isset($current_rating_show) && $current_rating_show)) {
+                                echo " hidden ";
+                            }
+
+                            ?>"><?php echo htmlspecialchars($hotelInfo->current_rating); ?></td>
+
+                            <td data-colname="<?php echo HOTEL_VOTE_TIMES_TITLE; ?>" class="posts column-vote_times <?php
+                            if (!(isset($vote_times_show) && $vote_times_show)) {
+                                echo " hidden ";
+                            }
+
+                            ?>"><?php echo htmlspecialchars($hotelInfo->vote_times); ?></td>
                         </tr>      
                         <?php
                     }
@@ -374,12 +539,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         <input type="checkbox" id="cb-select-all-2" onclick="checkAll(this)">
                     </td>
                     <?php
-                    if (isset($this->orderby) && $this->orderby == "name" && in_array($this->order, array('asc', 'desc'))) {
+                    if (isset($this->orderby) && $this->orderby == "post_title" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-name sorted <?php echo $this->order; ?>" id="name" scope="col">
-                            <a href="#" orderby="name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo NAME_TITLE; ?></span>
+                        <th class="manage-column column-post_title sorted <?php echo $this->order; ?>" id="post_title" scope="col">
+                            <a href="#" orderby="post_title" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>
@@ -387,9 +552,9 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-name sortable desc" id="name" scope="col">
-                            <a href="#" orderby="name" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo NAME_TITLE; ?></span>
+                        <th class="manage-column column-post_title sortable desc" id="post_title" scope="col">
+                            <a href="#" orderby="post_title" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NAME_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>
@@ -397,17 +562,17 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     }
 
 
-                    if (isset($this->orderby) && $this->orderby == "description" && in_array($this->order, array('asc', 'desc'))) {
+                    if (isset($this->orderby) && $this->orderby == "address" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-description <?php
-                        if (!(isset($description_show) && $description_show)) {
+                        <th class="manage-column column-address <?php
+                        if (!(isset($address_show) && $address_show)) {
                             echo " hidden";
                         }
 
-                        ?>  sorted <?php echo $this->order; ?>" id="description" scope="col">
-                            <a href="#" orderby="description" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo DESCRIPTION_TITLE; ?></span>
+                        ?> sorted <?php echo $this->order; ?>" id="address" scope="col">
+                            <a href="#" orderby="address" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_ADDRESS_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -415,32 +580,32 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-description <?php
-                        if (!(isset($description_show) && $description_show)) {
+                        <th class="manage-column column-address <?php
+                        if (!(isset($address_show) && $address_show)) {
                             echo " hidden";
                         }
 
-                        ?> sortable desc" id="description" scope="col">
-                            <a href="#" orderby="description" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo DESCRIPTION_TITLE; ?></span>
+                        ?>  sortable desc" id="address" scope="col">
+                            <a href="#" orderby="address" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_ADDRESS_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
                         <?php
                     }
-                    
-                    
-                    if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
+
+
+                    if (isset($this->orderby) && $this->orderby == "city_name" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-slug <?php
-                        if (!(isset($slug_show) && $slug_show)) {
+                        <th class="manage-column column-city_name <?php
+                        if (!(isset($city_name_show) && $city_name_show)) {
                             echo " hidden";
                         }
 
-                        ?>  sorted <?php echo $this->order; ?>" id="slug" scope="col">
-                            <a href="#" orderby="slug" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo SLUG_TITLE; ?></span>
+                        ?> sorted <?php echo $this->order; ?>" id="city_name" scope="col">
+                            <a href="#" orderby="city_name" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CITY_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -448,32 +613,31 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-slug <?php
-                        if (!(isset($slug_show) && $slug_show)) {
+                        <th class="manage-column column-city_name <?php
+                        if (!(isset($city_name_show) && $city_name_show)) {
                             echo " hidden";
                         }
 
-                        ?> sortable desc" id="slug" scope="col">
-                            <a href="#" orderby="slug" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo SLUG_TITLE; ?></span>
+                        ?>  sortable desc" id="city_name" scope="col">
+                            <a href="#" orderby="city_name" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CITY_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
                         <?php
                     }
-                    
-                    
-                    if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
+
+                    if (isset($this->orderby) && $this->orderby == "star" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
-                        <th class="manage-column column-tours <?php
-                        if (!(isset($tours_show) && $tours_show)) {
+                        <th class="manage-column column-star <?php
+                        if (!(isset($star_show) && $star_show)) {
                             echo " hidden";
                         }
 
-                        ?>  sorted <?php echo $this->order; ?>" id="tours" scope="col">
-                            <a href="#" orderby="tours" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
-                                <span><?php echo TOURS_TITLE; ?></span>
+                        ?> sorted <?php echo $this->order; ?>" id="star" scope="col">
+                            <a href="#" orderby="star" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_STAR_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -481,14 +645,111 @@ if (!(isset($this->ajax) && $this->ajax)) {
                     } else {
 
                         ?>
-                        <th class="manage-column column-tours <?php
-                        if (!(isset($tours_show) && $tours_show)) {
+                        <th class="manage-column column-star <?php
+                        if (!(isset($star_show) && $star_show)) {
                             echo " hidden";
                         }
 
-                        ?> sortable desc" id="tours" scope="col">
-                            <a href="#" orderby="tours" order="desc" onclick="filterOrderBy(this)">
-                                <span><?php echo TOURS_TITLE; ?></span>
+                        ?>  sortable desc" id="star" scope="col">
+                            <a href="#" orderby="star" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_STAR_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    }
+
+                    if (isset($this->orderby) && $this->orderby == "number_of_rooms" && in_array($this->order, array('asc', 'desc'))) {
+
+                        ?>
+                        <th class="manage-column column-number_of_rooms <?php
+                        if (!(isset($number_of_rooms_show) && $number_of_rooms_show)) {
+                            echo " hidden";
+                        }
+
+                        ?> sorted <?php echo $this->order; ?>" id="number_of_rooms" scope="col">
+                            <a href="#" orderby="number_of_rooms" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    } else {
+
+                        ?>
+                        <th class="manage-column column-number_of_rooms <?php
+                        if (!(isset($number_of_rooms_show) && $number_of_rooms_show)) {
+                            echo " hidden";
+                        }
+
+                        ?>  sortable desc" id="number_of_rooms" scope="col">
+                            <a href="#" orderby="number_of_rooms" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_NUMBER_OF_ROOMS_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    }
+
+
+                    if (isset($this->orderby) && $this->orderby == "current_rating" && in_array($this->order, array('asc', 'desc'))) {
+
+                        ?>
+                        <th class="manage-column column-current_rating <?php
+                        if (!(isset($current_rating_show) && $current_rating_show)) {
+                            echo " hidden";
+                        }
+
+                        ?> sorted <?php echo $this->order; ?>" id="current_rating" scope="col">
+                            <a href="#" orderby="current_rating" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CURRENT_RATING_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    } else {
+
+                        ?>
+                        <th class="manage-column column-current_rating <?php
+                        if (!(isset($current_rating_show) && $current_rating_show)) {
+                            echo " hidden";
+                        }
+
+                        ?>  sortable desc" id="current_rating" scope="col">
+                            <a href="#" orderby="current_rating" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_CURRENT_RATING_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    }
+
+                    if (isset($this->orderby) && $this->orderby == "vote_times" && in_array($this->order, array('asc', 'desc'))) {
+
+                        ?>
+                        <th class="manage-column column-vote_times <?php
+                        if (!(isset($vote_times_show) && $vote_times_show)) {
+                            echo " hidden";
+                        }
+
+                        ?> sorted <?php echo $this->order; ?>" id="vote_times" scope="col">
+                            <a href="#" orderby="vote_times" order="<?php echo $this->order; ?>" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_VOTE_TIMES_TITLE; ?></span>
+                                <span class="sorting-indicator"></span>
+                            </a>
+                        </th>   
+                        <?php
+                    } else {
+
+                        ?>
+                        <th class="manage-column column-vote_times <?php
+                        if (!(isset($vote_times_show) && $vote_times_show)) {
+                            echo " hidden";
+                        }
+
+                        ?>  sortable desc" id="vote_times" scope="col">
+                            <a href="#" orderby="vote_times" order="desc" onclick="filterOrderBy(this)">
+                                <span><?php echo HOTEL_VOTE_TIMES_TITLE; ?></span>
                                 <span class="sorting-indicator"></span>
                             </a>
                         </th>   
@@ -578,12 +839,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchHotel(postData);
         });
 
-//        jQuery("#form-hotel-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchHotel(postData);
-//        });
-        
+        //        jQuery("#form-hotel-edit").submit(function (e) {
+        //            e.preventDefault(); //STOP default action
+        //            var postData = jQuery(this).serializeArray();
+        //            searchHotel(postData);
+        //        });
+
         function submitFormHotelEdit(e) {
             e.preventDefault(); //STOP default action
             try {
@@ -636,61 +897,40 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function getEditHotelPage(element) {
-            var term_taxonomy_id = jQuery(element).attr("hotel");
+            var ID = jQuery(element).attr("hotel");
             var name = jQuery(element).attr("name");
-            var url = "<?php echo URL . CONTEXT_PATH_HOTEL_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
-            if (window.history.replaceState) {
-                window.history.replaceState(null, null, url);
-            } else if (window.history && window.history.pushState) {
-                window.history.pushState({}, null, url);
-            } else {
-                location = url;
+            var url = "<?php echo URL . CONTEXT_PATH_HOTEL_EDIT_INFO; ?>" + ID + "/" + name;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
             }
-            jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_HOTEL_EDIT_INFO; ?>",
-                type: "POST",
-                data: {
-                    hotel: term_taxonomy_id
-                },
-                success: function (data, textStatus, jqXHR)
-                {
-                    jQuery(".wrap").html(data);
-                    //data: return data from server
-                },
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    //if fails      
-                }
-            });
         }
+
+        function getAddNewPage(element) {
+            var url = "<?php echo URL . CONTEXT_PATH_HOTEL_ADD_NEW; ?>";
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
+        
         function getHotelInfoPage(element) {
             var hotel = jQuery(element).attr("hotel");
             var name = jQuery(element).attr("name");
             var url = "<?php echo URL . CONTEXT_PATH_HOTEL_INFO; ?>" + hotel + "/" + name;
-            if (window.history.replaceState) {
-                window.history.replaceState(null, null, url);
-            } else if (window.history && window.history.pushState) {
-                window.history.pushState({}, null, url);
-            } else {
-                location = url;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
             }
-
-            jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_HOTEL_INFO; ?>",
-                type: "POST",
-                data: {
-                    hotel: hotel
-                },
-                success: function (data, textStatus, jqXHR)
-                {
-                    jQuery(".wrap").html(data);
-                    //data: return data from server
-                },
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    //if fails      
-                }
-            });
+        }
+        function viewHotel(element) {
+            var hotel = jQuery(element).attr("hotel");
+            var name = jQuery(element).attr("name");
+            var url = "<?php echo URL . CONTEXT_PATH_HOTEL_VIEW; ?>" + hotel + "/" + name;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
         }
 
         function deleteHotel(element) {

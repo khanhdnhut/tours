@@ -86,7 +86,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <h1>
         <?php echo DASHBOARD_DESTINATION_TITLE; ?> 
-        <a class="page-title-action" ajaxlink="<?php echo URL . CONTEXT_PATH_DESTINATION_ADD_NEW; ?>" ajaxtarget=".wrap" href="#" onclick="openAjaxLink(this)" ><?php echo ADD_NEW_TITLE; ?></a>
+        <a class="page-title-action" onclick="getAddNewPage(this)" ><?php echo ADD_NEW_TITLE; ?></a>
     </h1>
 
     <?php $this->renderFeedbackMessages(); ?>
@@ -641,58 +641,28 @@ if (!(isset($this->ajax) && $this->ajax)) {
             var term_taxonomy_id = jQuery(element).attr("destination");
             var name = jQuery(element).attr("name");
             var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>" + term_taxonomy_id + "/" + name;
-            if (window.history.replaceState) {
-                window.history.replaceState(null, null, url);
-            } else if (window.history && window.history.pushState) {
-                window.history.pushState({}, null, url);
-            } else {
-                location = url;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
             }
-            jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_EDIT_INFO; ?>",
-                type: "POST",
-                data: {
-                    destination: term_taxonomy_id
-                },
-                success: function (data, textStatus, jqXHR)
-                {
-                    jQuery(".wrap").html(data);
-                    //data: return data from server
-                },
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    //if fails      
-                }
-            });
         }
+        
+        function getAddNewPage(element) {
+            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_ADD_NEW; ?>";
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
+        
         function getDestinationInfoPage(element) {
             var destination = jQuery(element).attr("destination");
             var name = jQuery(element).attr("name");
             var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_INFO; ?>" + destination + "/" + name;
-            if (window.history.replaceState) {
-                window.history.replaceState(null, null, url);
-            } else if (window.history && window.history.pushState) {
-                window.history.pushState({}, null, url);
-            } else {
-                location = url;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
             }
-
-            jQuery.ajax({
-                url: "<?php echo URL . CONTEXT_PATH_DESTINATION_INFO; ?>",
-                type: "POST",
-                data: {
-                    destination: destination
-                },
-                success: function (data, textStatus, jqXHR)
-                {
-                    jQuery(".wrap").html(data);
-                    //data: return data from server
-                },
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    //if fails      
-                }
-            });
         }
 
         function deleteDestination(element) {
