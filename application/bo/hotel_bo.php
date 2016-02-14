@@ -20,6 +20,7 @@ class HotelBO extends PostBO
     public $city_name;
     public $current_rating;
     public $vote_times;
+    public $tag_list;
 
     function __construct()
     {

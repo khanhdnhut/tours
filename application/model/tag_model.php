@@ -12,7 +12,7 @@ class TagModel extends TaxonomyModel
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->isExistName($para->name, "tag")) {
+            if ($this->isExistName($para->name, "tag") != FALSE) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }
@@ -42,6 +42,49 @@ class TagModel extends TaxonomyModel
         }
 
         return true;
+    }
+
+    public function addTagArray($tagArray)
+    {
+        $arrayTagId = array();
+        try {
+            if (is_array($tagArray) && count($tagArray) > 0) {
+                for ($i = 0; $i < count($tagArray); $i++) {
+                    $tagName = trim($tagArray[$i]);
+                    if ($tagName != "") {
+                        $resultCheckExist = $this->isExistName($tagName, "tag");
+                        if ($resultCheckExist == FALSE) {
+                            $tagSlug = Utils::createSlug($tagName);
+                            if ($tagSlug != NULL) {
+                                BO::autoloadBO("tag");
+                                $tagBO = new TagBO();
+
+                                if (isset($tagName)) {
+                                    $tagBO->name = $tagName;
+                                }
+                                if (isset($tagSlug)) {
+                                    $tagBO->slug = $tagSlug;
+                                }
+                                $tagBO->description = $tagName;
+                                $tagBO->count = 0;
+                                $tagBO->term_group = 0;
+                                $tagBO->parent = 0;
+                                $resultCheckExist = parent::addToDatabase($tagBO);
+                                if ($resultCheckExist != NULL) {
+                                    $arrayTagId[] = $resultCheckExist;
+                                }
+                            }
+                        } else {
+                            $arrayTagId[] = $resultCheckExist;
+                        }
+                    }
+                }
+                return $arrayTagId;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return FALSE;
     }
 
     public function addToDatabase($para)
@@ -239,8 +282,9 @@ class TagModel extends TaxonomyModel
             }
         }
     }
-    
-    public function searchAjax($view, $para){
+
+    public function searchAjax($view, $para)
+    {
         $tags_per_page_ajax = TAGS_PER_PAGE_AJAX_DEFAULT;
         $taxonomy = "tag";
 

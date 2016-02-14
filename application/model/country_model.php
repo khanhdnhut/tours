@@ -19,7 +19,7 @@ class CountryModel extends TaxonomyModel
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->isExistName($para->name, "country")) {
+            if ($this->isExistName($para->name, "country") != FALSE) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }

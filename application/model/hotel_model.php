@@ -66,6 +66,10 @@ class HotelModel extends PostModel
             }
         }
 
+        if (isset($para->tag_list) && $para->tag_list != NULL && $para->tag_list != "") {
+            $tag_array = explode(",", $para->tag_list);
+            $para->tag_array = $tag_array;
+        }
 
 
         if (isset($para->number_of_rooms) && $para->number_of_rooms != "" && !is_numeric($para->number_of_rooms)) {
@@ -122,8 +126,8 @@ class HotelModel extends PostModel
                 if (isset($para->vote_times)) {
                     $hotelBO->vote_times = $para->vote_times;
                 }
-                if (isset($para->tags)) {
-                    $hotelBO->tags = $para->tags;
+                if (isset($para->tag_list)) {
+                    $hotelBO->tag_list = $para->tag_list;
                 }
                 if (isset($para->post_content)) {
                     $hotelBO->post_content = $para->post_content;
@@ -164,7 +168,6 @@ class HotelModel extends PostModel
                         return FALSE;
                     }
                 }
-
 
                 $post_id = parent::addToDatabase($hotelBO);
                 if ($post_id != NULL) {
@@ -239,7 +242,10 @@ class HotelModel extends PostModel
                         }
                     }
 
-                    if ($this->addRelationshipToDatabase($post_id, $hotelBO->city_id, 0) == NULL) {
+                    Model::autoloadModel('taxonomy');
+                    $taxonomyModel = new TaxonomyModel($this->db);
+
+                    if ($taxonomyModel->addRelationshipToDatabase($post_id, $hotelBO->city_id, 0) == NULL) {
                         if (isset($imageModel) && isset($image_id)) {
                             $imageModel->delete($image_id);
                         }
@@ -247,6 +253,16 @@ class HotelModel extends PostModel
                         $_SESSION["fb_error"][] = ERROR_ADD_NEW_HOTEL;
                         return FALSE;
                     }
+
+                    if (isset($para->tag_array) && count($para->tag_array) > 1) {
+                        Model::autoloadModel('tag');
+                        $tagModel = new TagModel($this->db);
+                        $tag_id_array = $tagModel->addTagArray($para->tag_array);
+                        for ($i = 0; $i < count($tag_id_array); $i++) {
+                            $taxonomyModel->addRelationshipToDatabase($post_id, $tag_id_array[$i]);
+                        }
+                    }
+
 
                     $this->db->commit();
                     $_SESSION["fb_success"][] = ADD_HOTEL_SUCCESS;
@@ -353,12 +369,20 @@ class HotelModel extends PostModel
             if ($hotelBO != NULL) {
                 Model::autoloadModel("taxonomy");
                 $taxonomyModel = new TaxonomyModel($this->db);
+                $tagList = $taxonomyModel->getRelationship($post_id, "tag");
+
+                if ($tagList != NULL && count($tagList) > 0) {
+                    $hotelBO->tag_list = $tagList;
+                }
+
                 $cityList = $taxonomyModel->getRelationship($post_id, "city");
                 if (count($cityList) > 0) {
                     $cityBO = $cityList[0];
                     $hotelBO->city_name = $cityBO->name;
                     $hotelBO->city_id = $cityBO->term_taxonomy_id;
                 }
+
+
 
                 if (isset($hotelBO->image_id) && $hotelBO->image_id != "" && is_numeric($hotelBO->image_id)) {
                     Model::autoloadModel('image');

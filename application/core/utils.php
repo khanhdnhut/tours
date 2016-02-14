@@ -5,6 +5,15 @@ class Utils
 
     static $format_info = array();
 
+    public static function createSlug($str)
+    {
+        if ($str != NULL && $str != "") {
+            $slug = strtolower(preg_replace('/\s+/', '-', $str));
+            return $slug;
+        }
+        return NULL;
+    }
+
     /**
      * Class casting
      *

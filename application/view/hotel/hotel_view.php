@@ -97,6 +97,22 @@
                             <?php
                         }
 
+                        if (isset($this->hotelBO->tag_list) && count($this->hotelBO->tag_list) > 0) {
+
+                            ?>
+                            <strong>Tags</strong>: <?php
+                            $tagArray = array();
+                            foreach ($this->hotelBO->tag_list as $tag) {
+                                $tagArray[] = $tag->name;
+                            }
+                            if (count($tagArray) > 0) {
+                                echo join(' - ', $tagArray);
+                            }
+
+                            ?><br>
+                            <?php
+                        }
+
                         ?>
                     </p>
                     <?php

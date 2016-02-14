@@ -24,9 +24,10 @@ class TaxonomyModel extends TermModel
         $sth->execute(array(':name' => $name, ':taxonomy' => $taxonomy));
         $count = $sth->rowCount();
         if ($count != 0) {
-            return true;
+            $result = $sth->fetch();
+            return $result->term_taxonomy_id;
         }
-        return false;
+        return FALSE;
     }
 
     public function isExistSlug($slug, $taxonomy)
@@ -40,9 +41,10 @@ class TaxonomyModel extends TermModel
         $sth->execute(array(':slug' => $slug, ':taxonomy' => $taxonomy));
         $count = $sth->rowCount();
         if ($count != 0) {
-            return true;
+            $result = $sth->fetch();
+            return $result->term_taxonomy_id;
         }
-        return false;
+        return FALSE;
     }
 
     public function update($taxonomyBO)
@@ -305,8 +307,7 @@ WHERE " . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id");
 
             $paraSQL[':taxonomy'] = $view->taxonomy;
             if (isset($para->s) && strlen(trim($para->s)) > 0) {
-                $sqlWhere .= " AND (u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " like :s OR
-u." . TB_TERM_TAXONOMY_COL_DESCRIPTION . " like :s OR
+                $sqlWhere .= " AND (u." . TB_TERM_TAXONOMY_COL_DESCRIPTION . " like :s OR
 m." . TB_TERMS_COL_SLUG . " like :s OR
 m." . TB_TERMS_COL_NAME . " like :s ) ";
                 $paraSQL[':s'] = "%" . $para->s . "%";
@@ -408,5 +409,34 @@ m." . TB_TERMS_COL_NAME . " like :s ) ";
         } catch (Exception $e) {
             $view->taxonomyList = NULL;
         }
+    }
+
+    public function addRelationshipToDatabase($post_id, $term_taxonomy_id, $term_order = 0)
+    {
+        try {
+            $sql = "insert into " . TABLE_TERM_RELATIONSHIPS . " 
+                            (" . TB_TERM_RELATIONSHIPS_COL_OBJECT_ID . ",
+                             " . TB_TERM_RELATIONSHIPS_COL_TERM_ORDER . ",
+                             " . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . ")
+                values (:object_id,
+                        :term_order,
+                        :term_taxonomy_id);";
+            $sth = $this->db->prepare($sql);
+
+            $sth->execute(array(
+                ":object_id" => $post_id,
+                ":term_order" => $term_order,
+                ":term_taxonomy_id" => $term_taxonomy_id
+            ));
+
+            $count = $sth->rowCount();
+            if ($count > 0) {
+                $post_id = $this->db->lastInsertId();
+                return $post_id;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return NULL;
     }
 }

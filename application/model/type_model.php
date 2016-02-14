@@ -12,7 +12,7 @@ class TypeModel extends TaxonomyModel
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->isExistName($para->name, "type")) {
+            if ($this->isExistName($para->name, "type") != FALSE) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }

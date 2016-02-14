@@ -160,35 +160,6 @@ class PostModel extends Model
         return true;
     }
 
-    public function addRelationshipToDatabase($post_id, $term_taxonomy_id, $term_order)
-    {
-        try {
-            $sql = "insert into " . TABLE_TERM_RELATIONSHIPS . " 
-                            (" . TB_TERM_RELATIONSHIPS_COL_OBJECT_ID . ",
-                             " . TB_TERM_RELATIONSHIPS_COL_TERM_ORDER . ",
-                             " . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . ")
-                values (:object_id,
-                        :term_order,
-                        :term_taxonomy_id);";
-            $sth = $this->db->prepare($sql);
-
-            $sth->execute(array(
-                ":object_id" => $post_id,
-                ":term_order" => $term_order,
-                ":term_taxonomy_id" => $term_taxonomy_id
-            ));
-
-            $count = $sth->rowCount();
-            if ($count > 0) {
-                $post_id = $this->db->lastInsertId();
-                return $post_id;
-            }
-        } catch (Exception $e) {
-            
-        }
-        return NULL;
-    }
-
     /**
      * update
      *
