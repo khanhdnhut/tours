@@ -295,6 +295,28 @@ WHERE " . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id");
         return FALSE;
     }
 
+    public function deleteRelationship($post_id, $taxonomy_id)
+    {
+        $termBO = $this->get($taxonomy_id);
+
+        try {
+            $sth = $this->db->prepare("DELETE "
+                . " FROM " . TABLE_TERM_RELATIONSHIPS
+                . " WHERE " . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id "
+                . " AND " . TB_TERM_RELATIONSHIPS_COL_OBJECT_ID . " = :post_id; ");
+            $sth->execute(array(':term_taxonomy_id' => $taxonomy_id, ':post_id' => $post_id));
+            $count = $sth->rowCount();
+            if ($count > 0) {
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return FALSE;
+    }
+
     public function search($view, $para)
     {
         try {

@@ -340,6 +340,11 @@ class HotelModel extends PostModel
             }
         }
 
+        if (isset($para->tag_list) && $para->tag_list != NULL && $para->tag_list != "") {
+            $tag_array = explode(",", $para->tag_list);
+            $para->tag_array = $tag_array;
+        }
+
         if (isset($para->number_of_rooms) && $para->number_of_rooms != "" && !is_numeric($para->number_of_rooms)) {
             $_SESSION["fb_error"][] = ERROR_HOTEL_NUMBER_OF_ROOMS_INVALID;
             return false;
@@ -382,7 +387,9 @@ class HotelModel extends PostModel
                     $hotelBO->city_id = $cityBO->term_taxonomy_id;
                 }
 
-
+                Model::autoloadModel('tag');
+                $tagModel = new TagModel($this->db);
+                $hotelBO->tag_list = $tagModel->getRelationship($post_id, 'tag');
 
                 if (isset($hotelBO->image_id) && $hotelBO->image_id != "" && is_numeric($hotelBO->image_id)) {
                     Model::autoloadModel('image');
@@ -438,10 +445,6 @@ class HotelModel extends PostModel
                         $hotelBO->post_title = $para->post_title;
                     }
 
-
-//                    if (isset($para->tags) && $hotelBO->tags != $para->tags) {
-//                        $hotelBO->tags = $para->tags;
-//                    }
                     if (isset($para->post_content) && $hotelBO->post_content != $para->post_content) {
                         $hotelBO->post_content = $para->post_content;
                     }
@@ -657,6 +660,56 @@ class HotelModel extends PostModel
                             }
                         }
 
+                        if (isset($para->tag_array) || isset($hotelBO->tag_list)) {
+                            Model::autoloadModel('tag');
+                            $tagModel = new TagModel($this->db);
+                            Model::autoloadModel('taxonomy');
+                            $taxonomyModel = new TaxonomyModel($this->db);
+                            if (!isset($para->tag_array) || count($para->tag_array) == 0) {
+                                foreach ($hotelBO->tag_list as $tag) {
+                                    $tagModel->deleteRelationship($para->post_id, $tag->term_taxonomy_id);
+                                }
+                            } elseif (!isset($hotelBO->tag_list) || count($hotelBO->tag_list) == 0) {
+                                if (count($para->tag_array) > 1) {
+                                    $tag_id_array = $tagModel->addTagArray($para->tag_array);
+                                    for ($i = 0; $i < count($tag_id_array); $i++) {
+                                        $taxonomyModel->addRelationshipToDatabase($para->post_id, $tag_id_array[$i]);
+                                    }
+                                }
+                            } elseif (isset($para->tag_array) && isset($hotelBO->tag_list) &&
+                                count($para->tag_array) > 0 && count($hotelBO->tag_list) > 0) {
+                                $tags_old_array = array();
+                                foreach ($hotelBO->tag_list as $tag_old) {
+                                    $tags_old_array[] = $tag_old->name;
+                                }
+                                
+                                $tags_new_array = array();
+                                for ($i = 0; $i < count($para->tag_array); $i++) {
+                                    if (!in_array($para->tag_array[$i], $tags_old_array)) {
+                                        $tags_new_array[] = $para->tag_array[$i];
+                                    }
+                                }
+                                if (count($tags_new_array) > 0) {
+                                    $tag_id_new_array = $tagModel->addTagArray($tags_new_array);
+                                    for ($i = 0; $i < count($tag_id_new_array); $i++) {
+                                        $taxonomyModel->addRelationshipToDatabase($para->post_id, $tag_id_new_array[$i]);
+                                    }
+                                }
+
+                                $tags_delete_array = array();
+                                for ($i = 0; $i < count($hotelBO->tag_list); $i++) {
+                                    if (!in_array($hotelBO->tag_list[$i]->name, $para->tag_array)) {
+                                        $tags_delete_array[] = $hotelBO->tag_list[$i];
+                                    }
+                                }
+                                if (count($tags_delete_array) > 0) {
+                                    foreach ($tags_delete_array as $tag) {
+                                        $tagModel->deleteRelationship($para->post_id, $tag->term_taxonomy_id);
+                                    }
+                                }
+                            }
+                        }
+
                         $this->db->commit();
                         if (isset($imageModel) && isset($image_id) && isset($image_id_old)) {
                             $imageModel->delete($image_id_old);
@@ -838,7 +891,7 @@ class HotelModel extends PostModel
                             LEFT JOIN `postmeta` AS vo ON po.`ID` = vo.`post_id` AND vo.`meta_key` = 'vote_times' 
                             LEFT JOIN `postmeta` AS im ON po.`ID` = im.`post_id` AND im.`meta_key` = 'image_id'   
                             LEFT JOIN `term_relationships` AS re ON po.`ID` = re.`object_id` 
-                            LEFT JOIN `term_taxonomy` AS ta ON re.`term_taxonomy_id` = ta.`term_taxonomy_id` AND ta.`taxonomy` = 'city' 
+                            JOIN `term_taxonomy` AS ta ON re.`term_taxonomy_id` = ta.`term_taxonomy_id` AND ta.`taxonomy` = 'city' 
                             LEFT JOIN `terms` AS te ON ta.`term_id` = te.`term_id`  ";
             $sqlWhere = " WHERE po.`post_type` = 'hotel' ";
 

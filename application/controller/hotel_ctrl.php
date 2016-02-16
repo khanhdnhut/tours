@@ -120,8 +120,8 @@ class HotelCtrl extends Controller
                     if (isset($_POST['vote_times'])) {
                         $this->para->vote_times = $_POST['vote_times'];
                     }
-                    if (isset($_POST['tags'])) {
-                        $this->para->tags = $_POST['tags'];
+                    if (isset($_POST['tag_list'])) {
+                        $this->para->tag_list = $_POST['tag_list'];
                     }
                     if (isset($_POST['post_content'])) {
                         $this->para->post_content = trim($_POST['post_content']);

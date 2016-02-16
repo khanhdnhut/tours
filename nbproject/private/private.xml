@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/xampp/htdocs/tours/public/css/admin/list-tables.css</file>
-            <file>file:/E:/xampp/htdocs/tours/application/view/destination/destination_index.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/view/_templates/admin/footer.php</file>
             <file>file:/E:/xampp/htdocs/tours/application/config/language_en.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/bo/post_bo.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/config/const.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/bo/image_bo.php</file>
         </group>
     </open-files>
 </project-private>

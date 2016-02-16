@@ -202,15 +202,33 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                         <label for="tags"><?php echo HOTEL_TAGS_TITLE; ?></label>
                     </th>
                     <td colspan="3">
-                        <input style="min-width: 200px;" type="text" value="" autocomplete="off" size="16" class="newtag form-input-tip" name="tagInput" id="tags">                    
-                        <input type="button" value="Add" class="button tagadd">
+                        <input style="min-width: 200px;" type="text" value="" autocomplete="off" size="16" class="newtag form-input-tip" name="tag_input" id="tags" onkeyup="searchTagAjax(this.value)">
+                        <ul id="livesearch" class="ac_results" style="display: block;">
+                        </ul>                    
+                        <input type="button" value="Add" class="button tagadd" onclick="addInputTag()">
+                        <p id="new-tag-post_tag-desc" class="howto">Separate tags with commas</p>
+                        <div id="tagchecklist" class="tagchecklist">
+                            <?php
+                            if (isset($this->hotelBO->tag_list) && count($this->hotelBO->tag_list) > 0) {
+                                $tagArray = array();
+                                foreach ($this->hotelBO->tag_list as $tag) {
+                                    $tagArray[] = $tag->name;
 
+                                    ?>
+                                    <span><a onclick="removeTag(this)" tag_name="<?php echo $tag->name; ?>" class="ntdelbutton" tabindex="0">X</a>&nbsp;<?php echo $tag->name; ?></span>
+                                    <?php
+                                }
+                            }
 
-                        <div class="tagchecklist"></div>
-                        <div class="taglist">
-                            <input type="hidden" value="Hà Nội" name="tags[]">
-                            <input type="hidden" value="Sài Gòn" name="tags[]">
+                            ?>
+
                         </div>
+                        <input type="hidden" name="tag_list" value="<?php
+                        if (isset($tagArray) && count($tagArray) > 0) {
+                            echo join(",", $tagArray);
+                        }
+
+                        ?>">
                     </td>
                 </tr>
 
@@ -341,6 +359,99 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                 }
             }
         });
+        function searchTagAjax(str) {
+            if (str.length == 0) {
+                document.getElementById("livesearch").innerHTML = "";
+                document.getElementById("livesearch").style.border = "0px";
+                return;
+            }
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {  // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    document.getElementById("livesearch").innerHTML = xmlhttp.responseText;
+                    document.getElementById("livesearch").style.border = "1px solid #A5ACB2";
+                }
+            }
+            xmlhttp.open("GET", "<?php echo URL . CONTEXT_PATH_TAG_SEARCH_AJAX; ?>" + str, true);
+            xmlhttp.send();
+
+        }
+
+        function addInputTag() {
+            var tag_name = jQuery('#form-your-profile input[name="tag_input"]').val().trim();
+            if (tag_name != "") {
+                var tag_add_array = tag_name.split(",");
+                for (var i = 0; i < tag_add_array.length; i++) {
+                    var name = tag_add_array[i];
+                    if (name != undefined) {
+                        name = name.trim();
+                        if (name != "") {
+                            addTag(name);
+                        }
+                    }
+                }
+            }
+        }
+
+        function selectTag(element) {
+            var tag_name = jQuery(element).attr("tag_name");
+            if (tag_name != undefined) {
+                tag_name = tag_name.trim();
+                if (tag_name != "") {
+                    addTag(tag_name);
+                }
+            }
+        }
+
+        function addTag(tag_name) {
+            var tag_list = jQuery('#form-your-profile input[name="tag_list"]').val();
+            if (tag_list == "") {
+                var tag_array = [];
+            } else {
+                var tag_array = tag_list.split(",");
+            }
+
+            if (tag_array.indexOf(tag_name) == -1) {
+                tag_array.push(tag_name);
+                document.getElementById("tagchecklist").innerHTML = document.getElementById("tagchecklist").innerHTML + "<span><a tabindex='0' class='ntdelbutton' tag_name='" + tag_name + "' onclick='removeTag(this)'>X</a>&nbsp;" + tag_name + "</span>";
+                jQuery('#form-your-profile input[name="tag_list"]').val(tag_array.join(","));
+                document.getElementById("livesearch").innerHTML = "";
+                document.getElementById("livesearch").style.border = "0px solid #A5ACB2";
+                jQuery('#form-your-profile input[name="tag_input"]').val("");
+            } else {
+                document.getElementById("livesearch").innerHTML = "";
+                document.getElementById("livesearch").style.border = "0px solid #A5ACB2";
+                jQuery('#form-your-profile input[name="tag_input"]').val("");
+            }
+        }
+
+        function removeTag(element) {
+            var tag_name = jQuery(element).attr("tag_name");
+            if (tag_name != undefined) {
+                tag_name = tag_name.trim();
+                if (tag_name != "") {
+                    jQuery(element).parent().remove();
+                    var tag_list = jQuery('#form-your-profile input[name="tag_list"]').val();
+                    if (tag_list == "") {
+                        var tag_array = [];
+                    } else {
+                        var tag_array = tag_list.split(",");
+                    }
+
+                    if (tag_array.indexOf(tag_name) != -1) {
+                        tag_array.splice(tag_array.indexOf(tag_name), 1);
+                        jQuery('#form-your-profile input[name="tag_list"]').val(tag_array.join(","));
+                        document.getElementById("livesearch").innerHTML = "";
+                        document.getElementById("livesearch").style.border = "0px solid #A5ACB2";
+                    }
+                }
+            }
+        }
     </script>
     <?php
 } else {

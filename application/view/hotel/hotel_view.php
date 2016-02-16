@@ -1,3 +1,5 @@
+<link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/tag.css?ver=4.4" id="dashicons-css" rel="stylesheet" />
+
 <div style="width:74.4%" class="column" id="ja-current-content">
     <div class="ja-content-main clearfix" id="ja-content-main">
         <?php
@@ -81,7 +83,7 @@
                         }
 
                         ?></p>
-                    <p>
+                    <div>
                         <?php
                         if (isset($this->hotelBO->address)) {
 
@@ -97,24 +99,28 @@
                             <?php
                         }
 
+
                         if (isset($this->hotelBO->tag_list) && count($this->hotelBO->tag_list) > 0) {
 
                             ?>
-                            <strong>Tags</strong>: <?php
-                            $tagArray = array();
-                            foreach ($this->hotelBO->tag_list as $tag) {
-                                $tagArray[] = $tag->name;
-                            }
-                            if (count($tagArray) > 0) {
-                                echo join(' - ', $tagArray);
-                            }
+                            <strong>Tags</strong>: <ul class="tagList">
+                                <?php
+                                $tagArray = array();
+                                foreach ($this->hotelBO->tag_list as $tag) {
+                                    $tagArray[] = $tag->name;
 
-                            ?><br>
+                                    ?>
+                                    <li><a class="tag" href="<?php echo URL . CONTEXT_PATH_TAG_INFO . $tag->term_taxonomy_id . "/" . $tag->slug; ?>/" title=""><span class="arrow2"></span><?php echo $tag->name; ?></a></li>
+                                    <?php
+                                }
+
+                                ?>
+                            </ul><br>
                             <?php
                         }
 
                         ?>
-                    </p>
+                    </div>
                     <?php
                     if (isset($this->hotelBO->star)) {
 
