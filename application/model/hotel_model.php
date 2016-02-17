@@ -374,13 +374,13 @@ class HotelModel extends PostModel
             if ($hotelBO != NULL) {
                 Model::autoloadModel("taxonomy");
                 $taxonomyModel = new TaxonomyModel($this->db);
-                $tagList = $taxonomyModel->getRelationship($post_id, "tag");
+                $tagList = $taxonomyModel->getTaxonomyRelationshipByObjectId($post_id, "tag");
 
                 if ($tagList != NULL && count($tagList) > 0) {
                     $hotelBO->tag_list = $tagList;
                 }
 
-                $cityList = $taxonomyModel->getRelationship($post_id, "city");
+                $cityList = $taxonomyModel->getTaxonomyRelationshipByObjectId($post_id, "city");
                 if (count($cityList) > 0) {
                     $cityBO = $cityList[0];
                     $hotelBO->city_name = $cityBO->name;
@@ -389,7 +389,7 @@ class HotelModel extends PostModel
 
                 Model::autoloadModel('tag');
                 $tagModel = new TagModel($this->db);
-                $hotelBO->tag_list = $tagModel->getRelationship($post_id, 'tag');
+                $hotelBO->tag_list = $tagModel->getTaxonomyRelationshipByObjectId($post_id, 'tag');
 
                 if (isset($hotelBO->image_id) && $hotelBO->image_id != "" && is_numeric($hotelBO->image_id)) {
                     Model::autoloadModel('image');

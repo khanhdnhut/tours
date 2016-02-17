@@ -286,6 +286,37 @@ class PostModel extends Model
         return FALSE;
     }
 
+    public function getPostRelationshipByTaxonomyId($term_taxonomy_id, $taxonomy)
+    {
+        try {
+            $sth = $this->db->prepare("SELECT m.* "
+                . " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_POSTS . " AS m, " . TABLE_TERM_RELATIONSHIPS . " as r "
+                . " WHERE  u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " = :taxonomy "
+                . " AND u." . TB_TERM_TAXONOMY_COL_TERM_TAXONOMY_ID . " = r." . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . " "
+                . " AND r." . TB_TERM_RELATIONSHIPS_COL_OBJECT_ID . " =  m." . TB_POST_COL_ID . " "
+                . " AND r." . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id ");
+
+            $sth->execute(array(':taxonomy' => $taxonomy, ':term_taxonomy_id' => $term_taxonomy_id));
+            $count = $sth->rowCount();
+            if ($count != 0) {
+                $postList = $sth->fetchAll();
+                for ($i = 0; $i < sizeof($postList); $i++) {
+                    $postInfo = $postList[$i];
+                    $this->autoloadBO('post');
+                    $postBO = new PostBO();
+                    $postBO->setPost($postInfo);
+                    $postMetaInfoArray = $this->getMetaInfo($postInfo->ID);
+                    $postBO->setPostMetaInfo($postMetaInfoArray);
+                    $postList[$i] = $postBO;
+                }
+                return $postList;
+            }
+        } catch (Exception $e) {
+            
+        }
+        return null;
+    }
+
     public function get($post_id)
     {
         try {
@@ -341,7 +372,7 @@ class PostModel extends Model
             $sth->execute(array(':post_id' => $post_id));
             $count = $sth->rowCount();
             if ($count > 0) {
-                $this->deleteMeta($post_id);                
+                $this->deleteMeta($post_id);
                 return TRUE;
             } else {
                 return FALSE;
@@ -370,14 +401,14 @@ class PostModel extends Model
         }
         return FALSE;
     }
-    
+
     public function deleteRelationship($post_id, $term_taxonomy_id)
     {
         try {
             $sth = $this->db->prepare("DELETE 
                                    FROM   " . TABLE_TERM_RELATIONSHIPS . "
                                    WHERE  " . TB_TERM_RELATIONSHIPS_COL_OBJECT_ID . " = :post_id 
-                                   AND ".TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID." = :term_taxonomy_id ");
+                                   AND " . TB_TERM_RELATIONSHIPS_COL_TERM_TAXONOMY_ID . " = :term_taxonomy_id ");
             $sth->execute(array(':post_id' => $post_id, ':term_taxonomy_id' => $term_taxonomy_id));
             $count = $sth->rowCount();
             if ($count > 0) {

@@ -241,7 +241,7 @@ class TaxonomyModel extends TermModel
         return null;
     }
 
-    public function getRelationship($object_id, $taxonomy)
+    public function getTaxonomyRelationshipByObjectId($object_id, $taxonomy)
     {
         try {
             $sth = $this->db->prepare("SELECT u.term_taxonomy_id, u.term_id, "

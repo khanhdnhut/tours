@@ -10,5 +10,9 @@ class DestinationBO extends TaxonomyBO
 {
 
     public $taxonomy = "destination";
+    public $post_content_1 = "";
+    public $post_content_2 = "";
+    public $images;
+    public $image_ids;
 
 }

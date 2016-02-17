@@ -89,6 +89,47 @@
                     <p class="description"><?php echo DESTINATION_DESCRIPTION_DESC; ?></p>
                 </td>
             </tr>
+
+            <tr class="post_content_1-wrap">
+                <th>
+                    <label for="post_content_1"><?php echo POST_CONTENT_1_TITLE; ?></label>
+                </th>
+                <td>
+                    <textarea id="post_content_1" name="post_content_1" autocomplete="off" style="height: 100px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                        if (isset($this->para) && isset($this->para->post_content_1)) {
+                            echo htmlspecialchars($this->para->post_content_1);
+                        }
+
+                        ?></textarea>
+                    <p class="post_content_1"><?php echo POST_CONTENT_1_DESCRIPTION_DESC; ?></p>
+                </td>
+            </tr>
+            
+            <tr class="post_content_2-wrap">
+                <th>
+                    <label for="post_content_2"><?php echo POST_CONTENT_2_TITLE; ?></label>
+                </th>
+                <td>
+                    <textarea id="post_content_2" name="post_content_2" autocomplete="off" style="height: 100px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                        if (isset($this->para) && isset($this->para->post_content_2)) {
+                            echo htmlspecialchars($this->para->post_content_2);
+                        }
+
+                        ?></textarea>
+                    <p class="post_content_2"><?php echo POST_CONTENT_2_DESCRIPTION_DESC; ?></p>
+                </td>
+            </tr>
+            
+            <tr class="images-wrap">
+                <th>
+                    <label for="images"><?php echo IMAGES_TITLE; ?></label>
+                </th>
+                <td>
+                    <input type="file" id="images" name="images[]" accept=".jpg, .png, .jpeg"  multiple>                    
+                    <p class="post_content_2"><?php echo IMAGES_DESCRIPTION_DESC; ?></p>
+                </td>
+            </tr>
+
         </tbody>
     </table>
 

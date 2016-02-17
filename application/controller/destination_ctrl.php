@@ -40,6 +40,15 @@ class DestinationCtrl extends Controller
                 if (isset($_POST['parent'])) {
                     $this->para->parent = $_POST['parent'];
                 }
+                if (isset($_POST['post_content_1'])) {
+                    $this->para->post_content_1 = $_POST['post_content_1'];
+                }
+                if (isset($_POST['post_content_2'])) {
+                    $this->para->post_content_2 = $_POST['post_content_2'];
+                }
+                if (isset($_FILES['images']) && count($_FILES['images']) > 0) {
+                    $this->para->images = $_FILES['images'];
+                }
                 $result = $model->addToDatabase($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
@@ -141,6 +150,33 @@ class DestinationCtrl extends Controller
             }
         } else {
             $this->login();
+        }
+    }
+
+    public function view($term_taxonomy_id = NULL)
+    {
+        Model::autoloadModel('destination');
+        $model = new DestinationModel($this->db);
+        $this->para = new stdClass();
+        if (isset($_POST['destination'])) {
+            $this->para->term_taxonomy_id = $_POST['destination'];
+        } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+            $this->para->term_taxonomy_id = $term_taxonomy_id;
+        }
+
+        if (isset($this->para->term_taxonomy_id)) {
+            $this->view->destinationBO = $model->get($this->para->term_taxonomy_id);
+
+            $this->view->parentList = new SplDoublyLinkedList();
+            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+
+            if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+                $this->view->render(RENDER_VIEW_DESTINATION);
+            } else {
+                $this->view->render(RENDER_VIEW_DESTINATION, TRUE);
+            }
+        } else {
+            header('location: ' . URL);
         }
     }
 
