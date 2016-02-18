@@ -104,8 +104,97 @@ if (isset($this->cityBO) && $this->cityBO != NULL) {
                 </td>
             </tr>
 
+            <tr class="post_content_1-wrap">
+                <th>
+                    <label for="post_content_1"><?php echo POST_CONTENT_1_TITLE; ?></label>
+                </th>
+                <td>
+                    <textarea  disabled="disabled" id="post_content_1" name="post_content_1" autocomplete="off" style="height: 100px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                        if (isset($this->cityBO) && isset($this->cityBO->post_content_1)) {
+                            echo htmlspecialchars($this->cityBO->post_content_1);
+                        }
 
-        </tbody>
+                        ?></textarea>
+                </td>
+            </tr>
+
+            <tr class="post_content_2-wrap">
+                <th>
+                    <label for="post_content_2"><?php echo POST_CONTENT_2_TITLE; ?></label>
+                </th>
+                <td>
+                    <textarea disabled="disabled" id="post_content_2" name="post_content_2" autocomplete="off" style="height: 100px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                        if (isset($this->cityBO) && isset($this->cityBO->post_content_2)) {
+                            echo htmlspecialchars($this->cityBO->post_content_2);
+                        }
+
+                        ?></textarea>
+                </td>
+            </tr>
+
+            <tr class="images-wrap">
+                <th>
+                    <label for="images"><?php echo IMAGES_TITLE; ?></label>
+                </th>
+                <td>
+                    <?php
+                    if (isset($this->cityBO->images)) {
+                        foreach ($this->cityBO->images as $image) {
+                            if (isset($image->image_url)) {
+
+                                ?>
+                                <div data-p="144.50" style="float: left; margin-right: 10px;">
+                                    <img data-u="thumb" src="<?php echo URL . $image->slider_thumb_url; ?>" />
+                                </div>
+
+                                <?php
+                            }
+                        }
+                    }
+
+                    ?>                 
+                </td>
+            </tr>
+        <link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/tag.css?ver=4.4" id="dashicons-css" rel="stylesheet" />
+
+        <tr class="city-tags-wrap">   
+            <th colspan="1">
+                <label for="tags"><?php echo TAGS_TITLE; ?></label>
+            </th>
+            <td colspan="3">
+                <div id="tagchecklist" class="tagBlock TagContainer">
+                    <?php
+                    if (isset($this->cityBO->tag_list) && count($this->cityBO->tag_list) > 0) {
+
+                        ?>
+                        <ul class="tagList">
+                            <?php
+                            $tagArray = array();
+                            foreach ($this->cityBO->tag_list as $tag) {
+                                $tagArray[] = $tag->name;
+
+                                ?>
+                                <li><a class="tag" href="<?php echo URL . CONTEXT_PATH_TAG_INFO . $tag->term_taxonomy_id . "/" . $tag->slug; ?>/" title=""><span class="arrow2"></span><?php echo $tag->name; ?></a></li>
+                                        <?php
+                                    }
+
+                                    ?>
+                        </ul>
+                        <?php
+                    }
+
+                    ?>
+
+                </div>
+                <input type="hidden" name="tag_list" value="<?php
+                if (isset($tagArray) && count($tagArray) > 0) {
+                    echo join(",", $tagArray);
+                }
+
+                ?>">
+            </td>
+        </tr>
+    </tbody>
     </table>
 
     <script>

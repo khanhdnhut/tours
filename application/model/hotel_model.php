@@ -254,7 +254,7 @@ class HotelModel extends PostModel
                         return FALSE;
                     }
 
-                    if (isset($para->tag_array) && count($para->tag_array) > 1) {
+                    if (isset($para->tag_array) && count($para->tag_array) > 0) {
                         Model::autoloadModel('tag');
                         $tagModel = new TagModel($this->db);
                         $tag_id_array = $tagModel->addTagArray($para->tag_array);
@@ -374,11 +374,6 @@ class HotelModel extends PostModel
             if ($hotelBO != NULL) {
                 Model::autoloadModel("taxonomy");
                 $taxonomyModel = new TaxonomyModel($this->db);
-                $tagList = $taxonomyModel->getTaxonomyRelationshipByObjectId($post_id, "tag");
-
-                if ($tagList != NULL && count($tagList) > 0) {
-                    $hotelBO->tag_list = $tagList;
-                }
 
                 $cityList = $taxonomyModel->getTaxonomyRelationshipByObjectId($post_id, "city");
                 if (count($cityList) > 0) {
@@ -389,8 +384,11 @@ class HotelModel extends PostModel
 
                 Model::autoloadModel('tag');
                 $tagModel = new TagModel($this->db);
-                $hotelBO->tag_list = $tagModel->getTaxonomyRelationshipByObjectId($post_id, 'tag');
-
+                $tagList = $tagModel->getTaxonomyRelationshipByObjectId($post_id, 'tag');
+                if ($tagList != NULL && count($tagList) > 0) {
+                    $hotelBO->tag_list = $tagList;
+                }
+                
                 if (isset($hotelBO->image_id) && $hotelBO->image_id != "" && is_numeric($hotelBO->image_id)) {
                     Model::autoloadModel('image');
                     $imageModel = new ImageModel($this->db);
@@ -670,7 +668,7 @@ class HotelModel extends PostModel
                                     $tagModel->deleteRelationship($para->post_id, $tag->term_taxonomy_id);
                                 }
                             } elseif (!isset($hotelBO->tag_list) || count($hotelBO->tag_list) == 0) {
-                                if (count($para->tag_array) > 1) {
+                                if (count($para->tag_array) > 0) {
                                     $tag_id_array = $tagModel->addTagArray($para->tag_array);
                                     for ($i = 0; $i < count($tag_id_array); $i++) {
                                         $taxonomyModel->addRelationshipToDatabase($para->post_id, $tag_id_array[$i]);

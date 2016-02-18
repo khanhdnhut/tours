@@ -38,6 +38,7 @@
         <script src="<?php echo PUBLIC_JS; ?>includes/jquery/jquery.js?ver=4.4" type="text/javascript"></script>
         <script src="<?php echo PUBLIC_JS; ?>includes/jquery/jquery-migrate.js?ver=4.4" type="text/javascript"></script>
         <script src="<?php echo PUBLIC_JS; ?>includes/utils.js?ver=4.4" type="text/javascript"></script>
+        <script src="<?php echo PUBLIC_JS; ?>utils.js?ver=4.4" type="text/javascript"></script>
 
         <!--[if lt IE 8]>
         <script type='text/javascript' src='<?php echo PUBLIC_JS; ?>includes/json2.min.js?ver=2015-05-03'></script>

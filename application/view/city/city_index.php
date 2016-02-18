@@ -325,14 +325,18 @@ if (!(isset($this->ajax) && $this->ajax)) {
                                 </strong>
                                 <br>
                                 <div class="row-actions">
+                                    <span class="view">
+                                        <a href="#" city="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->slug); ?>" onclick="viewCity(this)"><?php echo VIEW_TITLE; ?>
+                                        </a>
+                                    </span> |                                    
                                     <span class="edit">
                                         <a href="#" city="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditCityPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
-                                        | <span class="delete">
-                                            <a href="#" class="submitdelete" city="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteCity(this)"><?php echo DELETE_TITLE; ?>
-                                            </a>
-                                        </span>
+                                    | <span class="delete">
+                                        <a href="#" class="submitdelete" city="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteCity(this)"><?php echo DELETE_TITLE; ?>
+                                        </a>
+                                    </span>
                                 </div>
                                 <button class="toggle-row" type="button">
                                     <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
@@ -428,8 +432,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-                    
-                    
+
+
                     if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -461,8 +465,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-                    
-                    
+
+
                     if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -578,12 +582,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchCity(postData);
         });
 
-//        jQuery("#form-city-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchCity(postData);
-//        });
-        
+    //        jQuery("#form-city-edit").submit(function (e) {
+    //            e.preventDefault(); //STOP default action
+    //            var postData = jQuery(this).serializeArray();
+    //            searchCity(postData);
+    //        });
+
         function submitFormCityEdit(e) {
             e.preventDefault(); //STOP default action
             try {
@@ -644,7 +648,16 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+        function viewCity(element) {
+            var term_taxonomy_id = jQuery(element).attr("city");
+            var name = jQuery(element).attr("name");
+            var url = "<?php echo URL . CONTEXT_PATH_CITY_VIEW; ?>" + term_taxonomy_id + "/" + name;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_CITY_ADD_NEW ?>";
             if (url != null && url != "" && url != undefined) {
@@ -652,7 +665,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getCityInfoPage(element) {
             var city = jQuery(element).attr("city");
             var name = jQuery(element).attr("name");
@@ -684,10 +697,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-city-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-city-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchCity(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-city-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-city-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchCity(postData);
+            }
         }
 
         function checkAll(element) {

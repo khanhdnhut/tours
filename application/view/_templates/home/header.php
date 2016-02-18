@@ -7,6 +7,7 @@
                 echo $head_title;
             else
                 echo HEADER_TITLE_DEFAULT;
+
             ?>
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -18,6 +19,7 @@
             $head_meta_keywords;
         else
             echo HEADER_META_KEYWORDS_DEFAULT;
+
         ?>"/>
 
         <meta name="description" content="
@@ -26,6 +28,7 @@
             $head_meta_description;
         else
             echo HEADER_META_DESCRIPTION_DEFAULT;
+
         ?>"/>
 
         <meta property="og:site_name" content="
@@ -34,31 +37,35 @@
             $head_meta_og_site_name;
         else
             echo HEADER_META_OG_SITE_NAME_DEFAULT;
+
         ?>"/>
 
         <meta property="og:type" content="
         <?php
-        if (isset($head_meta_og_type))
-            $head_meta_og_type;
-        else
-            echo HEADER_META_OG_TYPE_DEFAULT;
-        ?>"/>
+              if (isset($head_meta_og_type))
+                  $head_meta_og_type;
+              else
+                  echo HEADER_META_OG_TYPE_DEFAULT;
+
+              ?>"/>
 
         <meta property="og:url" content="
-        <?php
-        if (isset($head_meta_og_url))
-            $head_meta_og_url;
-        else
-            echo URL;
-        ?>"/>
+              <?php
+              if (isset($head_meta_og_url))
+                  $head_meta_og_url;
+              else
+                  echo URL;
+
+              ?>"/>
 
         <meta property="og:title" content="
-        <?php
-        if (isset($head_meta_og_title))
-            $head_meta_og_title;
-        else
-            echo HEADER_META_OG_TITLE_DEFAULT;
-        ?>"/>
+<?php
+if (isset($head_meta_og_title))
+    $head_meta_og_title;
+else
+    echo HEADER_META_OG_TITLE_DEFAULT;
+
+?>"/>
 
 
         <meta property="og:description" content="
@@ -67,6 +74,7 @@
             $head_meta_og_description;
         else
             echo HEADER_META_OG_DESCRIPTION_DEFAULT;
+
         ?>"/>
 
         <meta property="og:image" content="
@@ -75,6 +83,7 @@
             PUBLIC_IMG . $head_meta_og_image;
         else
             echo PUBLIC_IMG . HEADER_META_OG_IMAGE;
+
         ?>"/>
 
         <meta rel="canonical" href="
@@ -83,6 +92,7 @@
             $head_canonical;
         else
             echo URL;
+
         ?>"/>
 
         <meta rel="apple-touch-icon-precomposed" sizes="72x72" href="
@@ -91,6 +101,7 @@
             PUBLIC_IMG . $head_apple_touch_icon_precomposed_72;
         else
             echo PUBLIC_IMG . HEADER_APPLE_TOUCH_ICON_PRECOMPOSED_72_DEFAULT;
+
         ?>"/>
 
         <meta rel="apple-touch-icon-precomposed" sizes="144x144" href="
@@ -99,43 +110,51 @@
             PUBLIC_IMG . $head_apple_touch_icon_precomposed_114;
         else
             echo PUBLIC_IMG . HEADER_APPLE_TOUCH_ICON_PRECOMPOSED_114_DEFAULT;
+
         ?>"/>
 
         <meta rel="apple-touch-icon-precomposed" sizes="57x57" href="
         <?php
-        if (isset($head_apple_touch_icon_precomposed_57))
-            PUBLIC_IMG . $head_apple_touch_icon_precomposed_57;
-        else
-            echo PUBLIC_IMG . HEADER_APPLE_TOUCH_ICON_PRECOMPOSED_57_DEFAULT;
-        ?>"/>
+              if (isset($head_apple_touch_icon_precomposed_57))
+                  PUBLIC_IMG . $head_apple_touch_icon_precomposed_57;
+              else
+                  echo PUBLIC_IMG . HEADER_APPLE_TOUCH_ICON_PRECOMPOSED_57_DEFAULT;
+
+              ?>"/>
 
         <meta rel="apple-touch-icon-precomposed" sizes="1x1" href="
-        <?php
-        if (isset($head_apple_touch_icon_precomposed_1))
-            PUBLIC_IMG . $head_apple_touch_icon_precomposed_1;
-        else
-            echo PUBLIC_IMG . HEADER_APPLE_TOUCH_ICON_PRECOMPOSED_1_DEFAULT;
-        ?>"/>
+              <?php
+              if (isset($head_apple_touch_icon_precomposed_1))
+                  PUBLIC_IMG . $head_apple_touch_icon_precomposed_1;
+              else
+                  echo PUBLIC_IMG . HEADER_APPLE_TOUCH_ICON_PRECOMPOSED_1_DEFAULT;
+
+              ?>"/>
 
         <link rel="nokia-touch-icon" href="
-        <?php
-        if (isset($head_nokia_touch_icon))
-            PUBLIC_IMG . $head_nokia_touch_icon;
-        else
-            echo PUBLIC_IMG . HEADER_NOKIA_TOUCH_ICON_DEFAULT;
-        ?>"/>
+<?php
+if (isset($head_nokia_touch_icon))
+    PUBLIC_IMG . $head_nokia_touch_icon;
+else
+    echo PUBLIC_IMG . HEADER_NOKIA_TOUCH_ICON_DEFAULT;
+
+?>"/>
 
         <link rel="shortcut icon" type="image/x-icon" href="
-        <?php
-        if (isset($head_shortcut_icon))
-            PUBLIC_IMG . $head_shortcut_icon;
-        else
-            echo PUBLIC_IMG . HEADER_SHORTCUT_ICON_DEFAULT;
-        ?>"/>
+<?php
+if (isset($head_shortcut_icon))
+    PUBLIC_IMG . $head_shortcut_icon;
+else
+    echo PUBLIC_IMG . HEADER_SHORTCUT_ICON_DEFAULT;
+
+?>"/>
 
         <link href="<?php echo PUBLIC_CSS; ?>a49076c99c6cdb6c02f556b8d568a1e4.css" type="text/css" rel="stylesheet"/>
         <script async="" src="//www.google-analytics.com/analytics.js"></script>
         <script async="" src="<?php echo PUBLIC_JS; ?>analytics.js"></script>
+        <script>
+            var URL = '<?php echo URL; ?>';
+        </script>
         <script src="<?php echo PUBLIC_JS; ?>bfa91aa4ba6dbba485619f96e31645f7.js" type="application/javascript"></script>
 
         <!--[if ie]><link href="<?php echo PUBLIC_CSS; ?>template-ie.css" type="text/css" rel="stylesheet" /><![endif]-->

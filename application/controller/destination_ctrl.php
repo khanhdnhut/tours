@@ -46,7 +46,12 @@ class DestinationCtrl extends Controller
                 if (isset($_POST['post_content_2'])) {
                     $this->para->post_content_2 = $_POST['post_content_2'];
                 }
-                if (isset($_FILES['images']) && count($_FILES['images']) > 0) {
+                if (isset($_POST['tag_list'])) {
+                    $this->para->tag_list = $_POST['tag_list'];
+                }
+                if (isset($_FILES['images']) && count($_FILES['images']) > 0 &&
+                    isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) && 
+                    $_FILES['images']['name'][0] != '') {
                     $this->para->images = $_FILES['images'];
                 }
                 $result = $model->addToDatabase($this->para);
@@ -95,6 +100,23 @@ class DestinationCtrl extends Controller
                     }
                     if (isset($_POST['parent'])) {
                         $this->para->parent = $_POST['parent'];
+                    }
+                    if (isset($_POST['post_content_1'])) {
+                        $this->para->post_content_1 = $_POST['post_content_1'];
+                    }
+                    if (isset($_POST['post_content_2'])) {
+                        $this->para->post_content_2 = $_POST['post_content_2'];
+                    }
+                    if (isset($_POST['image_delete_list'])) {
+                        $this->para->image_delete_list = $_POST['image_delete_list'];
+                    }
+                    if (isset($_POST['tag_list'])) {
+                        $this->para->tag_list = $_POST['tag_list'];
+                    }
+                    if (isset($_FILES['images']) && count($_FILES['images']) > 0 &&
+                        isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) &&
+                        $_FILES['images']['name'][0] != "") {
+                        $this->para->images = $_FILES['images'];
                     }
 
                     $result = $model->updateInfo($this->para);

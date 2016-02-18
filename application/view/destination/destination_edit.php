@@ -8,7 +8,7 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
         }
     </style>
     <h1>
-        <?php echo EDIT_PROFILE_OF_TITLE . " " . DESTINATION_TITLE ; ?> "<strong><?php
+        <?php echo EDIT_PROFILE_OF_TITLE . " " . DESTINATION_TITLE; ?> "<strong><?php
             if (isset($this->destinationBO->name)) {
                 echo $this->destinationBO->name;
             }
@@ -67,7 +67,7 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                             if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
                                 $this->parentList->rewind();
                                 foreach ($this->parentList as $value) {
-                                    if ($value->term_taxonomy_id != $this->destinationBO->term_taxonomy_id && 
+                                    if ($value->term_taxonomy_id != $this->destinationBO->term_taxonomy_id &&
                                         $value->parent != $this->destinationBO->term_taxonomy_id) {
 
                                         ?> 
@@ -117,12 +117,133 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                     </td>
                 </tr>
 
+
+                <tr class="post_content_1-wrap">
+                    <th>
+                        <label for="post_content_1"><?php echo POST_CONTENT_1_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <textarea id="post_content_1" name="post_content_1" autocomplete="off" style="height: 100px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                            if (isset($this->destinationBO) && isset($this->destinationBO->post_content_1)) {
+                                echo htmlspecialchars($this->destinationBO->post_content_1);
+                            }
+
+                            ?></textarea>
+                    </td>
+                </tr>
+
+                <tr class="post_content_2-wrap">
+                    <th>
+                        <label for="post_content_2"><?php echo POST_CONTENT_2_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <textarea id="post_content_2" name="post_content_2" autocomplete="off" style="height: 100px;" class="wp-editor-area large-text" aria-hidden="true"><?php
+                            if (isset($this->destinationBO) && isset($this->destinationBO->post_content_2)) {
+                                echo htmlspecialchars($this->destinationBO->post_content_2);
+                            }
+
+                            ?></textarea>
+                    </td>
+                </tr>
+
+                <tr class="images-wrap">
+                    <th>
+                        <label for="images"><?php echo IMAGES_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input type="file" id="images" name="images[]" accept=".jpg, .png, .jpeg"  multiple>
+                        <p class="images"  style="float: left; width: 100%; margin-bottom: 30px;"><?php echo DESTINATION_IMAGES_DESCRIPTION_DESC; ?></p>
+                        <input type="hidden" name="image_delete_list">
+                        <?php
+                        if (isset($this->destinationBO->images)) {
+                            foreach ($this->destinationBO->images as $image) {
+                                if (isset($image->image_url)) {
+
+                                    ?>
+                                    <div data-p="144.50" style="float: left; margin-right: 10px;">
+                                        <img data-u="thumb" src="<?php echo URL . $image->slider_thumb_url; ?>" />
+                                        <div class="row-actions widefat" style="text-align: center;">
+                                            <span class="delete">
+                                                <a onclick="deleteImage(this)" image_id="<?php echo $image->image_id; ?>" class="submitdelete" href="#">Delete                                        </a>
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <?php
+                                }
+                            }
+                        }
+
+                        ?>                 
+                    </td>
+                </tr>
+
+                <tr class="destination-tags-wrap">   
+                    <th colspan="1">
+                        <label for="tags"><?php echo TAGS_TITLE; ?></label>
+                    </th>
+                    <td colspan="3">
+                        <input style="min-width: 200px;" type="text" value="" autocomplete="off" size="16" class="newtag form-input-tip" name="tag_input" id="tags" onkeyup="searchTagAjax(this.value)">
+                        <ul id="livesearch" class="ac_results" style="display: block;">
+                        </ul>                    
+                        <input type="button" value="Add" class="button tagadd" onclick="addInputTag()">
+                        <p id="new-tag-post_tag-desc" class="howto">Separate tags with commas</p>
+                        <div id="tagchecklist" class="tagchecklist">
+                            <?php
+                            if (isset($this->destinationBO->tag_list) && count($this->destinationBO->tag_list) > 0) {
+                                $tagArray = array();
+                                foreach ($this->destinationBO->tag_list as $tag) {
+                                    $tagArray[] = $tag->name;
+
+                                    ?>
+                                    <span><a onclick="removeTag(this)" tag_name="<?php echo $tag->name; ?>" class="ntdelbutton" tabindex="0">X</a>&nbsp;<?php echo $tag->name; ?></span>
+                                    <?php
+                                }
+                            }
+
+                            ?>
+
+                        </div>
+                        <input type="hidden" name="tag_list" value="<?php
+                        if (isset($tagArray) && count($tagArray) > 0) {
+                            echo join(",", $tagArray);
+                        }
+
+                        ?>">
+                    </td>
+                </tr>
             </tbody>
         </table>
 
         <p class="submit"><input type="submit" value="<?php echo LABEL_UPDATE_DESTINATION; ?>" class="button button-primary" id="submit" name="submit"></p>
     </form>
     <script>
+
+        function deleteImage(element) {
+
+            if (confirm('<?php echo CONFIRM_DELETE_IMAGE . CONFIRM_DELETE_CANCEL_OK; ?>')) {
+                var image_id = jQuery(element).attr("image_id");
+                if (image_id != undefined) {
+                    image_id = image_id.trim();
+                    if (image_id != "") {
+                        jQuery(element).parent().parent().parent().remove();
+                        var image_delete_list = jQuery('#form-your-profile input[name="image_delete_list"]').val();
+                        if (image_delete_list == "") {
+                            var image_delete_array = [];
+                        } else {
+                            var image_delete_array = image_delete_list.split(",");
+                        }
+
+                        if (image_delete_array.indexOf(image_id) == -1) {
+                            image_delete_array.push(image_id);
+                            jQuery('#form-your-profile input[name="image_delete_list"]').val(image_delete_array.join(","));
+                        }
+                    }
+                }
+            }
+        }
+
         window.scrollTo(0, 0);
 
         function getDoc(frame) {
@@ -161,6 +282,10 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                     "</div>";
             window.scrollTo(0, 0);
         }
+
+        jQuery('#form-your-profile input[name="name"]').change(function () {
+            jQuery('#form-your-profile input[name="slug"]').val(createSlug(jQuery('#form-your-profile input[name="name"]').val()));
+        })
 
         function validateFormEditDestination() {
             if (jQuery('#form-your-profile input[name="name"]').val() == "") {
@@ -227,6 +352,99 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                 }
             }
         });
+        function searchTagAjax(str) {
+            if (str.length == 0) {
+                document.getElementById("livesearch").innerHTML = "";
+                document.getElementById("livesearch").style.border = "0px";
+                return;
+            }
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {  // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    document.getElementById("livesearch").innerHTML = xmlhttp.responseText;
+                    document.getElementById("livesearch").style.border = "1px solid #A5ACB2";
+                }
+            }
+            xmlhttp.open("GET", "<?php echo URL . CONTEXT_PATH_TAG_SEARCH_AJAX; ?>" + str, true);
+            xmlhttp.send();
+
+        }
+
+        function addInputTag() {
+            var tag_name = jQuery('#form-your-profile input[name="tag_input"]').val().trim();
+            if (tag_name != "") {
+                var tag_add_array = tag_name.split(",");
+                for (var i = 0; i < tag_add_array.length; i++) {
+                    var name = tag_add_array[i];
+                    if (name != undefined) {
+                        name = name.trim();
+                        if (name != "") {
+                            addTag(name);
+                        }
+                    }
+                }
+            }
+        }
+
+        function selectTag(element) {
+            var tag_name = jQuery(element).attr("tag_name");
+            if (tag_name != undefined) {
+                tag_name = tag_name.trim();
+                if (tag_name != "") {
+                    addTag(tag_name);
+                }
+            }
+        }
+
+        function addTag(tag_name) {
+            var tag_list = jQuery('#form-your-profile input[name="tag_list"]').val();
+            if (tag_list == "") {
+                var tag_array = [];
+            } else {
+                var tag_array = tag_list.split(",");
+            }
+
+            if (tag_array.indexOf(tag_name) == -1) {
+                tag_array.push(tag_name);
+                document.getElementById("tagchecklist").innerHTML = document.getElementById("tagchecklist").innerHTML + "<span><a tabindex='0' class='ntdelbutton' tag_name='" + tag_name + "' onclick='removeTag(this)'>X</a>&nbsp;" + tag_name + "</span>";
+                jQuery('#form-your-profile input[name="tag_list"]').val(tag_array.join(","));
+                document.getElementById("livesearch").innerHTML = "";
+                document.getElementById("livesearch").style.border = "0px solid #A5ACB2";
+                jQuery('#form-your-profile input[name="tag_input"]').val("");
+            } else {
+                document.getElementById("livesearch").innerHTML = "";
+                document.getElementById("livesearch").style.border = "0px solid #A5ACB2";
+                jQuery('#form-your-profile input[name="tag_input"]').val("");
+            }
+        }
+
+        function removeTag(element) {
+            var tag_name = jQuery(element).attr("tag_name");
+            if (tag_name != undefined) {
+                tag_name = tag_name.trim();
+                if (tag_name != "") {
+                    jQuery(element).parent().remove();
+                    var tag_list = jQuery('#form-your-profile input[name="tag_list"]').val();
+                    if (tag_list == "") {
+                        var tag_array = [];
+                    } else {
+                        var tag_array = tag_list.split(",");
+                    }
+
+                    if (tag_array.indexOf(tag_name) != -1) {
+                        tag_array.splice(tag_array.indexOf(tag_name), 1);
+                        jQuery('#form-your-profile input[name="tag_list"]').val(tag_array.join(","));
+                        document.getElementById("livesearch").innerHTML = "";
+                        document.getElementById("livesearch").style.border = "0px solid #A5ACB2";
+                    }
+                }
+            }
+        }
     </script>
     <?php
 } else {

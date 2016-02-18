@@ -1,20 +1,20 @@
 <link media="all" type="text/css" href="<?php echo PUBLIC_CSS ?>includes/tag.css?ver=4.4" id="dashicons-css" rel="stylesheet" />
 
 <div style="width:74.4%; text-align: justify;" class="column" id="ja-current-content">
-    <div class="ja-content-main clearfix" id="ja-content-main" style="padding-bottom: 10px;">
+    <div class="ja-content-main clearfix" id="ja-content-main">
         <?php
-        if (isset($this->destinationBO) && $this->destinationBO != NULL) {
+        if (isset($this->cityBO) && $this->cityBO != NULL) {
 
             ?>
             <div itemtype="http://schema.org/Article" itemscope="" class="item-page">
-                <h1 class="contentheading2 clearfix"><?php echo $this->destinationBO->name; ?></h1>
+                <h1 class="contentheading2 clearfix"><?php echo $this->cityBO->name; ?></h1>
                 <div class="article-content">
                 </div>
             </div>
 
             <?php
-            if (isset($this->destinationBO->post_content_1)) {
-                echo str_replace("\n", "<br>", $this->destinationBO->post_content_1);
+            if (isset($this->cityBO->post_content_1)) {
+                echo str_replace("\n", "<br>", $this->cityBO->post_content_1);
             }
             if (isset($this->destinationBO->images)) {
 
@@ -212,8 +212,8 @@
                         </div>
                         <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 800px; height: 356px; overflow: hidden;">
                             <?php
-                            if (isset($this->destinationBO->images)) {
-                                foreach ($this->destinationBO->images as $image) {
+                            if (isset($this->cityBO->images)) {
+                                foreach ($this->cityBO->images as $image) {
                                     if (isset($image->image_url)) {
 
                                         ?>
@@ -257,11 +257,11 @@
 
                 <?php
             }
-            if (isset($this->destinationBO->post_content_2)) {
-                echo str_replace("\n", "<br>", $this->destinationBO->post_content_2);
+            if (isset($this->cityBO->post_content_2)) {
+                echo str_replace("\n", "<br>", $this->cityBO->post_content_2);
             }
 
-            if (isset($this->destinationBO->tag_list) && count($this->destinationBO->tag_list) > 0) {
+            if (isset($this->cityBO->tag_list) && count($this->cityBO->tag_list) > 0) {
 
                 ?>
                 <div style="margin-top: 10px;">
@@ -269,7 +269,7 @@
                     <ul class="tagList">
                         <?php
                         $tagArray = array();
-                        foreach ($this->destinationBO->tag_list as $tag) {
+                        foreach ($this->cityBO->tag_list as $tag) {
                             $tagArray[] = $tag->name;
 
                             ?>

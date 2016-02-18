@@ -138,6 +138,10 @@
         window.scrollTo(0, 0);
     }
 
+    jQuery('#form-your-profile input[name="name"]').change(function () {
+        jQuery('#form-your-profile input[name="slug"]').val(createSlug(jQuery('#form-your-profile input[name="name"]').val()));
+    })
+
     function validateFormAddNewTag() {
         if (jQuery('#form-your-profile input[name="name"]').val() == "") {
             noticeError("<?php echo ERROR_NAME_EMPTY; ?>");

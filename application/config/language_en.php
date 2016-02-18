@@ -159,6 +159,7 @@ define("VIEW_TITLE", "View");
 define("SHOW_MORE_DETAILS_TITLE", "Show more details");
 define("CHANGE_TITLE", "Change");
 define("CONFIRM_DELETE_CANCEL_OK", ". \\n \"Cancel\" to stop, \"OK\" to delete.");
+define("CONFIRM_ACTION_CANCEL_OK", ". \\n \"Cancel\" to stop, \"OK\" to execute this action.");
 define("CONFIRM_EDIT_INFO_CANCEL_OK", ". \\n \"Cancel\" to stop, \"OK\" to edit.");
 define("PROFILE_OF_TITLE", "Profile of ");
 define("EDIT_PROFILE_OF_TITLE", "Edit profile of ");
@@ -280,13 +281,16 @@ define("RENDER_VIEW_COUNTRY_INDEX", "country/country_index");
 define("RENDER_VIEW_COUNTRY_ADD_NEW", "country/country_add_new");
 define("RENDER_VIEW_COUNTRY_EDIT", "country/country_edit");
 define("RENDER_VIEW_COUNTRY_INFO", "country/country_info");
+define("RENDER_VIEW_COUNTRY", "country/country_view");
 define("CONTEXT_PATH_COUNTRY_INDEX", "country/index/");
 define("CONTEXT_PATH_COUNTRY_ADD_NEW", "country/addNew/");
 define("CONTEXT_PATH_COUNTRY_EDIT_INFO", "country/editInfo/");
+define("CONTEXT_PATH_COUNTRY_VIEW", "country/view/");
 define("CONTEXT_PATH_COUNTRY_INFO", "country/info/");
 define("SEARCH_COUNTRIES_TITLE", "Search Countries");
 define("COUNTRIES_LIST_TITLE", "Countries list");
 define("CONFIRM_DELETE_COUNTRY", "You are about to permanently delete these country: ");
+define("CONFIRM_ACTION_COUNTRY", "You are about to permanently execute this action these country. ");
 define("CONFIRM_EDIT_INFO_COUNTRY", "You are about to permanently edit these country: ");
 define("CONFIRM_ADD_NEW_COUNTRY", "You are about to permanently add these country: ");
 define("COUNTRY_NAME_DESC", "The name is how it appears on your site.");
@@ -303,6 +307,20 @@ define("LABEL_UPDATE_COUNTRY", "Update Country");
 define("COUNTRY_TITLE", "country");
 define("DESTINATION_COUNTRY_TITLE", "Country");
 
+define("IMAGE_WEATHERS_TITLE", "Images for weather");
+define("OVERVIEW_TITLE", "Overview");
+define("HISTORY_TITLE", "History");
+define("WEATHER_TITLE", "Weather");
+define("PASSPORT_VISA_TITLE", "Passport & Visa");
+define("CURRENCY_TITLE", "Currency");
+define("PHONE_INTERNET_SERVICE_TITLE", "Phone and Internet service");
+define("TRANSPORTATION_TITLE", "Transportation");
+define("FOOD_DRINK_TITLE", "Food & Drink");
+define("PUBLIC_HOLIDAY_TITLE", "Public holiday");
+define("PREDEPARTURE_CHECK_LIST_TITLE", "Pre-departure check list");
+
+
+
 /*
  * City
  */
@@ -315,9 +333,11 @@ define("RENDER_VIEW_CITY_INDEX", "city/city_index");
 define("RENDER_VIEW_CITY_ADD_NEW", "city/city_add_new");
 define("RENDER_VIEW_CITY_EDIT", "city/city_edit");
 define("RENDER_VIEW_CITY_INFO", "city/city_info");
+define("RENDER_VIEW_CITY", "city/city_view");
 define("CONTEXT_PATH_CITY_INDEX", "city/index/");
 define("CONTEXT_PATH_CITY_ADD_NEW", "city/addNew/");
 define("CONTEXT_PATH_CITY_EDIT_INFO", "city/editInfo/");
+define("CONTEXT_PATH_CITY_VIEW", "city/view/");
 define("CONTEXT_PATH_CITY_INFO", "city/info/");
 define("SEARCH_CITIES_TITLE", "Search Cities");
 define("CITIES_LIST_TITLE", "Cities list");
@@ -325,8 +345,8 @@ define("CONFIRM_DELETE_CITY", "You are about to permanently delete these city: "
 define("CONFIRM_EDIT_INFO_CITY", "You are about to permanently edit these city: ");
 define("CONFIRM_ADD_NEW_CITY", "You are about to permanently add these city: ");
 define("CITY_NAME_DESC", "The name is how it appears on your site.");
-define("CITY_PERENT_TITLE", "Parent");
-define("CITY_PERENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("CITY_PERENT_TITLE", "Country");
+define("CITY_PERENT_DESC", "Country of this city");
 define("CITY_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
 define("CITY_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
 define("ERROR_UPDATE_INFO_CITY", "Update profile of city failed!");
@@ -337,6 +357,7 @@ define("ADD_NEW_CITY_LABEL", "Add New City");
 define("LABEL_UPDATE_CITY", "Update City");
 define("CITY_TITLE", "city");
 define("DESTINATION_CITY_TITLE", "City");
+define("CITY_IMAGES_DESCRIPTION_DESC", "Images of article. <span style='color: red;'>Size: 800x356px</span> ");
 
 /*
  * Hotel
@@ -351,7 +372,7 @@ define("HOTEL_VOTE_TIMES_TITLE", "Vote times");
 define("HOTEL_CONTENT_TITLE", "Content");
 define("HOTEL_CITY_TITLE", "City");
 define("HOTEL_IMAGE_TITLE", "Image");
-define("HOTEL_TAGS_TITLE", "Tags");
+define("TAGS_TITLE", "Tags");
 define("ERROR_TITLE_EMPTY", "Title is empty");
 define("ERROR_ADDRESS_EMPTY", "Address is empty");
 define("ERROR_CITY_EMPTY", "City is none");
@@ -401,7 +422,7 @@ define("ERROR_HOTEL_IMAGE_EMPTY", "Image is not choose");
 define("ERROR_HOTEL_IMAGE_INVALID", "Type of image is invalid");
 define("ERROR_HOTEL_CITY_EMPTY", "City is none");
 define("ERROR_HOTEL_CITY_NOT_EXIST", "City is not exist");
-
+define("HOTEL_IMAGES_DESCRIPTION_DESC", "Image of article. <span style='color: red;'>Size: 250x188px</span> ");
 
 /*
  * Tag
@@ -457,10 +478,13 @@ define("RENDER_VIEW_DESTINATION_INFO", "destination/destination_info");
 define("CONTEXT_PATH_DESTINATION_INDEX", "destination/index/");
 define("CONTEXT_PATH_DESTINATION_ADD_NEW", "destination/addNew/");
 define("CONTEXT_PATH_DESTINATION_EDIT_INFO", "destination/editInfo/");
+define("CONTEXT_PATH_DESTINATION_VIEW", "destination/view/");
 define("CONTEXT_PATH_DESTINATION_INFO", "destination/info/");
 define("SEARCH_DESTINATIONS_TITLE", "Search Destinations");
 define("DESTINATIONS_LIST_TITLE", "Destinations list");
 define("CONFIRM_DELETE_DESTINATION", "You are about to permanently delete these destination: ");
+define("CONFIRM_ACTION_DESTINATION", "You are about to permanently execute this action these destination. ");
+define("CONFIRM_DELETE_IMAGE", "You are about to permanently delete these image. ");
 define("CONFIRM_EDIT_INFO_DESTINATION", "You are about to permanently edit these destination: ");
 define("CONFIRM_ADD_NEW_DESTINATION", "You are about to permanently add these destination: ");
 define("DESTINATION_NAME_DESC", "The name is how it appears on your site.");
@@ -469,7 +493,7 @@ define("DESTINATION_PERENT_DESC", "Categories, unlike tags, can have a hierarchy
 define("DESTINATION_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
 define("POST_CONTENT_1_DESCRIPTION_DESC", "Content 1 of article.");
 define("POST_CONTENT_2_DESCRIPTION_DESC", "Content 2 of article.");
-define("IMAGES_DESCRIPTION_DESC", "Images of article.");
+define("DESTINATION_IMAGES_DESCRIPTION_DESC", "Images of article. <span style='color: red;'>Size: 800x356px</span> ");
 define("DESTINATION_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
 define("ERROR_UPDATE_INFO_DESTINATION", "Update profile of destination failed!");
 define("ERROR_ADD_NEW_DESTINATION", "Add new destination failed!");
@@ -552,5 +576,6 @@ define("TYPE_TITLE", "type");
  * Tour
  */
 define("DASHBOARD_TOUR_ADD_NEW_TITLE", "Add New Tour");
+define("ABOUT_TITLE", "About ");
 
 

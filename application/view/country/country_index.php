@@ -325,14 +325,18 @@ if (!(isset($this->ajax) && $this->ajax)) {
                                 </strong>
                                 <br>
                                 <div class="row-actions">
+                                    <span class="view">
+                                        <a href="#" country="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->slug); ?>" onclick="viewCountry(this)"><?php echo VIEW_TITLE; ?>
+                                        </a>
+                                    </span> |                                    
                                     <span class="edit">
                                         <a href="#" country="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditCountryPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
-                                        | <span class="delete">
-                                            <a href="#" class="submitdelete" country="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteCountry(this)"><?php echo DELETE_TITLE; ?>
-                                            </a>
-                                        </span>
+                                    | <span class="delete">
+                                        <a href="#" class="submitdelete" country="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteCountry(this)"><?php echo DELETE_TITLE; ?>
+                                        </a>
+                                    </span>
                                 </div>
                                 <button class="toggle-row" type="button">
                                     <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
@@ -428,8 +432,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-                    
-                    
+
+
                     if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -461,8 +465,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-                    
-                    
+
+
                     if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -578,12 +582,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchCountry(postData);
         });
 
-//        jQuery("#form-country-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchCountry(postData);
-//        });
-        
+    //        jQuery("#form-country-edit").submit(function (e) {
+    //            e.preventDefault(); //STOP default action
+    //            var postData = jQuery(this).serializeArray();
+    //            searchCountry(postData);
+    //        });
+
         function submitFormCountryEdit(e) {
             e.preventDefault(); //STOP default action
             try {
@@ -644,7 +648,16 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+        function viewCountry(element) {
+            var term_taxonomy_id = jQuery(element).attr("country");
+            var name = jQuery(element).attr("name");
+            var url = "<?php echo URL . CONTEXT_PATH_COUNTRY_VIEW; ?>" + term_taxonomy_id + "/" + name;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_COUNTRY_ADD_NEW; ?>";
             if (url != null && url != "" && url != undefined) {
@@ -652,7 +665,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getCountryInfoPage(element) {
             var country = jQuery(element).attr("country");
             var name = jQuery(element).attr("name");
@@ -684,10 +697,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-country-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-country-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchCountry(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_COUNTRY . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-country-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-country-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchCountry(postData);
+            }
         }
 
         function checkAll(element) {

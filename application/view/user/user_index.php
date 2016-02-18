@@ -615,7 +615,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
         ?>
     </div>
-<?php
+    <?php
 }
 if (!(isset($this->ajax) && $this->ajax)) {
 
@@ -643,13 +643,13 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchUser(postData);
         });
 
-//        jQuery("#form-user-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchUser(postData);
-//        });
-        
-        
+    //        jQuery("#form-user-edit").submit(function (e) {
+    //            e.preventDefault(); //STOP default action
+    //            var postData = jQuery(this).serializeArray();
+    //            searchUser(postData);
+    //        });
+
+
         function submitFormUserEdit(e) {
             e.preventDefault(); //STOP default action
             try {
@@ -661,7 +661,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
             return false;
         }
 
-        
+
         function searchUser(postData) {
             jQuery.ajax({
                 url: "",
@@ -719,7 +719,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_USER_ADD_NEW; ?>";
             if (url != null && url != "" && url != undefined) {
@@ -727,7 +727,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getUserInfoPage(element) {
             var user = jQuery(element).attr("user");
             var name = jQuery(element).attr("name");
@@ -761,10 +761,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-user-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-user-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchUser(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-user-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-user-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchUser(postData);
+            }
         }
 
         function checkAll(element) {

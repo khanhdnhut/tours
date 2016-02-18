@@ -67,10 +67,9 @@ class HotelCtrl extends Controller
                 }
             }
 
-            $this->view->cityList = new SplDoublyLinkedList();
             Model::autoloadModel('city');
             $cityModel = new CityModel($this->db);
-            $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
+            $this->view->cityList = $cityModel->getAll("city");
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
                 $this->view->renderAdmin(RENDER_VIEW_HOTEL_ADD_NEW, TRUE);
@@ -141,10 +140,10 @@ class HotelCtrl extends Controller
                 }
                 $this->view->hotelBO = $model->get($this->para->post_id);
 
-                $this->view->cityList = new SplDoublyLinkedList();
+
                 Model::autoloadModel('city');
                 $cityModel = new CityModel($this->db);
-                $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
+                $this->view->cityList = $cityModel->getAll("city");
 
                 if (isset($post_id) && !is_null($post_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_HOTEL_EDIT);
@@ -174,10 +173,10 @@ class HotelCtrl extends Controller
             if (isset($this->para->post_id)) {
                 $this->view->hotelBO = $model->get($this->para->post_id);
 
-                $this->view->cityList = new SplDoublyLinkedList();
-                Model::autoloadModel('city');
-                $cityModel = new CityModel($this->db);
-                $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
+                
+            Model::autoloadModel('city');
+            $cityModel = new CityModel($this->db);
+            $this->view->cityList = $cityModel->getAll("city");
 
 
                 if (isset($post_id) && !is_null($post_id)) {
@@ -207,10 +206,10 @@ class HotelCtrl extends Controller
         if (isset($this->para->post_id)) {
             $this->view->hotelBO = $model->get($this->para->post_id);
 
-            $this->view->cityList = new SplDoublyLinkedList();
+            
             Model::autoloadModel('city');
             $cityModel = new CityModel($this->db);
-            $cityModel->getAllSorted($this->view->cityList, $cityModel->buildTree($cityModel->getAll("city")), -1);
+            $this->view->cityList = $cityModel->getAll("city");
 
 
             if (isset($post_id) && !is_null($post_id)) {

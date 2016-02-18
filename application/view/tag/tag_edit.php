@@ -67,7 +67,7 @@ if (isset($this->tagBO) && $this->tagBO != NULL) {
                             if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
                                 $this->parentList->rewind();
                                 foreach ($this->parentList as $value) {
-                                    if ($value->term_taxonomy_id != $this->tagBO->term_taxonomy_id && 
+                                    if ($value->term_taxonomy_id != $this->tagBO->term_taxonomy_id &&
                                         $value->parent != $this->tagBO->term_taxonomy_id) {
 
                                         ?> 
@@ -162,6 +162,10 @@ if (isset($this->tagBO) && $this->tagBO != NULL) {
             window.scrollTo(0, 0);
         }
 
+        jQuery('#form-your-profile input[name="name"]').change(function () {
+            jQuery('#form-your-profile input[name="slug"]').val(createSlug(jQuery('#form-your-profile input[name="name"]').val()));
+        })
+        
         function validateFormEditTag() {
             if (jQuery('#form-your-profile input[name="name"]').val() == "") {
                 noticeError("<?php echo ERROR_NAME_EMPTY; ?>");

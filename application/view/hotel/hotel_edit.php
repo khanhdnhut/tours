@@ -9,8 +9,8 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
     </style>
     <h1>
         <?php echo EDIT_PROFILE_OF_TITLE . " " . HOTEL_TITLE; ?> "<strong><?php
-            if (isset($this->hotelBO->name)) {
-                echo $this->hotelBO->name;
+            if (isset($this->hotelBO->post_title)) {
+                echo $this->hotelBO->post_title;
             }
 
             ?></strong>"
@@ -120,8 +120,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                     <td colspan="3">
                         <select id="city_id" name="city_id"  style="min-width: 150px;">
                             <?php
-                            if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
-                                $this->cityList->rewind();
+                            if (isset($this->cityList) && is_array($this->cityList)) {
                                 foreach ($this->cityList as $value) {
 
                                     ?>
@@ -181,6 +180,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                              ?>" alt="">
                         <br>
                         <input type="file" id="image" name="image" accept=".jpg, .png, .jpeg" required>
+                        <p class="images"><?php echo HOTEL_IMAGES_DESCRIPTION_DESC; ?></p>
                     </td>
                 </tr>
                 <tr class="hotel-post-content-wrap">
@@ -199,7 +199,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
 
                 <tr class="hotel-tags-wrap">   
                     <th colspan="1">
-                        <label for="tags"><?php echo HOTEL_TAGS_TITLE; ?></label>
+                        <label for="tags"><?php echo TAGS_TITLE; ?></label>
                     </th>
                     <td colspan="3">
                         <input style="min-width: 200px;" type="text" value="" autocomplete="off" size="16" class="newtag form-input-tip" name="tag_input" id="tags" onkeyup="searchTagAjax(this.value)">

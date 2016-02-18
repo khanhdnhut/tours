@@ -103,8 +103,7 @@
                 <td>
                     <select id="city_id" name="city_id"  style="min-width: 150px;">
                         <?php
-                        if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
-                            $this->cityList->rewind();
+                        if (isset($this->cityList) && is_array($this->cityList)) {
                             foreach ($this->cityList as $value) {
 
                                 ?>
@@ -142,6 +141,7 @@
                 <th><label for="city_id"><?php echo HOTEL_IMAGE_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_TYPE_IMAGE_REQUIRED; ?></label></th>
                 <td>                    
                     <input type="file" id="image" name="image" accept=".jpg, .png, .jpeg" required>
+                    <p class="images"><?php echo HOTEL_IMAGES_DESCRIPTION_DESC; ?></p>
                 </td>
             </tr>
 
@@ -162,7 +162,7 @@
 
             <tr class="hotel-tags-wrap">   
                 <th colspan="1">
-                    <label for="tags"><?php echo HOTEL_TAGS_TITLE; ?></label>
+                    <label for="tags"><?php echo TAGS_TITLE; ?></label>
                 </th>
                 <td colspan="3">
                     <input style="min-width: 200px;" type="text" value="" autocomplete="off" size="16" class="newtag form-input-tip" name="tag_input" id="tags" onkeyup="searchTagAjax(this.value)">

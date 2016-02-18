@@ -91,7 +91,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <?php $this->renderFeedbackMessages(); ?>
 
-        <form id="form-style-edit" method="post" onsubmit="submitFormStyleEdit(event)">
+    <form id="form-style-edit" method="post" onsubmit="submitFormStyleEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -578,11 +578,11 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchStyle(postData);
         });
 
-//        jQuery("#form-style-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchStyle(postData);
-//        });
+    //        jQuery("#form-style-edit").submit(function (e) {
+    //            e.preventDefault(); //STOP default action
+    //            var postData = jQuery(this).serializeArray();
+    //            searchStyle(postData);
+    //        });
 
         function submitFormStyleEdit(e) {
             e.preventDefault(); //STOP default action
@@ -644,7 +644,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_STYLE_ADD_NEW; ?>";
             if (url != null && url != "" && url != undefined) {
@@ -652,7 +652,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getStyleInfoPage(element) {
             var style = jQuery(element).attr("style");
             var name = jQuery(element).attr("name");
@@ -684,10 +684,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-style-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-style-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchStyle(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-style-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-style-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchStyle(postData);
+            }
         }
 
         function checkAll(element) {

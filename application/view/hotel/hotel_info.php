@@ -108,8 +108,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                 <td colspan="3">
                     <select disabled="disabled" id="city_id" name="city_id"  style="min-width: 150px;">
                         <?php
-                        if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
-                            $this->cityList->rewind();
+                        if (isset($this->cityList) && is_array($this->cityList)) {
                             foreach ($this->cityList as $value) {
 
                                 ?>
@@ -187,7 +186,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
 
         <tr class="hotel-tags-wrap">   
             <th colspan="1">
-                <label for="tags"><?php echo HOTEL_TAGS_TITLE; ?></label>
+                <label for="tags"><?php echo TAGS_TITLE; ?></label>
             </th>
             <td colspan="3">
                 <div id="tagchecklist" class="tagBlock TagContainer">

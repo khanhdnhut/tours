@@ -327,6 +327,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
                                 </strong>
                                 <br>
                                 <div class="row-actions">
+                                    <span class="view">
+                                        <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->slug); ?>" onclick="viewDestination(this)"><?php echo VIEW_TITLE; ?>
+                                        </a>
+                                    </span> |                                    
                                     <span class="edit">
                                         <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditDestinationPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
@@ -646,7 +650,16 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+        function viewDestination(element) {
+            var term_taxonomy_id = jQuery(element).attr("destination");
+            var name = jQuery(element).attr("name");
+            var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_VIEW; ?>" + term_taxonomy_id + "/" + name;
+            if (url != null && url != "" && url != undefined) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_DESTINATION_ADD_NEW; ?>";
             if (url != null && url != "" && url != undefined) {
@@ -654,7 +667,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getDestinationInfoPage(element) {
             var destination = jQuery(element).attr("destination");
             var name = jQuery(element).attr("name");
@@ -686,10 +699,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-destination-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-destination-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchDestination(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-destination-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-destination-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchDestination(postData);
+            }
         }
 
         function checkAll(element) {
@@ -705,9 +720,9 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
         }
 
-    //        jQuery(function () {
-    //            jQuery(document).tooltip();
-    //        });
+        //        jQuery(function () {
+        //            jQuery(document).tooltip();
+        //        });
 
     </script>
 <?php } ?>

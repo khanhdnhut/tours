@@ -10,5 +10,21 @@ class CountryBO extends TaxonomyBO
 {
 
     public $taxonomy = "country";
+    public $postBO;
+    
+    public $overview = "";
+    public $history = "";
+    public $weather = "";    
+    public $passport_visa = "";
+    public $currency = "";
+    public $phone_internet_service = "";
+    public $transportation = "";
+    public $food_drink = "";
+    public $public_holiday = "";
+    public $predeparture_check_list = "";
+    
+    public $image_weather_ids;
+    public $image_weathers;
+    public $tag_list;
 
 }

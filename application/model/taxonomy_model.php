@@ -175,8 +175,9 @@ class TaxonomyModel extends TermModel
             foreach ($taxonomyList as &$taxonomy)
                 if (isset($childs[$taxonomy->term_taxonomy_id]))
                     $taxonomy->childs = $childs[$taxonomy->term_taxonomy_id];
-
-            return $childs[0];
+            if (count($childs) > 0 && isset($childs[0])) {
+                return $childs[0];
+            }
         }
         return NULL;
     }

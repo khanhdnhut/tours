@@ -329,10 +329,10 @@ if (!(isset($this->ajax) && $this->ajax)) {
                                         <a href="#" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditTagPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
-                                        | <span class="delete">
-                                            <a href="#" class="submitdelete" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteTag(this)"><?php echo DELETE_TITLE; ?>
-                                            </a>
-                                        </span>
+                                    | <span class="delete">
+                                        <a href="#" class="submitdelete" tag="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="deleteTag(this)"><?php echo DELETE_TITLE; ?>
+                                        </a>
+                                    </span>
                                 </div>
                                 <button class="toggle-row" type="button">
                                     <span class="screen-reader-text"><?php echo SHOW_MORE_DETAILS_TITLE; ?></span>
@@ -428,8 +428,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-                    
-                    
+
+
                     if (isset($this->orderby) && $this->orderby == "slug" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -461,8 +461,8 @@ if (!(isset($this->ajax) && $this->ajax)) {
                         </th>   
                         <?php
                     }
-                    
-                    
+
+
                     if (isset($this->orderby) && $this->orderby == "tours" && in_array($this->order, array('asc', 'desc'))) {
 
                         ?>
@@ -578,14 +578,14 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchTag(postData);
         });
 
-//        jQuery("#form-tag-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchTag(postData);
-//        });
-        
-        
-        
+    //        jQuery("#form-tag-edit").submit(function (e) {
+    //            e.preventDefault(); //STOP default action
+    //            var postData = jQuery(this).serializeArray();
+    //            searchTag(postData);
+    //        });
+
+
+
         function submitFormTagEdit(e) {
             e.preventDefault(); //STOP default action
             try {
@@ -646,7 +646,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_TAG_ADD_NEW; ?>";
             if (url != null && url != "" && url != undefined) {
@@ -654,7 +654,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getTagInfoPage(element) {
             var tag = jQuery(element).attr("tag");
             var name = jQuery(element).attr("name");
@@ -686,10 +686,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-tag-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-tag-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchTag(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-tag-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-tag-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchTag(postData);
+            }
         }
 
         function checkAll(element) {

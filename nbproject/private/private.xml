@@ -3,10 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/xampp/htdocs/tours/application/config/language_en.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/view/destination/destination_view.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/view/hotel/hotel_view.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/controller/hotel_ctrl.php</file>
             <file>file:/E:/xampp/htdocs/tours/application/bo/post_bo.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/bo/term_bo.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/model/hotel_model.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/config/language_en.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/model/taxonomy_model.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/model/post_model.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/view/_templates/admin/header.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/controller/destination_ctrl.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/bo/destination_bo.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/model/image_model.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/model/term_model.php</file>
             <file>file:/E:/xampp/htdocs/tours/application/config/const.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/bo/image_bo.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/view/destination/destination_add_new.php</file>
+            <file>file:/E:/xampp/htdocs/tours/application/model/destination_model.php</file>
         </group>
     </open-files>
 </project-private>

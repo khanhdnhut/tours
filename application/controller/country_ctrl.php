@@ -40,6 +40,46 @@ class CountryCtrl extends Controller
                 if (isset($_POST['parent'])) {
                     $this->para->parent = $_POST['parent'];
                 }
+
+
+                if (isset($_POST['overview'])) {
+                    $this->para->overview = $_POST['overview'];
+                }
+                if (isset($_POST['history'])) {
+                    $this->para->history = $_POST['history'];
+                }
+                if (isset($_POST['weather'])) {
+                    $this->para->weather = $_POST['weather'];
+                }
+                if (isset($_POST['passport_visa'])) {
+                    $this->para->passport_visa = $_POST['passport_visa'];
+                }
+                if (isset($_POST['currency'])) {
+                    $this->para->currency = $_POST['currency'];
+                }
+                if (isset($_POST['phone_internet_service'])) {
+                    $this->para->phone_internet_service = $_POST['phone_internet_service'];
+                }
+                if (isset($_POST['transportation'])) {
+                    $this->para->transportation = $_POST['transportation'];
+                }
+                if (isset($_POST['food_drink'])) {
+                    $this->para->food_drink = $_POST['food_drink'];
+                }
+                if (isset($_POST['public_holiday'])) {
+                    $this->para->public_holiday = $_POST['public_holiday'];
+                }
+                if (isset($_POST['predeparture_check_list'])) {
+                    $this->para->predeparture_check_list = $_POST['predeparture_check_list'];
+                }
+                if (isset($_POST['tag_list'])) {
+                    $this->para->tag_list = $_POST['tag_list'];
+                }
+                if (isset($_FILES['image_weathers']) && count($_FILES['image_weathers']) > 0 &&
+                    isset($_FILES['image_weathers']['name']) && isset($_FILES['image_weathers']['name'][0]) &&
+                    $_FILES['image_weathers']['name'][0] != "") {
+                    $this->para->image_weathers = $_FILES['image_weathers'];
+                }
                 $result = $model->addToDatabase($this->para);
                 if (!$result) {
                     $this->view->para = $this->para;
@@ -75,17 +115,60 @@ class CountryCtrl extends Controller
                 if (isset($_POST['action']) && $_POST['action'] == "update") {
                     $this->para->action = $_POST['action'];
 
-                    if (isset($_POST['name'])) {
+                    if (isset($_POST['name']) && $_POST['name'] != "") {
                         $this->para->name = $_POST['name'];
                     }
-                    if (isset($_POST['slug'])) {
+                    if (isset($_POST['slug']) && $_POST['slug'] != "") {
                         $this->para->slug = $_POST['slug'];
                     }
-                    if (isset($_POST['description'])) {
+                    if (isset($_POST['description']) && $_POST['description'] != "") {
                         $this->para->description = $_POST['description'];
                     }
-                    if (isset($_POST['parent'])) {
+                    if (isset($_POST['parent']) && $_POST['parent'] != "") {
                         $this->para->parent = $_POST['parent'];
+                    }
+
+                    if (isset($_POST['overview']) && $_POST['overview'] != "") {
+                        $this->para->overview = $_POST['overview'];
+                    }
+                    if (isset($_POST['history']) && $_POST['history'] != "") {
+                        $this->para->history = $_POST['history'];
+                    }
+                    if (isset($_POST['weather']) && $_POST['weather'] != "") {
+                        $this->para->weather = $_POST['weather'];
+                    }
+                    if (isset($_POST['passport_visa']) && $_POST['passport_visa'] != "") {
+                        $this->para->passport_visa = $_POST['passport_visa'];
+                    }
+                    if (isset($_POST['currency']) && $_POST['currency'] != "") {
+                        $this->para->currency = $_POST['currency'];
+                    }
+                    if (isset($_POST['phone_internet_service']) && $_POST['phone_internet_service'] != "") {
+                        $this->para->phone_internet_service = $_POST['phone_internet_service'];
+                    }
+                    if (isset($_POST['transportation']) && $_POST['transportation'] != "") {
+                        $this->para->transportation = $_POST['transportation'];
+                    }
+                    if (isset($_POST['food_drink']) && $_POST['food_drink'] != "") {
+                        $this->para->food_drink = $_POST['food_drink'];
+                    }
+                    if (isset($_POST['public_holiday']) && $_POST['public_holiday'] != "") {
+                        $this->para->public_holiday = $_POST['public_holiday'];
+                    }
+                    if (isset($_POST['predeparture_check_list']) && $_POST['predeparture_check_list'] != "") {
+                        $this->para->predeparture_check_list = $_POST['predeparture_check_list'];
+                    }
+                    if (isset($_POST['image_weather_delete_list'])) {
+                        $this->para->image_weather_delete_list = $_POST['image_weather_delete_list'];
+                    }
+                    if (isset($_POST['tag_list'])) {
+                        $this->para->tag_list = $_POST['tag_list'];
+                    }
+
+                    if (isset($_FILES['image_weathers']) && count($_FILES['image_weathers']) > 0 &&
+                        isset($_FILES['image_weathers']['name']) && isset($_FILES['image_weathers']['name'][0]) &&
+                        $_FILES['image_weathers']['name'][0] != "") {
+                        $this->para->image_weathers = $_FILES['image_weathers'];
                     }
 
                     $result = $model->updateInfo($this->para);
@@ -140,6 +223,33 @@ class CountryCtrl extends Controller
             }
         } else {
             $this->login();
+        }
+    }
+
+    public function view($term_taxonomy_id = NULL)
+    {
+        Model::autoloadModel('country');
+        $model = new CountryModel($this->db);
+        $this->para = new stdClass();
+        if (isset($_POST['country'])) {
+            $this->para->term_taxonomy_id = $_POST['country'];
+        } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+            $this->para->term_taxonomy_id = $term_taxonomy_id;
+        }
+
+        if (isset($this->para->term_taxonomy_id)) {
+            $this->view->countryBO = $model->get($this->para->term_taxonomy_id);
+
+            $this->view->parentList = new SplDoublyLinkedList();
+            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+
+            if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
+                $this->view->render(RENDER_VIEW_COUNTRY);
+            } else {
+                $this->view->render(RENDER_VIEW_COUNTRY, TRUE);
+            }
+        } else {
+            header('location: ' . URL);
         }
     }
 
@@ -201,8 +311,8 @@ class CountryCtrl extends Controller
                 $model->executeAction($this->para);
             }
 
-            
-            
+
+
             $model->search($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {

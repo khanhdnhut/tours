@@ -10,5 +10,11 @@ class CityBO extends TaxonomyBO
 {
 
     public $taxonomy = "city";
+    public $postBO;
+    public $post_content_1 = "";
+    public $post_content_2 = "";
+    public $images;
+    public $image_ids;
+    public $tag_list;
 
 }

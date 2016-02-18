@@ -91,7 +91,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
 
     <?php $this->renderFeedbackMessages(); ?>
 
-        <form id="form-type-edit" method="post" onsubmit="submitFormTypeEdit(event)">
+    <form id="form-type-edit" method="post" onsubmit="submitFormTypeEdit(event)">
         <input type="hidden" value="<?php
         if (isset($this->orderby)) {
             echo htmlspecialchars($this->orderby);
@@ -578,11 +578,11 @@ if (!(isset($this->ajax) && $this->ajax)) {
             searchType(postData);
         });
 
-//        jQuery("#form-type-edit").submit(function (e) {
-//            e.preventDefault(); //STOP default action
-//            var postData = jQuery(this).serializeArray();
-//            searchType(postData);
-//        });
+    //        jQuery("#form-type-edit").submit(function (e) {
+    //            e.preventDefault(); //STOP default action
+    //            var postData = jQuery(this).serializeArray();
+    //            searchType(postData);
+    //        });
 
         function submitFormTypeEdit(e) {
             e.preventDefault(); //STOP default action
@@ -644,7 +644,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getAddNewPage(element) {
             var url = "<?php echo URL . CONTEXT_PATH_TYPE_ADD_NEW; ?>";
             if (url != null && url != "" && url != undefined) {
@@ -652,7 +652,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getTypeInfoPage(element) {
             var type = jQuery(element).attr("type");
             var name = jQuery(element).attr("name");
@@ -684,10 +684,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-type-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-type-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchType(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-type-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-type-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchType(postData);
+            }
         }
 
         function checkAll(element) {

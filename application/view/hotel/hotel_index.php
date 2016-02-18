@@ -913,7 +913,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                 win.focus();
             }
         }
-        
+
         function getHotelInfoPage(element) {
             var hotel = jQuery(element).attr("hotel");
             var name = jQuery(element).attr("name");
@@ -954,10 +954,12 @@ if (!(isset($this->ajax) && $this->ajax)) {
         }
 
         function applyAction(type) {
-            jQuery('#form-hotel-edit input[name="type"]').val(type);
-            var postData = jQuery("#form-hotel-edit").serializeArray();
-            //        var formURL = jQuery(this).attr("action");
-            searchHotel(postData);
+            if (confirm('<?php echo CONFIRM_ACTION_DESTINATION . CONFIRM_ACTION_CANCEL_OK; ?>')) {
+                jQuery('#form-hotel-edit input[name="type"]').val(type);
+                var postData = jQuery("#form-hotel-edit").serializeArray();
+                //        var formURL = jQuery(this).attr("action");
+                searchHotel(postData);
+            }
         }
 
         function checkAll(element) {

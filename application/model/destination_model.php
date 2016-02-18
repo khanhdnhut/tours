@@ -14,6 +14,9 @@ class DestinationModel extends TaxonomyModel
             $postBOList = $postModel->getPostRelationshipByTaxonomyId($taxonomy_id, "destination");
             if (count($postBOList) != 0) {
                 $postBO = $postBOList[0];
+
+                $destinationBO->postBO = $postBO;
+
                 if (isset($postBO->post_content)) {
                     $post_content = json_decode($postBO->post_content);
                     if (isset($post_content->post_content_1)) {
@@ -22,6 +25,13 @@ class DestinationModel extends TaxonomyModel
                     if (isset($post_content->post_content_2)) {
                         $destinationBO->post_content_2 = $post_content->post_content_2;
                     }
+                }
+
+                Model::autoloadModel('tag');
+                $tagModel = new TagModel($this->db);
+                $tagList = $tagModel->getTaxonomyRelationshipByObjectId($postBO->ID, 'tag');
+                if ($tagList != NULL && count($tagList) > 0) {
+                    $destinationBO->tag_list = $tagList;
                 }
 
                 if (isset($postBO->image_ids)) {
@@ -33,8 +43,9 @@ class DestinationModel extends TaxonomyModel
                         $image_object = $imageModel->get($image_id);
                         if ($image_object != NULL) {
                             $image_info = new stdClass();
-
+                            $image_info->image_id = $image_id;
                             if (isset($image_object->attachment_metadata) && isset($image_object->attachment_metadata->sizes)) {
+
                                 if (isset($image_object->attachment_metadata->sizes->slider_thumb) && isset($image_object->attachment_metadata->sizes->slider_thumb->url)) {
                                     $image_info->slider_thumb_url = $image_object->attachment_metadata->sizes->slider_thumb->url;
                                 }
@@ -107,6 +118,11 @@ class DestinationModel extends TaxonomyModel
             }
         }
 
+        if (isset($para->tag_list) && $para->tag_list != NULL && $para->tag_list != "") {
+            $tag_array = explode(",", $para->tag_list);
+            $para->tag_array = $tag_array;
+        }
+
         return true;
     }
 
@@ -136,8 +152,8 @@ class DestinationModel extends TaxonomyModel
                 }
                 $postBO->post_content = json_encode($post_content);
             }
-            if (isset($destinationBO->post_name)) {
-                $postBO->post_name = $destinationBO->name;
+            if (isset($destinationBO->name)) {
+                $postBO->post_name = Utils::createSlug($destinationBO->name);
             }
 
             $postBO->post_author = Session::get("user_id");
@@ -194,6 +210,16 @@ class DestinationModel extends TaxonomyModel
                     }
                     return FALSE;
                 }
+
+                if (isset($destinationBO->tag_array) && count($destinationBO->tag_array) > 0) {
+                    Model::autoloadModel('tag');
+                    $tagModel = new TagModel($this->db);
+                    $tag_id_array = $tagModel->addTagArray($destinationBO->tag_array);
+                    for ($i = 0; $i < count($tag_id_array); $i++) {
+                        $taxonomyModel->addRelationshipToDatabase($post_id, $tag_id_array[$i]);
+                    }
+                }
+
                 return TRUE;
             } else {
                 if (isset($imageModel) && isset($image_id)) {
@@ -230,6 +256,12 @@ class DestinationModel extends TaxonomyModel
                 }
                 if (isset($para->post_content_2)) {
                     $destinationBO->post_content_2 = $para->post_content_2;
+                }
+                if (isset($para->tag_list)) {
+                    $destinationBO->tag_list = $para->tag_list;
+                }
+                if (isset($para->tag_array)) {
+                    $destinationBO->tag_array = $para->tag_array;
                 }
                 if (isset($para->images)) {
                     $destinationBO->images = $para->images;
@@ -292,7 +324,130 @@ class DestinationModel extends TaxonomyModel
                 $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             }
         }
+
+        if (isset($para->tag_list) && $para->tag_list != NULL && $para->tag_list != "") {
+            $tag_array = explode(",", $para->tag_list);
+            $para->tag_array = $tag_array;
+        }
         return true;
+    }
+
+    public function updateContent($destinationBO)
+    {
+        if (isset($destinationBO->postBO)) {
+            $postBO = $destinationBO->postBO;
+            try {
+                $sql = "UPDATE " . TABLE_POSTS . " ";
+                $set = "SET ";
+                $where = " WHERE " . TB_POST_COL_ID . " = :post_id;";
+
+                $para_array = [];
+                $para_array[":post_id"] = $postBO->ID;
+
+                if (isset($destinationBO->name)) {
+                    $postBO->post_title = $destinationBO->name;
+                    $set .= " " . TB_POST_COL_POST_TITLE . " = :post_title,";
+                    $para_array[":post_title"] = $postBO->post_title;
+                }
+                if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2)) {
+                    $post_content = new stdClass();
+                    if (isset($destinationBO->post_content_1)) {
+                        $post_content->post_content_1 = $destinationBO->post_content_1;
+                    }
+                    if (isset($destinationBO->post_content_2)) {
+                        $post_content->post_content_2 = $destinationBO->post_content_2;
+                    }
+                    $postBO->post_content = json_encode($post_content);
+                    $set .= " " . TB_POST_COL_POST_CONTENT . " = :post_content,";
+                    $para_array[":post_content"] = $postBO->post_content;
+                }
+                if (isset($destinationBO->name)) {
+                    $postBO->post_name = Utils::createSlug($destinationBO->name);
+                    $set .= " " . TB_POST_COL_POST_NAME . " = :post_name,";
+                    $para_array[":post_name"] = $postBO->post_name;
+                }
+
+                if (isset($postBO->image_ids)) {
+                    $image_ids = json_decode($postBO->image_ids);
+                } else {
+                    $image_ids = array();
+                }
+
+                Model::autoloadModel("image");
+                $imageModel = new ImageModel($this->db);
+                if (isset($destinationBO->images_upload)) {
+                    $imageModel->is_create_thumb = true;
+                    $imageModel->is_slider_thumb = true;
+                    $imageModel->is_large = true;
+//                $imageModel->slider_thumb_crop = true;
+                    $image_array_id = $imageModel->uploadImages("images");
+
+                    if (!is_null($image_array_id) && is_array($image_array_id) && sizeof($image_array_id) != 0) {
+                        $image_ids = array_merge($image_ids, $image_array_id);
+                    } else {
+                        return FALSE;
+                    }
+                }
+
+                if (isset($destinationBO->image_delete_list) && $destinationBO->image_delete_list != "" && $destinationBO->image_delete_list != NULL) {
+                    $image_delete_array = explode(",", $destinationBO->image_delete_list);
+                    if (count($image_delete_array) > 0) {
+                        foreach ($image_delete_array as $image_delete_id) {
+                            $image_ids = array_diff($image_ids, [$image_delete_id]);
+//                            array_slice($image_ids, $image_delete_id, 1);
+                        }
+                    }
+                }
+
+                if (count($para_array) != 0) {
+                    $set = substr($set, 0, strlen($set) - 1);
+                    $sql .= $set . $where;
+                    $sth = $this->db->prepare($sql);
+                    $sth->execute($para_array);
+
+                    Model::autoloadModel("post");
+                    $postModel = new PostModel($this->db);
+                    $image_ids = json_encode($image_ids);
+                    if (isset($image_ids) && $image_ids != "") {
+                        if (isset($postBO->image_ids)) {
+                            if (!$postModel->updateMetaInfoToDatabase($postBO->ID, "image_ids", $image_ids)) {
+                                if (isset($imageModel) && isset($image_array_id)) {
+                                    foreach ($image_array_id as $image_id) {
+                                        $imageModel->delete($image_id);
+                                    }
+                                }
+                                return FALSE;
+                            } else { //thanh cong xoa image bi tich bo
+                                if (isset($imageModel) && isset($image_delete_array)) {
+                                    foreach ($image_delete_array as $image_id) {
+                                        $imageModel->delete($image_id);
+                                    }
+                                }
+                            }
+                        } else {
+                            if (!$postModel->addMetaInfoToDatabase($postBO->ID, "image_ids", $image_ids)) {
+                                if (isset($imageModel) && isset($image_array_id)) {
+                                    foreach ($image_array_id as $image_id) {
+                                        $imageModel->delete($image_id);
+                                    }
+                                }
+                                return FALSE;
+                            } else { //thanh cong xoa image bi tich bo
+                                if (isset($imageModel) && isset($image_delete_array)) {
+                                    foreach ($image_delete_array as $image_id) {
+                                        $imageModel->delete($image_id);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return TRUE;
+                }
+            } catch (Exception $e) {
+                
+            }
+        }
     }
 
     public function updateInfo($para)
@@ -316,9 +471,77 @@ class DestinationModel extends TaxonomyModel
                         $destinationBO->parent = 0;
                     }
 
+                    if (isset($para->image_delete_list)) {
+                        $destinationBO->image_delete_list = $para->image_delete_list;
+                    }
+
+                    if (isset($para->images)) {
+                        $destinationBO->images_upload = $para->images;
+                    }
+
                     $this->db->beginTransaction();
 
                     if ($this->update($destinationBO)) {
+                        if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2) || isset($para->post_content_1) || isset($para->post_content_2)) {
+                            if (isset($para->post_content_1)) {
+                                $destinationBO->post_content_1 = $para->post_content_1;
+                            }
+
+                            if (isset($para->post_content_2)) {
+                                $destinationBO->post_content_2 = $para->post_content_2;
+                            }
+                            $this->updateContent($destinationBO);
+                            if (isset($para->tag_array) || isset($destinationBO->tag_list)) {
+                                Model::autoloadModel('tag');
+                                $tagModel = new TagModel($this->db);
+                                Model::autoloadModel('taxonomy');
+                                $taxonomyModel = new TaxonomyModel($this->db);
+                                if (!isset($para->tag_array) || count($para->tag_array) == 0) {
+                                    foreach ($destinationBO->tag_list as $tag) {
+                                        $tagModel->deleteRelationship($destinationBO->postBO->ID, $tag->term_taxonomy_id);
+                                    }
+                                } elseif (!isset($destinationBO->tag_list) || count($destinationBO->tag_list) == 0) {
+                                    if (count($para->tag_array) > 0) {
+                                        $tag_id_array = $tagModel->addTagArray($para->tag_array);
+                                        for ($i = 0; $i < count($tag_id_array); $i++) {
+                                            $taxonomyModel->addRelationshipToDatabase($destinationBO->postBO->ID, $tag_id_array[$i]);
+                                        }
+                                    }
+                                } elseif (isset($para->tag_array) && isset($destinationBO->tag_list) &&
+                                    count($para->tag_array) > 0 && count($destinationBO->tag_list) > 0) {
+                                    $tags_old_array = array();
+                                    foreach ($destinationBO->tag_list as $tag_old) {
+                                        $tags_old_array[] = $tag_old->name;
+                                    }
+
+                                    $tags_new_array = array();
+                                    for ($i = 0; $i < count($para->tag_array); $i++) {
+                                        if (!in_array($para->tag_array[$i], $tags_old_array)) {
+                                            $tags_new_array[] = $para->tag_array[$i];
+                                        }
+                                    }
+                                    if (count($tags_new_array) > 0) {
+                                        $tag_id_new_array = $tagModel->addTagArray($tags_new_array);
+                                        for ($i = 0; $i < count($tag_id_new_array); $i++) {
+                                            $taxonomyModel->addRelationshipToDatabase($destinationBO->postBO->ID, $tag_id_new_array[$i]);
+                                        }
+                                    }
+
+                                    $tags_delete_array = array();
+                                    for ($i = 0; $i < count($destinationBO->tag_list); $i++) {
+                                        if (!in_array($destinationBO->tag_list[$i]->name, $para->tag_array)) {
+                                            $tags_delete_array[] = $destinationBO->tag_list[$i];
+                                        }
+                                    }
+                                    if (count($tags_delete_array) > 0) {
+                                        foreach ($tags_delete_array as $tag) {
+                                            $tagModel->deleteRelationship($destinationBO->postBO->ID, $tag->term_taxonomy_id);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         $this->db->commit();
                         $_SESSION["fb_success"][] = UPDATE_DESTINATION_SUCCESS;
                         return TRUE;
