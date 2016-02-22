@@ -29,6 +29,32 @@
                 </td>
             </tr>
 
+            <tr class="current_rating-wrap">
+                <th>
+                    <label for="current_rating"><?php echo CURRENT_RATING_TITLE; ?></label>
+                </th>
+                <td>
+                    <input type="number" step="1" min="0" max="5" class="screen-per-page" name="current_rating" id="current_rating" maxlength="3" value="<?php
+                    if (isset($this->para->current_rating)) {
+                        echo htmlspecialchars($this->para->current_rating);
+                    }
+
+                    ?>" style="min-width: 150px;">
+                </td>
+            </tr>
+            <tr class="vote_times-wrap">
+                <th>
+                    <label for="vote_times"><?php echo VOTE_TIMES_TITLE; ?></label>
+                </th>
+                <td>
+                    <input type="number" step="1" min="0" max="999" class="screen-per-page" name="vote_times" id="vote_times" maxlength="3" value="<?php
+                    if (isset($this->para->vote_times)) {
+                        echo htmlspecialchars($this->para->vote_times);
+                    }
+
+                    ?>" style="min-width: 150px;">
+                </td>
+            </tr>
             <tr class="destination-slug-wrap">
                 <th>
                     <label for="slug"><?php echo SLUG_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label>
@@ -44,34 +70,119 @@
                 </td>
             </tr>
 
-            <tr class="destination-parent-wrap"><th><label for="parent"><?php echo DESTINATION_PERENT_TITLE; ?></label></th>
+            <tr class="destination-country-wrap"><th><label for="country"><?php echo DESTINATION_PARENT_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label></th>
+                <td>
+                    <select id="country" name="country" >
+                        <?php
+                        if (isset($this->countryList) && is_a($this->countryList, "SplDoublyLinkedList")) {
+                            $this->countryList->rewind();
+                            foreach ($this->countryList as $value) {
+
+                                ?>
+                                <option <?php if (isset($this->para) && isset($this->para->country) && $value->term_taxonomy_id == $this->para->country) {
+
+                                    ?>
+                                        selected="selected"
+                                    <?php }
+
+                                    ?>  value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
+                                        }
+
+                                        ?></option>
+                                <?php
+                            }
+                        }
+
+                        ?>
+                        <option value="0" <?php if (!isset($this->para->country) || $this->para->country == "0") { ?>
+                                    selected="selected"
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                                                        
+                    </select>
+                    <span class="description"><?php echo DESTINATION_PARENT_DESC; ?></span>
+                </td>
+            </tr>
+
+            <tr class="destination-city-wrap"><th><label for="city"><?php echo DESTINATION_CITY_TITLE; ?></label></th>
+                <td>
+                    <select id="city" name="city" >
+                        <?php
+                        if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
+                            $this->cityList->rewind();
+                            foreach ($this->cityList as $value) {
+
+                                ?>
+                                <option <?php if (isset($this->para) && isset($this->para->city) && $value->term_taxonomy_id == $this->para->city) {
+
+                                    ?>
+                                        selected="selected"
+                                    <?php }
+
+                                    ?>  value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
+                                        }
+
+                                        ?></option>
+                                <?php
+                            }
+                        }
+
+                        ?>
+                        <option value="0" <?php if (!isset($this->para->city) || $this->para->city == "0") { ?>
+                                    selected="selected"
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                                                        
+                    </select>
+                    <span class="description"><?php echo DESTINATION_PARENT_DESC; ?></span>
+                </td>
+            </tr>
+
+            <tr class="destination-parent-wrap"><th><label for="parent"><?php echo PARENT_TITLE; ?> </label></th>
                 <td>
                     <select id="parent" name="parent" >
                         <?php
                         if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
                             $this->parentList->rewind();
                             foreach ($this->parentList as $value) {
-
+                                
                                 ?>
-                                <option value="<?php
-                                if (isset($value->term_taxonomy_id)) {
-                                    echo $value->term_taxonomy_id;
-                                }
+                                <option <?php if (isset($this->para) && isset($this->para->parent) && $value->term_taxonomy_id == $this->para->parent) {
 
-                                ?>"><?php
-                                            if (isset($value->name)) {
-                                                echo $value->name;
-                                            }
+                                    ?>
+                                        selected="selected"
+                                    <?php }
 
-                                            ?></option>
+                                    ?>  value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
+                                        }
+
+                                        ?></option>
                                 <?php
                             }
                         }
 
                         ?>
-                        <option value="0" selected="selected"><?php echo NONE_TITLE; ?></option>                                                                        
+                        <option value="0" <?php if (!isset($this->para->parent) || $this->para->parent == "0") { ?>
+                                    selected="selected"
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                                                        
                     </select>
-                    <span class="description"><?php echo DESTINATION_PERENT_DESC; ?></span>
                 </td>
             </tr>
 
@@ -207,6 +318,10 @@
                                 noticeError("<?php echo ERROR_SLUG_EMPTY; ?>");
                                 return false;
                             }
+                            if (jQuery('#form-your-profile select[name="country"]').val() == "0") {
+                                noticeError("<?php echo ERROR_COUNTRY_EMPTY; ?>");
+                                return false;
+                            }
                             return true;
                         }
 
@@ -267,6 +382,28 @@
                             }
 
                         });
+
+                        jQuery('#form-your-profile select[name="country"]').change(function () {
+                            var country = jQuery('#form-your-profile select[name="country"]').val();
+                            if (country == "0") {
+                                jQuery('#form-your-profile select[name="city"]').html("<option selected='selected' value='0'>None</option>");
+                                return;
+                            }
+                            if (window.XMLHttpRequest) {
+                                // code for IE7+, Firefox, Chrome, Opera, Safari
+                                xmlhttp = new XMLHttpRequest();
+                            } else {  // code for IE6, IE5
+                                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                            }
+                            xmlhttp.onreadystatechange = function () {
+                                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                                    jQuery('#form-your-profile select[name="city"]').html(xmlhttp.responseText);
+                                }
+                            }
+                            xmlhttp.open("GET", "<?php echo URL . CONTEXT_PATH_CITY_BY_COUNTRY_AJAX; ?>" + country, true);
+                            xmlhttp.send();
+                        })
+
                         function searchTagAjax(str) {
                             if (str.length == 0) {
                                 document.getElementById("livesearch").innerHTML = "";

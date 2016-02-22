@@ -37,8 +37,8 @@ class CityCtrl extends Controller
                 if (isset($_POST['description'])) {
                     $this->para->description = $_POST['description'];
                 }
-                if (isset($_POST['parent'])) {
-                    $this->para->parent = $_POST['parent'];
+                if (isset($_POST['country'])) {
+                    $this->para->country = $_POST['country'];
                 }
                 if (isset($_POST['post_content_1'])) {
                     $this->para->post_content_1 = $_POST['post_content_1'];
@@ -46,11 +46,17 @@ class CityCtrl extends Controller
                 if (isset($_POST['post_content_2'])) {
                     $this->para->post_content_2 = $_POST['post_content_2'];
                 }
+                if (isset($_POST['current_rating'])) {
+                    $this->para->current_rating = $_POST['current_rating'];
+                }
+                if (isset($_POST['vote_times'])) {
+                    $this->para->vote_times = $_POST['vote_times'];
+                }
                 if (isset($_POST['tag_list'])) {
                     $this->para->tag_list = $_POST['tag_list'];
                 }
                 if (isset($_FILES['images']) && count($_FILES['images']) > 0 &&
-                    isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) && 
+                    isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) &&
                     $_FILES['images']['name'][0] != '') {
                     $this->para->images = $_FILES['images'];
                 }
@@ -60,8 +66,8 @@ class CityCtrl extends Controller
                 }
             }
 
-            $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+            $this->view->countryList = new SplDoublyLinkedList();
+            $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
                 $this->view->renderAdmin(RENDER_VIEW_CITY_ADD_NEW, TRUE);
@@ -71,6 +77,14 @@ class CityCtrl extends Controller
         } else {
             $this->login();
         }
+    }
+
+    public function getByCountry($country_id = NULL)
+    {
+        Model::autoloadModel('city');
+        $model = new CityModel($this->db);
+        $this->view->taxonomyList = $model->getByMetaData("city", "country", $country_id);
+        $this->view->renderAdmin(RENDER_SEARCH_CITY_BY_COUNTRY_AJAX, TRUE);
     }
 
     public function editInfo($term_taxonomy_id = NULL)
@@ -98,8 +112,8 @@ class CityCtrl extends Controller
                     if (isset($_POST['description'])) {
                         $this->para->description = $_POST['description'];
                     }
-                    if (isset($_POST['parent'])) {
-                        $this->para->parent = $_POST['parent'];
+                    if (isset($_POST['country'])) {
+                        $this->para->country = $_POST['country'];
                     }
                     if (isset($_POST['post_content_1'])) {
                         $this->para->post_content_1 = $_POST['post_content_1'];
@@ -107,14 +121,20 @@ class CityCtrl extends Controller
                     if (isset($_POST['post_content_2'])) {
                         $this->para->post_content_2 = $_POST['post_content_2'];
                     }
+                    if (isset($_POST['current_rating'])) {
+                        $this->para->current_rating = $_POST['current_rating'];
+                    }
+                    if (isset($_POST['vote_times'])) {
+                        $this->para->vote_times = $_POST['vote_times'];
+                    }
                     if (isset($_POST['image_delete_list'])) {
                         $this->para->image_delete_list = $_POST['image_delete_list'];
                     }
                     if (isset($_POST['tag_list'])) {
                         $this->para->tag_list = $_POST['tag_list'];
                     }
-                    if (isset($_FILES['images']) && count($_FILES['images']) > 0 && 
-                        isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) && 
+                    if (isset($_FILES['images']) && count($_FILES['images']) > 0 &&
+                        isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) &&
                         $_FILES['images']['name'][0] != "") {
                         $this->para->images = $_FILES['images'];
                     }
@@ -128,8 +148,8 @@ class CityCtrl extends Controller
                 }
                 $this->view->cityBO = $model->get($this->para->term_taxonomy_id);
 
-                $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+                $this->view->countryList = new SplDoublyLinkedList();
+                $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_CITY_EDIT);
@@ -158,8 +178,8 @@ class CityCtrl extends Controller
 
             if (isset($this->para->term_taxonomy_id)) {
                 $this->view->cityBO = $model->get($this->para->term_taxonomy_id);
-                $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+                $this->view->countryList = new SplDoublyLinkedList();
+                $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                     $this->view->renderAdmin(RENDER_VIEW_CITY_INFO);
@@ -188,8 +208,8 @@ class CityCtrl extends Controller
         if (isset($this->para->term_taxonomy_id)) {
             $this->view->cityBO = $model->get($this->para->term_taxonomy_id);
 
-            $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("country")), -1);
+            $this->view->countryList = new SplDoublyLinkedList();
+            $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
             if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                 $this->view->render(RENDER_VIEW_CITY);
@@ -247,6 +267,12 @@ class CityCtrl extends Controller
             if (isset($_POST['cities_per_page'])) {
                 $this->para->cities_per_page = $_POST['cities_per_page'];
             }
+            if (isset($_POST['current_rating'])) {
+                $this->para->current_rating = $_POST['current_rating'];
+            }
+            if (isset($_POST['vote_times'])) {
+                $this->para->vote_times = $_POST['vote_times'];
+            }
             if (isset($_POST['adv_setting'])) {
                 $this->para->adv_setting = $_POST['adv_setting'];
             }
@@ -259,8 +285,8 @@ class CityCtrl extends Controller
                 $model->executeAction($this->para);
             }
 
-            
-            
+
+
             $model->search($this->view, $this->para);
 
             if (count((array) $this->para) > 0) {

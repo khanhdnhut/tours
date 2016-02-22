@@ -15,6 +15,8 @@ class CityBO extends TaxonomyBO
     public $post_content_2 = "";
     public $images;
     public $image_ids;
+    public $current_rating;
+    public $vote_times;
     public $tag_list;
 
 }

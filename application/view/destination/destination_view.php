@@ -12,6 +12,54 @@
                 </div>
             </div>
 
+            <div class="article-tools clearfix">                    
+                <div class="size-1 extravote">
+                    <span itemtype="/AggregateRating" itemscope="" itemprop="aggregateRating" class="extravote-stars">
+                        <meta content="2" itemprop="ratingCount">
+                        <span itemprop="ratingValue" style="width:<?php
+                        if (isset($this->destinationBO->current_rating) && is_numeric($this->destinationBO->current_rating)) {
+                            echo $this->destinationBO->current_rating * 100 / 5;
+                        } else {
+                            echo 0;
+                        }
+
+                        ?>%;" class="current-rating" id="rating_623_0"><?php
+                              if (isset($this->destinationBO->current_rating) && is_numeric($this->destinationBO->current_rating)) {
+                                  echo $this->destinationBO->current_rating;
+                              } else {
+                                  echo 0;
+                              }
+
+                              ?></span>
+                        <span class="extravote-star"><a class="ev-5-stars" title="0.5 out of 5" onclick="javascript:JVXVote(623, 0.5, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-10-stars" title="1 out of 5" onclick="javascript:JVXVote(623, 1, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-15-stars" title="1.5 out of 5" onclick="javascript:JVXVote(623, 1.5, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-20-stars" title="2 out of 5" onclick="javascript:JVXVote(623, 2, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-25-stars" title="2.5 out of 5" onclick="javascript:JVXVote(623, 2.5, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-30-stars" title="3 out of 5" onclick="javascript:JVXVote(623, 3, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-35-stars" title="3.5 out of 5" onclick="javascript:JVXVote(623, 3.5, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-40-stars" title="4 out of 5" onclick="javascript:JVXVote(623, 4, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-45-stars" title="4.5 out of 5" onclick="javascript:JVXVote(623, 4.5, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                        <span class="extravote-star"><a class="ev-50-stars" title="5 out of 5" onclick="javascript:JVXVote(623, 5, 8, 2, '0', 1, 1, 1);" href="">1</a></span>
+                    </span>
+                    <span id="extravote_623_0" class="extravote-info">Rating <?php
+                        if (isset($this->destinationBO->current_rating) && is_numeric($this->destinationBO->current_rating)) {
+                            echo $this->destinationBO->current_rating;
+                        } else {
+                            echo 0;
+                        }
+
+                        ?> (<?php
+                        if (isset($this->destinationBO->vote_times)) {
+                            echo $this->destinationBO->vote_times;
+                        } else {
+                            echo 0;
+                        }
+
+                        ?> Votes)</span>
+                </div>
+            </div>
+
             <?php
             if (isset($this->destinationBO->post_content_1)) {
                 echo str_replace("\n", "<br>", $this->destinationBO->post_content_1);
@@ -28,72 +76,72 @@
                 <script type="text/javascript" src="<?php echo PUBLIC_JS; ?>includes/slider/jssor.slider.min.js"></script>
                 <!-- use jssor.slider.debug.js instead for debug -->
                 <script>
-                    jssor_1_slider_init = function () {
+                            jssor_1_slider_init = function () {
 
-                        var jssor_1_SlideshowTransitions = [
-                            {$Duration: 1200, x: 0.3, $During: {$Left: [0.3, 0.7]}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: -0.3, $SlideOut: true, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: -0.3, $During: {$Left: [0.3, 0.7]}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: 0.3, $SlideOut: true, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: 0.3, $During: {$Top: [0.3, 0.7]}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: -0.3, $SlideOut: true, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: -0.3, $During: {$Top: [0.3, 0.7]}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: 0.3, $SlideOut: true, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: 0.3, $Cols: 2, $During: {$Left: [0.3, 0.7]}, $ChessMode: {$Column: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: 0.3, $Cols: 2, $SlideOut: true, $ChessMode: {$Column: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: 0.3, $Rows: 2, $During: {$Top: [0.3, 0.7]}, $ChessMode: {$Row: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: 0.3, $Rows: 2, $SlideOut: true, $ChessMode: {$Row: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: 0.3, $Cols: 2, $During: {$Top: [0.3, 0.7]}, $ChessMode: {$Column: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, y: -0.3, $Cols: 2, $SlideOut: true, $ChessMode: {$Column: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: 0.3, $Rows: 2, $During: {$Left: [0.3, 0.7]}, $ChessMode: {$Row: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: -0.3, $Rows: 2, $SlideOut: true, $ChessMode: {$Row: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: 0.3, y: 0.3, $Cols: 2, $Rows: 2, $During: {$Left: [0.3, 0.7], $Top: [0.3, 0.7]}, $ChessMode: {$Column: 3, $Row: 12}, $Easing: {$Left: $Jease$.$InCubic, $Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, x: 0.3, y: 0.3, $Cols: 2, $Rows: 2, $During: {$Left: [0.3, 0.7], $Top: [0.3, 0.7]}, $SlideOut: true, $ChessMode: {$Column: 3, $Row: 12}, $Easing: {$Left: $Jease$.$InCubic, $Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, $Delay: 20, $Clip: 3, $Assembly: 260, $Easing: {$Clip: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, $Delay: 20, $Clip: 3, $SlideOut: true, $Assembly: 260, $Easing: {$Clip: $Jease$.$OutCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, $Delay: 20, $Clip: 12, $Assembly: 260, $Easing: {$Clip: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
-                            {$Duration: 1200, $Delay: 20, $Clip: 12, $SlideOut: true, $Assembly: 260, $Easing: {$Clip: $Jease$.$OutCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2}
-                        ];
+                                var jssor_1_SlideshowTransitions = [
+                                    {$Duration: 1200, x: 0.3, $During: {$Left: [0.3, 0.7]}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: -0.3, $SlideOut: true, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: -0.3, $During: {$Left: [0.3, 0.7]}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: 0.3, $SlideOut: true, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: 0.3, $During: {$Top: [0.3, 0.7]}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: -0.3, $SlideOut: true, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: -0.3, $During: {$Top: [0.3, 0.7]}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: 0.3, $SlideOut: true, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: 0.3, $Cols: 2, $During: {$Left: [0.3, 0.7]}, $ChessMode: {$Column: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: 0.3, $Cols: 2, $SlideOut: true, $ChessMode: {$Column: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: 0.3, $Rows: 2, $During: {$Top: [0.3, 0.7]}, $ChessMode: {$Row: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: 0.3, $Rows: 2, $SlideOut: true, $ChessMode: {$Row: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: 0.3, $Cols: 2, $During: {$Top: [0.3, 0.7]}, $ChessMode: {$Column: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, y: -0.3, $Cols: 2, $SlideOut: true, $ChessMode: {$Column: 12}, $Easing: {$Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: 0.3, $Rows: 2, $During: {$Left: [0.3, 0.7]}, $ChessMode: {$Row: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: -0.3, $Rows: 2, $SlideOut: true, $ChessMode: {$Row: 3}, $Easing: {$Left: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: 0.3, y: 0.3, $Cols: 2, $Rows: 2, $During: {$Left: [0.3, 0.7], $Top: [0.3, 0.7]}, $ChessMode: {$Column: 3, $Row: 12}, $Easing: {$Left: $Jease$.$InCubic, $Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, x: 0.3, y: 0.3, $Cols: 2, $Rows: 2, $During: {$Left: [0.3, 0.7], $Top: [0.3, 0.7]}, $SlideOut: true, $ChessMode: {$Column: 3, $Row: 12}, $Easing: {$Left: $Jease$.$InCubic, $Top: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, $Delay: 20, $Clip: 3, $Assembly: 260, $Easing: {$Clip: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, $Delay: 20, $Clip: 3, $SlideOut: true, $Assembly: 260, $Easing: {$Clip: $Jease$.$OutCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, $Delay: 20, $Clip: 12, $Assembly: 260, $Easing: {$Clip: $Jease$.$InCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2},
+                                    {$Duration: 1200, $Delay: 20, $Clip: 12, $SlideOut: true, $Assembly: 260, $Easing: {$Clip: $Jease$.$OutCubic, $Opacity: $Jease$.$Linear}, $Opacity: 2}
+                                ];
 
-                        var jssor_1_options = {
-                            $AutoPlay: true,
-                            $SlideshowOptions: {
-                                $Class: $JssorSlideshowRunner$,
-                                $Transitions: jssor_1_SlideshowTransitions,
-                                $TransitionsOrder: 1
-                            },
-                            $ArrowNavigatorOptions: {
-                                $Class: $JssorArrowNavigator$
-                            },
-                            $ThumbnailNavigatorOptions: {
-                                $Class: $JssorThumbnailNavigator$,
-                                $Cols: 10,
-                                $SpacingX: 8,
-                                $SpacingY: 8,
-                                $Align: 360
-                            }
-                        };
+                                var jssor_1_options = {
+                                    $AutoPlay: true,
+                                    $SlideshowOptions: {
+                                        $Class: $JssorSlideshowRunner$,
+                                        $Transitions: jssor_1_SlideshowTransitions,
+                                        $TransitionsOrder: 1
+                                    },
+                                    $ArrowNavigatorOptions: {
+                                        $Class: $JssorArrowNavigator$
+                                    },
+                                    $ThumbnailNavigatorOptions: {
+                                        $Class: $JssorThumbnailNavigator$,
+                                        $Cols: 10,
+                                        $SpacingX: 8,
+                                        $SpacingY: 8,
+                                        $Align: 360
+                                    }
+                                };
 
-                        var jssor_1_slider = new $JssorSlider$("jssor_1", jssor_1_options);
+                                var jssor_1_slider = new $JssorSlider$("jssor_1", jssor_1_options);
 
-                        //responsive code begin
-                        //you can remove responsive code if you don't want the slider scales while window resizing
-                        function ScaleSlider() {
-                            var refSize = jssor_1_slider.$Elmt.parentNode.clientWidth;
-                            if (refSize) {
-                                refSize = Math.min(refSize, 800);
-                                jssor_1_slider.$ScaleWidth(refSize);
-                            }
-                            else {
-                                window.setTimeout(ScaleSlider, 30);
-                            }
-                        }
-                        ScaleSlider();
-                        $Jssor$.$AddEvent(window, "load", ScaleSlider);
-                        $Jssor$.$AddEvent(window, "resize", ScaleSlider);
-                        $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
-                        //responsive code end
-                    };
+                                //responsive code begin
+                                //you can remove responsive code if you don't want the slider scales while window resizing
+                                function ScaleSlider() {
+                                    var refSize = jssor_1_slider.$Elmt.parentNode.clientWidth;
+                                    if (refSize) {
+                                        refSize = Math.min(refSize, 800);
+                                        jssor_1_slider.$ScaleWidth(refSize);
+                                    }
+                                    else {
+                                        window.setTimeout(ScaleSlider, 30);
+                                    }
+                                }
+                                ScaleSlider();
+                                $Jssor$.$AddEvent(window, "load", ScaleSlider);
+                                $Jssor$.$AddEvent(window, "resize", ScaleSlider);
+                                $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
+                                //responsive code end
+                            };
                 </script>
 
                 <style>

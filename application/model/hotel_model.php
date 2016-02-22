@@ -48,6 +48,18 @@ class HotelModel extends PostModel
                 return false;
             }
         }
+        if (!(isset($para->country_id) && $para->country_id != "0")) {
+            $_SESSION["fb_error"][] = ERROR_COUNTRY_EMPTY;
+            return false;
+        } else {
+            Model::autoloadModel("country");
+            $countryModel = new CityModel($this->db);
+            $countryBO = $countryModel->get($para->country_id);
+            if ($countryBO == NULL || !(isset($countryBO->taxonomy) && $countryBO->taxonomy == "country")) {
+                $_SESSION["fb_error"][] = ERROR_COUNTRY_NOT_IMPOSSIBLE;
+                return false;
+            }
+        }
         if (!(isset($para->post_content) && $para->post_content != "")) {
             $_SESSION["fb_error"][] = ERROR_HOTEL_IMAGE_EMPTY;
             return false;
@@ -78,16 +90,16 @@ class HotelModel extends PostModel
         }
 
         if (isset($para->star) && $para->star != "" && !is_numeric($para->star)) {
-            $_SESSION["fb_error"][] = ERROR_HOTEL_STAR_INVALID;
+            $_SESSION["fb_error"][] = ERROR_STAR_INVALID;
             return false;
         }
         if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
-            $_SESSION["fb_error"][] = ERROR_HOTEL_CURRENT_RATING_INVALID;
+            $_SESSION["fb_error"][] = ERROR_CURRENT_RATING_INVALID;
             return false;
         }
 
         if (isset($para->vote_times) && $para->vote_times != "" && !is_numeric($para->vote_times)) {
-            $_SESSION["fb_error"][] = ERROR_HOTEL_VOTE_TIMES_INVALID;
+            $_SESSION["fb_error"][] = ERROR_VOTE_TIMES_INVALID;
             return false;
         }
 
@@ -137,6 +149,9 @@ class HotelModel extends PostModel
                 }
                 if (isset($para->city_id)) {
                     $hotelBO->city_id = $para->city_id;
+                }
+                if (isset($para->country_id)) {
+                    $hotelBO->country_id = $para->country_id;
                 }
 
                 $hotelBO->post_author = Session::get("user_id");
@@ -254,6 +269,15 @@ class HotelModel extends PostModel
                         return FALSE;
                     }
 
+                    if ($taxonomyModel->addRelationshipToDatabase($post_id, $hotelBO->country_id, 0) == NULL) {
+                        if (isset($imageModel) && isset($image_id)) {
+                            $imageModel->delete($image_id);
+                        }
+                        $this->db->rollBack();
+                        $_SESSION["fb_error"][] = ERROR_ADD_NEW_HOTEL;
+                        return FALSE;
+                    }
+
                     if (isset($para->tag_array) && count($para->tag_array) > 0) {
                         Model::autoloadModel('tag');
                         $tagModel = new TagModel($this->db);
@@ -325,6 +349,20 @@ class HotelModel extends PostModel
                 return false;
             }
         }
+        
+        if (!(isset($para->country_id) && $para->country_id != "0")) {
+            $_SESSION["fb_error"][] = ERROR_COUNTRY_EMPTY;
+            return false;
+        } else {
+            Model::autoloadModel("country");
+            $countryModel = new CityModel($this->db);
+            $countryBO = $countryModel->get($para->country_id);
+            if ($countryBO == NULL || !(isset($countryBO->taxonomy) && $countryBO->taxonomy == "country")) {
+                $_SESSION["fb_error"][] = ERROR_COUNTRY_NOT_IMPOSSIBLE;
+                return false;
+            }
+        }
+        
         if (!(isset($para->post_content) && $para->post_content != "")) {
             $_SESSION["fb_error"][] = ERROR_HOTEL_CONTENT_EMPTY;
             return false;
@@ -351,16 +389,16 @@ class HotelModel extends PostModel
         }
 
         if (isset($para->star) && $para->star != "" && !is_numeric($para->star)) {
-            $_SESSION["fb_error"][] = ERROR_HOTEL_STAR_INVALID;
+            $_SESSION["fb_error"][] = ERROR_STAR_INVALID;
             return false;
         }
         if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
-            $_SESSION["fb_error"][] = ERROR_HOTEL_CURRENT_RATING_INVALID;
+            $_SESSION["fb_error"][] = ERROR_CURRENT_RATING_INVALID;
             return false;
         }
 
         if (isset($para->vote_times) && $para->vote_times != "" && !is_numeric($para->vote_times)) {
-            $_SESSION["fb_error"][] = ERROR_HOTEL_VOTE_TIMES_INVALID;
+            $_SESSION["fb_error"][] = ERROR_VOTE_TIMES_INVALID;
             return false;
         }
 
@@ -381,6 +419,13 @@ class HotelModel extends PostModel
                     $hotelBO->city_name = $cityBO->name;
                     $hotelBO->city_id = $cityBO->term_taxonomy_id;
                 }
+                
+                $countryList = $taxonomyModel->getTaxonomyRelationshipByObjectId($post_id, "country");
+                if (count($countryList) > 0) {
+                    $countryBO = $countryList[0];
+                    $hotelBO->country_name = $countryBO->name;
+                    $hotelBO->country_id = $countryBO->term_taxonomy_id;
+                }
 
                 Model::autoloadModel('tag');
                 $tagModel = new TagModel($this->db);
@@ -388,7 +433,7 @@ class HotelModel extends PostModel
                 if ($tagList != NULL && count($tagList) > 0) {
                     $hotelBO->tag_list = $tagList;
                 }
-                
+
                 if (isset($hotelBO->image_id) && $hotelBO->image_id != "" && is_numeric($hotelBO->image_id)) {
                     Model::autoloadModel('image');
                     $imageModel = new ImageModel($this->db);
@@ -657,6 +702,30 @@ class HotelModel extends PostModel
                                 }
                             }
                         }
+                        
+                        if (isset($para->country_id)) {
+                            if (!isset($hotelBO->country_id)) {
+                                $hotelBO->country_id = $para->country_id;
+                                if ($this->addMetaInfoToDatabase($para->post_id, "country_id", $hotelBO->country_id) == NULL) {
+                                    $this->db->rollBack();
+                                    if (isset($imageModel) && isset($country_id)) {
+                                        $imageModel->delete($country_id);
+                                    }
+                                    $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_HOTEL;
+                                    return FALSE;
+                                }
+                            } else if ($hotelBO->country_id != $para->country_id) {
+                                $hotelBO->country_id = $para->country_id;
+                                if (!$this->updateMetaInfoToDatabase($para->post_id, "country_id", $hotelBO->country_id)) {
+                                    $this->db->rollBack();
+                                    if (isset($imageModel) && isset($country_id)) {
+                                        $imageModel->delete($country_id);
+                                    }
+                                    $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_HOTEL;
+                                    return FALSE;
+                                }
+                            }
+                        }
 
                         if (isset($para->tag_array) || isset($hotelBO->tag_list)) {
                             Model::autoloadModel('tag');
@@ -680,7 +749,7 @@ class HotelModel extends PostModel
                                 foreach ($hotelBO->tag_list as $tag_old) {
                                     $tags_old_array[] = $tag_old->name;
                                 }
-                                
+
                                 $tags_new_array = array();
                                 for ($i = 0; $i < count($para->tag_array); $i++) {
                                     if (!in_array($para->tag_array[$i], $tags_old_array)) {
@@ -803,6 +872,9 @@ class HotelModel extends PostModel
                     if (isset($hotelBO->city_id)) {
                         $this->deleteRelationship($post_id, $hotelBO->city_id);
                     }
+                    if (isset($hotelBO->country_id)) {
+                        $this->deleteRelationship($post_id, $hotelBO->country_id);
+                    }
                     if (isset($hotelBO->image_id)) {
                         Model::autoloadModel("image");
                         $imageModel = new ImageModel($this->db);
@@ -877,6 +949,8 @@ class HotelModel extends PostModel
                                 im.`meta_value` AS image_id,
                                 te.`name` AS city_name,
                                 ta.`term_taxonomy_id` AS city_id,
+                                ts.`name` AS country_name,
+                                tc.`term_taxonomy_id` AS country_id,
                                 po.*  ";
             $sqlSelectCount = "SELECT COUNT(*) as countHotel ";
             //para: orderby, order, page, s, paged, countries, new_role, new_role2, action, action2
@@ -889,8 +963,11 @@ class HotelModel extends PostModel
                             LEFT JOIN `postmeta` AS vo ON po.`ID` = vo.`post_id` AND vo.`meta_key` = 'vote_times' 
                             LEFT JOIN `postmeta` AS im ON po.`ID` = im.`post_id` AND im.`meta_key` = 'image_id'   
                             LEFT JOIN `term_relationships` AS re ON po.`ID` = re.`object_id` 
-                            JOIN `term_taxonomy` AS ta ON re.`term_taxonomy_id` = ta.`term_taxonomy_id` AND ta.`taxonomy` = 'city' 
-                            LEFT JOIN `terms` AS te ON ta.`term_id` = te.`term_id`  ";
+                            JOIN `term_taxonomy` AS ta ON re.`term_taxonomy_id` = ta.`term_taxonomy_id` AND ta.`taxonomy` = 'city'                             
+                            LEFT JOIN `terms` AS te ON ta.`term_id` = te.`term_id` 
+                            LEFT JOIN `term_relationships` AS rd ON po.`ID` = rd.`object_id` 
+                            JOIN `term_taxonomy` AS tc ON rd.`term_taxonomy_id` = tc.`term_taxonomy_id` AND tc.`taxonomy` = 'country' 
+                            LEFT JOIN `terms` AS ts ON tc.`term_id` = ts.`term_id` ";
             $sqlWhere = " WHERE po.`post_type` = 'hotel' ";
 
 
@@ -900,15 +977,16 @@ class HotelModel extends PostModel
                                 OR po.`post_name` LIKE :s 
                                 OR po.`post_title` LIKE :s 
                                 OR te.`name` LIKE :s
+                                OR ts.`name` LIKE :s
                               ) ";
                 $paraSQL[':s'] = "%" . $para->s . "%";
                 $view->s = $para->s;
             }
 
-            $view->orderby = "name";
+            $view->orderby = "post_title";
             $view->order = "asc";
 
-            if (isset($para->orderby) && in_array($para->orderby, array("post_title", "address", "city_name",
+            if (isset($para->orderby) && in_array($para->orderby, array("post_title", "address", "city_name", "country_name",
                     "star", "number_of_rooms", "current_rating", "vote_times"))) {
                 switch ($para->orderby) {
                     case "post_title":
@@ -939,6 +1017,10 @@ class HotelModel extends PostModel
                         $para->orderby = "city_name";
                         $view->orderby = "city_name";
                         break;
+                    case "country_name":
+                        $para->orderby = "country_name";
+                        $view->orderby = "country_name";
+                        break;
                 }
 
                 if (isset($para->order) && in_array($para->order, array("desc", "asc"))) {
@@ -949,7 +1031,7 @@ class HotelModel extends PostModel
                 }
                 $sqlOrderby = " ORDER BY " . $para->orderby . " " . $para->order;
             } else {
-                $sqlOrderby = " ORDER BY " . TB_TERMS_COL_NAME . " ASC";
+                $sqlOrderby = " ORDER BY " . TB_POST_COL_POST_TITLE . " ASC";
             }
 
             $sqlCount = $sqlSelectCount . $sqlFrom . $sqlWhere;

@@ -32,6 +32,32 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                     ?>" id="name" name="name">
                 </td>
             </tr>
+            <tr class="current_rating-wrap">
+                <th>
+                    <label for="current_rating"><?php echo CURRENT_RATING_TITLE; ?></label>
+                </th>
+                <td>
+                    <input disabled="disabled" type="number" step="1" min="0" max="5" class="screen-per-page" name="current_rating" id="current_rating" maxlength="3" value="<?php
+                    if (isset($this->destinationBO->current_rating)) {
+                        echo htmlspecialchars($this->destinationBO->current_rating);
+                    }
+
+                    ?>" style="min-width: 150px;">
+                </td>
+            </tr>
+            <tr class="vote_times-wrap">
+                <th>
+                    <label for="vote_times"><?php echo VOTE_TIMES_TITLE; ?></label>
+                </th>
+                <td>
+                    <input disabled="disabled" type="number" step="1" min="0" max="999" class="screen-per-page" name="vote_times" id="vote_times" maxlength="3" value="<?php
+                    if (isset($this->destinationBO->vote_times)) {
+                        echo htmlspecialchars($this->destinationBO->vote_times);
+                    }
+
+                    ?>" style="min-width: 150px;">
+                </td>
+            </tr>
             <tr class="destination-slug-wrap">
                 <th>
                     <label for="slug"><?php echo SLUG_TITLE; ?></label>
@@ -46,9 +72,90 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                 </td>
             </tr>
 
+            <tr class="destination-country-wrap">
+                <th>
+                    <label for="country"><?php echo DESTINATION_COUNTRY_TITLE; ?></label>
+                </th>
+                <td>
+                    <select id="country" name="country" disabled="disabled"  >
+                        <?php
+                        if (isset($this->countryList) && is_a($this->countryList, "SplDoublyLinkedList")) {
+                            $this->countryList->rewind();
+                            foreach ($this->countryList as $value) {
+
+                                ?> 
+                                <option <?php if ($value->term_taxonomy_id == $this->destinationBO->country) {
+
+                                    ?>
+                                        selected="selected"
+                                    <?php }
+
+                                    ?> value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
+                                        }
+
+                                        ?></option>
+                                <?php
+                            }
+                        }
+
+                        ?>
+                        <option value="0" <?php if ($this->destinationBO->country == 0 || $this->destinationBO->country == "0") { ?>
+                                    selected="selected"
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                                
+                    </select>
+                </td>
+            </tr>
+            <tr class="destination-city-wrap">
+                <th>
+                    <label for="city"><?php echo DESTINATION_CITY_TITLE; ?></label>
+                </th>
+                <td>
+                    <select id="city" name="city" disabled="disabled"  >
+                        <?php
+                        if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
+                            $this->cityList->rewind();
+                            foreach ($this->cityList as $value) {
+
+                                ?> 
+                                <option <?php if ($value->term_taxonomy_id == $this->destinationBO->city) {
+
+                                    ?>
+                                        selected="selected"
+                                    <?php }
+
+                                    ?> value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
+                                        }
+
+                                        ?></option>
+                                <?php
+                            }
+                        }
+
+                        ?>
+                        <option value="0" <?php if ($this->destinationBO->city == 0 || $this->destinationBO->city == "0") { ?>
+                                    selected="selected"
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                                
+                    </select>
+                </td>
+            </tr>
+            
             <tr class="destination-parent-wrap">
                 <th>
-                    <label for="parent"><?php echo DESTINATION_COUNTRY_TITLE; ?></label>
+                    <label for="parent"><?php echo PARENT_TITLE; ?></label>
                 </th>
                 <td>
                     <select id="parent" name="parent" disabled="disabled"  >
@@ -56,29 +163,26 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                         if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
                             $this->parentList->rewind();
                             foreach ($this->parentList as $value) {
-                                if ($value->term_taxonomy_id != $this->destinationBO->term_taxonomy_id &&
-                                    $value->parent != $this->destinationBO->term_taxonomy_id) {
 
-                                    ?> 
-                                    <option <?php if ($value->term_taxonomy_id == $this->destinationBO->parent) {
+                                ?> 
+                                <option <?php if ($value->term_taxonomy_id == $this->destinationBO->parent) {
 
-                                        ?>
-                                            selected="selected"
-                                        <?php }
+                                    ?>
+                                        selected="selected"
+                                    <?php }
 
-                                        ?> value="<?php
-                                        if (isset($value->term_taxonomy_id)) {
-                                            echo $value->term_taxonomy_id;
+                                    ?> value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
                                         }
 
-                                        ?>"><?php
-                                            if (isset($value->name)) {
-                                                echo $value->name;
-                                            }
-
-                                            ?></option>
-                                    <?php
-                                }
+                                        ?></option>
+                                <?php
                             }
                         }
 
@@ -89,7 +193,6 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                     </select>
                 </td>
             </tr>
-
             <tr class="destination-description-wrap">
                 <th>
                     <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
@@ -194,7 +297,7 @@ if (isset($this->destinationBO) && $this->destinationBO != NULL) {
                 ?>">
             </td>
         </tr>
-        </tbody>
+    </tbody>
     </table>
 
     <script>

@@ -32,6 +32,32 @@ if (isset($this->cityBO) && $this->cityBO != NULL) {
                     ?>" id="name" name="name">
                 </td>
             </tr>
+            <tr class="current_rating-wrap">
+                <th>
+                    <label for="current_rating"><?php echo CURRENT_RATING_TITLE; ?></label>
+                </th>
+                <td>
+                    <input disabled="disabled" type="number" step="1" min="0" max="5" class="screen-per-page" name="current_rating" id="current_rating" maxlength="3" value="<?php
+                    if (isset($this->cityBO->current_rating)) {
+                        echo htmlspecialchars($this->cityBO->current_rating);
+                    }
+
+                    ?>" style="min-width: 150px;">
+                </td>
+            </tr>
+            <tr class="vote_times-wrap">
+                <th>
+                    <label for="vote_times"><?php echo VOTE_TIMES_TITLE; ?></label>
+                </th>
+                <td>
+                    <input disabled="disabled" type="number" step="1" min="0" max="999" class="screen-per-page" name="vote_times" id="vote_times" maxlength="3" value="<?php
+                    if (isset($this->cityBO->vote_times)) {
+                        echo htmlspecialchars($this->cityBO->vote_times);
+                    }
+
+                    ?>" style="min-width: 150px;">
+                </td>
+            </tr>
             <tr class="city-slug-wrap">
                 <th>
                     <label for="slug"><?php echo SLUG_TITLE; ?></label>
@@ -46,46 +72,43 @@ if (isset($this->cityBO) && $this->cityBO != NULL) {
                 </td>
             </tr>
 
-            <tr class="city-parent-wrap">
+            <tr class="city-country-wrap">
                 <th>
-                    <label for="parent"><?php echo PARENT_TITLE; ?></label>
+                    <label for="country"><?php echo DESTINATION_COUNTRY_TITLE; ?></label>
                 </th>
                 <td>
-                    <select id="parent" name="parent" disabled="disabled"  >
+                    <select id="country" name="country" disabled="disabled"  >
                         <?php
-                        if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
-                            $this->parentList->rewind();
-                            foreach ($this->parentList as $value) {
-                                if ($value->term_taxonomy_id != $this->cityBO->term_taxonomy_id &&
-                                    $value->parent != $this->cityBO->term_taxonomy_id) {
+                        if (isset($this->countryList) && is_a($this->countryList, "SplDoublyLinkedList")) {
+                            $this->countryList->rewind();
+                            foreach ($this->countryList as $value) {
 
-                                    ?> 
-                                    <option <?php if ($value->term_taxonomy_id == $this->cityBO->parent) {
+                                ?> 
+                                <option <?php if (isset($this->cityBO->country) && $value->term_taxonomy_id == $this->cityBO->country) {
 
-                                        ?>
-                                            selected="selected"
-                                        <?php }
+                                    ?>
+                                        selected="selected"
+                                    <?php }
 
-                                        ?> value="<?php
-                                        if (isset($value->term_taxonomy_id)) {
-                                            echo $value->term_taxonomy_id;
+                                    ?> value="<?php
+                                    if (isset($value->term_taxonomy_id)) {
+                                        echo $value->term_taxonomy_id;
+                                    }
+
+                                    ?>"><?php
+                                        if (isset($value->name)) {
+                                            echo $value->name;
                                         }
 
-                                        ?>"><?php
-                                            if (isset($value->name)) {
-                                                echo $value->name;
-                                            }
-
-                                            ?></option>
-                                    <?php
-                                }
+                                        ?></option>
+                                <?php
                             }
                         }
 
                         ?>
-                        <option value="0" <?php if ($this->cityBO->parent == 0 || $this->cityBO->parent == "0") { ?>
+                        <option value="0" <?php if (isset($this->cityBO->country) && $this->cityBO->country == "0") { ?>
                                     selected="selected"
-                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                              
+                                <?php } ?> ><?php echo NONE_TITLE; ?></option>                                                
                     </select>
                 </td>
             </tr>

@@ -31,6 +31,24 @@ class TermModel extends Model
         return NULL;
     }
 
+    public function updateMetaInfoToDatabase($term_id, $meta_key, $meta_value)
+    {
+        try {
+            $sql = "UPDATE " . TABLE_TERMMETA . " 
+                    SET " . TB_TERMMETA_COL_META_VALUE . " = :meta_value
+                    WHERE " . TB_TERMMETA_COL_TERM_ID . " = :term_id AND " . TB_TERMMETA_COL_META_KEY . " = :meta_key";
+            $sth = $this->db->prepare($sql);
+            $sth->execute(array(':meta_key' => $meta_key, ':meta_value' => $meta_value, ':term_id' => $term_id));
+            $count = $sth->rowCount();
+            if ($count == 0) {
+                return false;
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
     public function addToDatabase($termBO)
     {
         if (is_a($termBO, "TermBO")) {

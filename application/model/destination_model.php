@@ -108,13 +108,23 @@ class DestinationModel extends TaxonomyModel
             return false;
         }
 
-        if (!(isset($para->parent) && $para->parent != "" && is_numeric($para->parent))) {
-            $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
+        if (!isset($para->country) || $para->country == "" || !is_numeric($para->country)) {
+            $_SESSION["fb_error"][] = ERROR_COUNTRY_EMPTY;
             return false;
         } else {
-            $para->parent = (int) $para->parent;
-            if ($para->parent < 0) {
-                $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
+            $para->country = (int) $para->country;
+            if ($para->country < 0) {
+                $_SESSION["fb_error"][] = ERROR_COUNTRY_NOT_IMPOSSIBLE;
+            }
+        }
+
+        if (!(isset($para->city) && $para->city != "" && is_numeric($para->city))) {
+            $_SESSION["fb_error"][] = ERROR_CITY_NOT_IMPOSSIBLE;
+            return false;
+        } else {
+            $para->city = (int) $para->city;
+            if ($para->city < 0) {
+                $_SESSION["fb_error"][] = ERROR_CITY_NOT_IMPOSSIBLE;
             }
         }
 
@@ -122,7 +132,15 @@ class DestinationModel extends TaxonomyModel
             $tag_array = explode(",", $para->tag_list);
             $para->tag_array = $tag_array;
         }
+        if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
+            $_SESSION["fb_error"][] = ERROR_CURRENT_RATING_INVALID;
+            return false;
+        }
 
+        if (isset($para->vote_times) && $para->vote_times != "" && !is_numeric($para->vote_times)) {
+            $_SESSION["fb_error"][] = ERROR_VOTE_TIMES_INVALID;
+            return false;
+        }
         return true;
     }
 
@@ -156,6 +174,12 @@ class DestinationModel extends TaxonomyModel
                 $postBO->post_name = Utils::createSlug($destinationBO->name);
             }
 
+            if (isset($para->current_rating)) {
+                $destinationBO->current_rating = $para->current_rating;
+            }
+            if (isset($para->vote_times)) {
+                $destinationBO->vote_times = $para->vote_times;
+            }
             $postBO->post_author = Session::get("user_id");
             $postBO->post_date = date("Y-m-d H:i:s");
             $postBO->post_date_gmt = gmdate("Y-m-d H:i:s");
@@ -219,7 +243,6 @@ class DestinationModel extends TaxonomyModel
                         $taxonomyModel->addRelationshipToDatabase($post_id, $tag_id_array[$i]);
                     }
                 }
-
                 return TRUE;
             } else {
                 if (isset($imageModel) && isset($image_id)) {
@@ -248,14 +271,26 @@ class DestinationModel extends TaxonomyModel
                 if (isset($para->description)) {
                     $destinationBO->description = $para->description;
                 }
-                if (isset($para->parent)) {
+                if (isset($para->country) && $para->country != "0") {
+                    $destinationBO->country = $para->country;
+                }
+                if (isset($para->parent) && $para->parent != "0") {
                     $destinationBO->parent = $para->parent;
+                }
+                if (isset($para->city) && $para->city != "0") {
+                    $destinationBO->city = $para->city;
                 }
                 if (isset($para->post_content_1)) {
                     $destinationBO->post_content_1 = $para->post_content_1;
                 }
                 if (isset($para->post_content_2)) {
                     $destinationBO->post_content_2 = $para->post_content_2;
+                }
+                if (isset($para->current_rating)) {
+                    $destinationBO->current_rating = $para->current_rating;
+                }
+                if (isset($para->vote_times)) {
+                    $destinationBO->vote_times = $para->vote_times;
                 }
                 if (isset($para->tag_list)) {
                     $destinationBO->tag_list = $para->tag_list;
@@ -277,6 +312,21 @@ class DestinationModel extends TaxonomyModel
                         $this->addContent($destinationBO);
                     }
                     $this->db->commit();
+
+                    $destinationBOAdded = parent::get($destinationBO->term_taxonomy_id);
+
+                    if (isset($destinationBO->country) && $destinationBO->country != "") {
+                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "country", $destinationBO->country);
+                    }
+                    if (isset($destinationBO->city) && $destinationBO->city != "") {
+                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "city", $destinationBO->city);
+                    }
+                    if (isset($destinationBO->current_rating) && $destinationBO->current_rating != "") {
+                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "current_rating", $destinationBO->current_rating);
+                    }
+                    if (isset($destinationBO->vote_times) && $destinationBO->vote_times != "") {
+                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "vote_times", $destinationBO->vote_times);
+                    }
                     $_SESSION["fb_success"][] = ADD_DESTINATION_SUCCESS;
                     return TRUE;
                 } else {
@@ -315,13 +365,22 @@ class DestinationModel extends TaxonomyModel
             $_SESSION["fb_error"][] = ERROR_SLUG_EMPTY;
             return false;
         }
-        if (!(isset($para->parent) && $para->parent != "" && is_numeric($para->parent))) {
+        if (!(isset($para->country) && $para->country != "" && is_numeric($para->country))) {
             $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             return false;
         } else {
-            $para->parent = (int) $para->parent;
-            if ($para->parent < 0) {
+            $para->country = (int) $para->country;
+            if ($para->country < 0) {
                 $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
+            }
+        }
+        if (!(isset($para->city) && $para->city != "" && is_numeric($para->city))) {
+            $_SESSION["fb_error"][] = ERROR_CITY_NOT_IMPOSSIBLE;
+            return false;
+        } else {
+            $para->city = (int) $para->city;
+            if ($para->city < 0) {
+                $_SESSION["fb_error"][] = ERROR_CITY_NOT_IMPOSSIBLE;
             }
         }
 
@@ -329,6 +388,25 @@ class DestinationModel extends TaxonomyModel
             $tag_array = explode(",", $para->tag_list);
             $para->tag_array = $tag_array;
         }
+
+        if (isset($para->country) && $para->country != "" && !is_numeric($para->country)) {
+            $_SESSION["fb_error"][] = ERROR_COUNTRY_INVALID;
+            return false;
+        }
+        if (isset($para->city) && $para->city != "" && !is_numeric($para->city)) {
+            $_SESSION["fb_error"][] = ERROR_CITY_INVALID;
+            return false;
+        }
+        if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
+            $_SESSION["fb_error"][] = ERROR_CURRENT_RATING_INVALID;
+            return false;
+        }
+
+        if (isset($para->vote_times) && $para->vote_times != "" && !is_numeric($para->vote_times)) {
+            $_SESSION["fb_error"][] = ERROR_VOTE_TIMES_INVALID;
+            return false;
+        }
+
         return true;
     }
 
@@ -465,11 +543,6 @@ class DestinationModel extends TaxonomyModel
                     if (isset($para->description)) {
                         $destinationBO->description = $para->description;
                     }
-                    if (isset($para->parent)) {
-                        $destinationBO->parent = $para->parent;
-                    } else {
-                        $destinationBO->parent = 0;
-                    }
 
                     if (isset($para->image_delete_list)) {
                         $destinationBO->image_delete_list = $para->image_delete_list;
@@ -478,10 +551,54 @@ class DestinationModel extends TaxonomyModel
                     if (isset($para->images)) {
                         $destinationBO->images_upload = $para->images;
                     }
+                    if (isset($para->parent)) {
+                        $destinationBO->parent = $para->parent;
+                    }
 
                     $this->db->beginTransaction();
 
                     if ($this->update($destinationBO)) {
+
+                        if (isset($para->country)) {
+                            if (!isset($destinationBO->country)) {
+                                $destinationBO->country = $para->country;
+                                $this->addMetaInfoToDatabase($destinationBO->term_id, "country", $destinationBO->country);
+                            } else if ($destinationBO->country != $para->country) {
+                                $destinationBO->country = $para->country;
+                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "country", $destinationBO->country);
+                            }
+                        }
+
+                        if (isset($para->city)) {
+                            if (!isset($destinationBO->city)) {
+                                $destinationBO->city = $para->city;
+                                $this->addMetaInfoToDatabase($destinationBO->term_id, "city", $destinationBO->city);
+                            } else if ($destinationBO->city != $para->city) {
+                                $destinationBO->city = $para->city;
+                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "city", $destinationBO->city);
+                            }
+                        }
+
+                        if (isset($para->current_rating)) {
+                            if (!isset($destinationBO->current_rating)) {
+                                $destinationBO->current_rating = $para->current_rating;
+                                $this->addMetaInfoToDatabase($destinationBO->term_id, "current_rating", $destinationBO->current_rating);
+                            } else if ($destinationBO->current_rating != $para->current_rating) {
+                                $destinationBO->current_rating = $para->current_rating;
+                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "current_rating", $destinationBO->current_rating);
+                            }
+                        }
+
+                        if (isset($para->vote_times)) {
+                            if (!isset($destinationBO->vote_times)) {
+                                $destinationBO->vote_times = $para->vote_times;
+                                $this->addMetaInfoToDatabase($destinationBO->term_id, "vote_times", $destinationBO->vote_times) == NULL;
+                            } else if ($destinationBO->vote_times != $para->vote_times) {
+                                $destinationBO->vote_times = $para->vote_times;
+                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "vote_times", $destinationBO->vote_times);
+                            }
+                        }
+
                         if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2) || isset($para->post_content_1) || isset($para->post_content_2)) {
                             if (isset($para->post_content_1)) {
                                 $destinationBO->post_content_1 = $para->post_content_1;

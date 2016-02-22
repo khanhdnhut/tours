@@ -8,7 +8,7 @@
  * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
  *
  */
-class HotelCtrl extends Controller
+class EatCtrl extends Controller
 {
 
     /**
@@ -22,8 +22,8 @@ class HotelCtrl extends Controller
     public function addNew()
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('hotel');
-            $model = new HotelModel($this->db);
+            Model::autoloadModel('eat');
+            $model = new EatModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['action']) && $_POST['action'] == "addNew") {
                 $this->para->action = $_POST['action'];
@@ -59,10 +59,11 @@ class HotelCtrl extends Controller
                     $this->para->post_content = trim($_POST['post_content']);
                 }
 
-                if (isset($_FILES['image']) && isset($_FILES['image']['name']) &&
-                    $_FILES['image']['name'] != '') {
-                    $this->para->image = $_FILES['image'];
-                }
+                if (isset($_FILES['images']) && count($_FILES['images']) > 0 &&
+                        isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) &&
+                        $_FILES['images']['name'][0] != "") {
+                        $this->para->images = $_FILES['images'];
+                    }
 
                 $result = $model->addToDatabase($this->para);
                 if (!$result) {
@@ -94,11 +95,11 @@ class HotelCtrl extends Controller
     public function editInfo($post_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('hotel');
-            $model = new HotelModel($this->db);
+            Model::autoloadModel('eat');
+            $model = new EatModel($this->db);
             $this->para = new stdClass();
-            if (isset($_POST['hotel'])) {
-                $this->para->post_id = $_POST['hotel'];
+            if (isset($_POST['eat'])) {
+                $this->para->post_id = $_POST['eat'];
             } elseif (isset($post_id) && !is_null($post_id)) {
                 $this->para->post_id = $post_id;
             }
@@ -138,9 +139,10 @@ class HotelCtrl extends Controller
                         $this->para->post_content = trim($_POST['post_content']);
                     }
 
-                    if (isset($_FILES['image']) && isset($_FILES['image']['name']) &&
-                        $_FILES['image']['name'] != '') {
-                        $this->para->image = $_FILES['image'];
+                    if (isset($_FILES['images']) && count($_FILES['images']) > 0 &&
+                        isset($_FILES['images']['name']) && isset($_FILES['images']['name'][0]) &&
+                        $_FILES['images']['name'][0] != "") {
+                        $this->para->images = $_FILES['images'];
                     }
 
                     $result = $model->updateInfo($this->para);
@@ -150,7 +152,7 @@ class HotelCtrl extends Controller
                         $update_success = TRUE;
                     }
                 }
-                $this->view->hotelBO = $model->get($this->para->post_id);
+                $this->view->eatBO = $model->get($this->para->post_id);
 
                 Model::autoloadModel('taxonomy');
                 $taxonomyModel = new TaxonomyModel($this->db);
@@ -158,8 +160,8 @@ class HotelCtrl extends Controller
                 $taxonomyModel->getAllSorted($this->view->countryList, $taxonomyModel->buildTree($taxonomyModel->getAll("country")), -1);
 
                 $this->view->cityList = new SplDoublyLinkedList();
-                if (isset($this->view->hotelBO->country_id) && $this->view->hotelBO->country_id != "0") {
-                    $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->hotelBO->country_id)), -1);
+                if (isset($this->view->eatBO->country_id) && $this->view->eatBO->country_id != "0") {
+                    $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->eatBO->country_id)), -1);
                 }
                 if (isset($this->view->para) && isset($this->view->para->country_id)) {
                     $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->para->country_id)), -1);
@@ -181,17 +183,17 @@ class HotelCtrl extends Controller
     public function info($post_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('hotel');
-            $model = new HotelModel($this->db);
+            Model::autoloadModel('eat');
+            $model = new EatModel($this->db);
             $this->para = new stdClass();
-            if (isset($_POST['hotel'])) {
-                $this->para->post_id = $_POST['hotel'];
+            if (isset($_POST['eat'])) {
+                $this->para->post_id = $_POST['eat'];
             } elseif (isset($post_id) && !is_null($post_id)) {
                 $this->para->post_id = $post_id;
             }
 
             if (isset($this->para->post_id)) {
-                $this->view->hotelBO = $model->get($this->para->post_id);
+                $this->view->eatBO = $model->get($this->para->post_id);
 
 
                 Model::autoloadModel('taxonomy');
@@ -201,8 +203,8 @@ class HotelCtrl extends Controller
                 $taxonomyModel->getAllSorted($this->view->countryList, $taxonomyModel->buildTree($taxonomyModel->getAll("country")), -1);
 
                 $this->view->cityList = new SplDoublyLinkedList();
-                if (isset($this->view->hotelBO->country_id) && $this->view->hotelBO->country_id != "0") {
-                    $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->hotelBO->country_id)), -1);
+                if (isset($this->view->eatBO->country_id) && $this->view->eatBO->country_id != "0") {
+                    $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->eatBO->country_id)), -1);
                 }
 
                 if (isset($post_id) && !is_null($post_id)) {
@@ -220,17 +222,17 @@ class HotelCtrl extends Controller
 
     public function view($post_id = NULL)
     {
-        Model::autoloadModel('hotel');
-        $model = new HotelModel($this->db);
+        Model::autoloadModel('eat');
+        $model = new EatModel($this->db);
         $this->para = new stdClass();
-        if (isset($_POST['hotel'])) {
-            $this->para->post_id = $_POST['hotel'];
+        if (isset($_POST['eat'])) {
+            $this->para->post_id = $_POST['eat'];
         } elseif (isset($post_id) && !is_null($post_id)) {
             $this->para->post_id = $post_id;
         }
 
         if (isset($this->para->post_id)) {
-            $this->view->hotelBO = $model->get($this->para->post_id);
+            $this->view->eatBO = $model->get($this->para->post_id);
 
             Model::autoloadModel('taxonomy');
             $taxonomyModel = new TaxonomyModel($this->db);
@@ -238,8 +240,8 @@ class HotelCtrl extends Controller
             $taxonomyModel->getAllSorted($this->view->countryList, $taxonomyModel->buildTree($taxonomyModel->getAll("country")), -1);
 
             $this->view->cityList = new SplDoublyLinkedList();
-            if (isset($this->view->hotelBO->country_id) && $this->view->hotelBO->country_id != "0") {
-                $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->hotelBO->country_id)), -1);
+            if (isset($this->view->eatBO->country_id) && $this->view->eatBO->country_id != "0") {
+                $taxonomyModel->getAllSorted($this->view->cityList, $taxonomyModel->buildTree($taxonomyModel->getByMetaData("city", "country", $this->view->eatBO->country_id)), -1);
             }
 
             if (isset($post_id) && !is_null($post_id)) {
@@ -255,8 +257,8 @@ class HotelCtrl extends Controller
     public function index()
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('hotel');
-            $model = new HotelModel($this->db);
+            Model::autoloadModel('eat');
+            $model = new EatModel($this->db);
             $this->para = new stdClass();
 
             if (isset($_POST['type'])) {
@@ -277,8 +279,8 @@ class HotelCtrl extends Controller
             if (isset($_POST['paged'])) {
                 $this->para->paged = $_POST['paged'];
             }
-            if (isset($_POST['hotels'])) {
-                $this->para->hotels = $_POST['hotels'];
+            if (isset($_POST['eats'])) {
+                $this->para->eats = $_POST['eats'];
             }
             if (isset($_POST['action'])) {
                 $this->para->action = $_POST['action'];
@@ -304,8 +306,8 @@ class HotelCtrl extends Controller
             if (isset($_POST['vote_times'])) {
                 $this->para->vote_times = $_POST['vote_times'];
             }
-            if (isset($_POST['hotels_per_page'])) {
-                $this->para->hotels_per_page = $_POST['hotels_per_page'];
+            if (isset($_POST['eats_per_page'])) {
+                $this->para->eats_per_page = $_POST['eats_per_page'];
             }
             if (isset($_POST['adv_setting'])) {
                 $this->para->adv_setting = $_POST['adv_setting'];
@@ -315,7 +317,7 @@ class HotelCtrl extends Controller
                 $model->changeAdvSetting($this->para);
             }
 
-            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->hotels)) {
+            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->eats)) {
                 $model->executeAction($this->para);
             }
 

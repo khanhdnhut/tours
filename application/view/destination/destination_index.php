@@ -332,7 +332,7 @@ if (!(isset($this->ajax) && $this->ajax)) {
                                         </a>
                                     </span> |                                    
                                     <span class="edit">
-                                        <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->name); ?>" onclick="getEditDestinationPage(this)"><?php echo EDIT_TITLE; ?>
+                                        <a href="#" destination="<?php echo $taxonomyInfo->term_taxonomy_id; ?>" name="<?php echo htmlspecialchars($taxonomyInfo->slug); ?>" onclick="getEditDestinationPage(this)"><?php echo EDIT_TITLE; ?>
                                         </a>
                                     </span>
                                     | <span class="delete">

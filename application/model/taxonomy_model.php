@@ -242,6 +242,42 @@ class TaxonomyModel extends TermModel
         return null;
     }
 
+    public function getByMetaData($taxonomy, $meta_key, $meta_value)
+    {
+        try {
+            $sth = $this->db->prepare("SELECT u.term_taxonomy_id, u.term_id, "
+                . " u.taxonomy, u.description, u.parent, u.count, m.name, m.slug, m.term_group "
+                . " FROM " . TABLE_TERM_TAXONOMY . " AS u, " . TABLE_TERMS . " AS m, " . TABLE_TERMMETA . " AS n "
+                . " WHERE  u." . TB_TERM_TAXONOMY_COL_TERM_ID . " = m." . TB_TERMS_COL_TERM_ID . " "
+                . " AND m." . TB_TERMS_COL_TERM_ID . " = n." . TB_TERMMETA_COL_TERM_ID . " "
+                . " AND u." . TB_TERM_TAXONOMY_COL_TAXONOMY . " = :taxonomy "
+                . " AND n." . TB_TERMMETA_COL_META_KEY . " = :meta_key "
+                . " AND n." . TB_TERMMETA_COL_META_VALUE . " = :meta_value "
+            );
+
+            $sth->execute(array(':taxonomy' => $taxonomy, ':meta_key' => $meta_key, ':meta_value' => $meta_value));
+            $count = $sth->rowCount();
+            if ($count == 0) {
+                return null;
+            }
+
+            $taxonomyList = $sth->fetchAll();
+            for ($i = 0; $i < sizeof($taxonomyList); $i++) {
+                $taxonomyInfo = $taxonomyList[$i];
+                $this->autoloadBO('taxonomy');
+                $taxonomyBO = new TaxonomyBO();
+                $taxonomyBO->setTaxonomyInfo($taxonomyInfo);
+                $taxonomyBO->setTermInfo($taxonomyInfo);
+                $taxonomyBO->setTermMetaInfo($this->getMetaInfo($taxonomyBO->term_id));
+                $taxonomyList[$i] = $taxonomyBO;
+            }
+            return $taxonomyList;
+        } catch (Exception $e) {
+            
+        }
+        return null;
+    }
+
     public function getTaxonomyRelationshipByObjectId($object_id, $taxonomy)
     {
         try {

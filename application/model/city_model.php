@@ -26,7 +26,7 @@ class CityModel extends TaxonomyModel
                         $cityBO->post_content_2 = $post_content->post_content_2;
                     }
                 }
-                
+
                 Model::autoloadModel('tag');
                 $tagModel = new TagModel($this->db);
                 $tagList = $tagModel->getTaxonomyRelationshipByObjectId($postBO->ID, 'tag');
@@ -108,12 +108,12 @@ class CityModel extends TaxonomyModel
             return false;
         }
 
-        if (!(isset($para->parent) && $para->parent != "" && is_numeric($para->parent))) {
+        if (!isset($para->country) || $para->country == "" || !is_numeric($para->country)) {
             $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             return false;
         } else {
-            $para->parent = (int) $para->parent;
-            if ($para->parent < 0) {
+            $para->country = (int) $para->country;
+            if ($para->country < 0) {
                 $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             }
         }
@@ -122,7 +122,15 @@ class CityModel extends TaxonomyModel
             $tag_array = explode(",", $para->tag_list);
             $para->tag_array = $tag_array;
         }
+        if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
+            $_SESSION["fb_error"][] = ERROR_CURRENT_RATING_INVALID;
+            return false;
+        }
 
+        if (isset($para->vote_times) && $para->vote_times != "" && !is_numeric($para->vote_times)) {
+            $_SESSION["fb_error"][] = ERROR_VOTE_TIMES_INVALID;
+            return false;
+        }
         return true;
     }
 
@@ -156,6 +164,12 @@ class CityModel extends TaxonomyModel
                 $postBO->post_name = Utils::createSlug($cityBO->name);
             }
 
+            if (isset($para->current_rating)) {
+                $cityBO->current_rating = $para->current_rating;
+            }
+            if (isset($para->vote_times)) {
+                $cityBO->vote_times = $para->vote_times;
+            }
             $postBO->post_author = Session::get("user_id");
             $postBO->post_date = date("Y-m-d H:i:s");
             $postBO->post_date_gmt = gmdate("Y-m-d H:i:s");
@@ -248,14 +262,20 @@ class CityModel extends TaxonomyModel
                 if (isset($para->description)) {
                     $cityBO->description = $para->description;
                 }
-                if (isset($para->parent)) {
-                    $cityBO->parent = $para->parent;
+                if (isset($para->country)) {
+                    $cityBO->country = $para->country;
                 }
                 if (isset($para->post_content_1)) {
                     $cityBO->post_content_1 = $para->post_content_1;
                 }
                 if (isset($para->post_content_2)) {
                     $cityBO->post_content_2 = $para->post_content_2;
+                }
+                if (isset($para->current_rating)) {
+                    $cityBO->current_rating = $para->current_rating;
+                }
+                if (isset($para->vote_times)) {
+                    $cityBO->vote_times = $para->vote_times;
                 }
                 if (isset($para->tag_list)) {
                     $cityBO->tag_list = $para->tag_list;
@@ -277,6 +297,18 @@ class CityModel extends TaxonomyModel
                         $this->addContent($cityBO);
                     }
                     $this->db->commit();
+
+                    $cityBOAdded = parent::get($cityBO->term_taxonomy_id);
+
+                    if (isset($cityBO->country) && $cityBO->country != "") {
+                        $this->addMetaInfoToDatabase($cityBOAdded->term_id, "country", $cityBO->country);
+                    }
+                    if (isset($cityBO->current_rating) && $cityBO->current_rating != "") {
+                        $this->addMetaInfoToDatabase($cityBOAdded->term_id, "current_rating", $cityBO->current_rating);
+                    }
+                    if (isset($cityBO->vote_times) && $cityBO->vote_times != "") {
+                        $this->addMetaInfoToDatabase($cityBOAdded->term_id, "vote_times", $cityBO->vote_times);
+                    }
                     $_SESSION["fb_success"][] = ADD_CITY_SUCCESS;
                     return TRUE;
                 } else {
@@ -322,12 +354,12 @@ class CityModel extends TaxonomyModel
             $_SESSION["fb_error"][] = ERROR_SLUG_EMPTY;
             return false;
         }
-        if (!(isset($para->parent) && $para->parent != "" && is_numeric($para->parent))) {
+        if (!isset($para->country) || $para->country == "" || !is_numeric($para->country)) {
             $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             return false;
         } else {
-            $para->parent = (int) $para->parent;
-            if ($para->parent < 0) {
+            $para->country = (int) $para->country;
+            if ($para->country < 0) {
                 $_SESSION["fb_error"][] = ERROR_PARENT_NOT_IMPOSSIBLE;
             }
         }
@@ -336,6 +368,21 @@ class CityModel extends TaxonomyModel
             $tag_array = explode(",", $para->tag_list);
             $para->tag_array = $tag_array;
         }
+        
+        if (isset($para->city) && $para->city != "" && !is_numeric($para->city)) {
+            $_SESSION["fb_error"][] = ERROR_CITY_INVALID;
+            return false;
+        }
+        if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
+            $_SESSION["fb_error"][] = ERROR_CURRENT_RATING_INVALID;
+            return false;
+        }
+
+        if (isset($para->vote_times) && $para->vote_times != "" && !is_numeric($para->vote_times)) {
+            $_SESSION["fb_error"][] = ERROR_VOTE_TIMES_INVALID;
+            return false;
+        }
+
         return true;
     }
 
@@ -489,6 +536,35 @@ class CityModel extends TaxonomyModel
                     $this->db->beginTransaction();
 
                     if ($this->update($cityBO)) {
+                        if (isset($para->country)) {
+                            if (!isset($cityBO->country)) {
+                                $cityBO->country = $para->country;
+                                $this->addMetaInfoToDatabase($cityBO->term_id, "country", $cityBO->country);
+                            } else if ($cityBO->country != $para->country) {
+                                $cityBO->country = $para->country;
+                                $this->updateMetaInfoToDatabase($cityBO->term_id, "country", $cityBO->country);
+                            }
+                        }
+                        if (isset($para->current_rating)) {
+                            if (!isset($cityBO->current_rating)) {
+                                $cityBO->current_rating = $para->current_rating;
+                                $this->addMetaInfoToDatabase($cityBO->term_id, "current_rating", $cityBO->current_rating);
+                            } else if ($cityBO->current_rating != $para->current_rating) {
+                                $cityBO->current_rating = $para->current_rating;
+                                $this->updateMetaInfoToDatabase($cityBO->term_id, "current_rating", $cityBO->current_rating);
+                            }
+                        }
+
+                        if (isset($para->vote_times)) {
+                            if (!isset($cityBO->vote_times)) {
+                                $cityBO->vote_times = $para->vote_times;
+                                $this->addMetaInfoToDatabase($cityBO->term_id, "vote_times", $cityBO->vote_times) == NULL;
+                            } else if ($cityBO->vote_times != $para->vote_times) {
+                                $cityBO->vote_times = $para->vote_times;
+                                $this->updateMetaInfoToDatabase($cityBO->term_id, "vote_times", $cityBO->vote_times);
+                            }
+                        }
+
                         if (isset($cityBO->post_content_1) || isset($cityBO->post_content_2) || isset($para->post_content_1) || isset($para->post_content_2)) {
                             if (isset($para->post_content_1)) {
                                 $cityBO->post_content_1 = $para->post_content_1;
@@ -656,7 +732,7 @@ class CityModel extends TaxonomyModel
     {
         $cities_per_page = CITIES_PER_PAGE_DEFAULT;
         $taxonomy = "city";
-        
+
         $userLoginBO = json_decode(Session::get("userInfo"));
         if ($userLoginBO != NULL) {
             if (isset($userLoginBO->cities_per_page) && is_numeric($userLoginBO->cities_per_page)) {

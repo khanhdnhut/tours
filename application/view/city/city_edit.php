@@ -60,48 +60,71 @@ if (isset($this->cityBO) && $this->cityBO != NULL) {
                     </td>
                 </tr>
 
-                <tr class="city-parent-wrap"><th><label for="parent"><?php echo CITY_PERENT_TITLE; ?> </label></th>
+                <tr class="city-country-wrap"><th><label for="country"><?php echo CITY_PERENT_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></span></label></th>
                     <td>
-                        <select id="parent" name="parent" >
+                        <select id="country" name="country" >
                             <?php
-                            if (isset($this->parentList) && is_a($this->parentList, "SplDoublyLinkedList")) {
-                                $this->parentList->rewind();
-                                foreach ($this->parentList as $value) {
-                                    if ($value->term_taxonomy_id != $this->cityBO->term_taxonomy_id &&
-                                        $value->parent != $this->cityBO->term_taxonomy_id) {
+                            if (isset($this->countryList) && is_a($this->countryList, "SplDoublyLinkedList")) {
+                                $this->countryList->rewind();
+                                foreach ($this->countryList as $value) {
 
-                                        ?> 
-                                        <option <?php if ($value->term_taxonomy_id == $this->cityBO->parent) {
+                                    ?> 
+                                    <option <?php if ($value->term_taxonomy_id == $this->cityBO->country) {
 
-                                            ?>
-                                                selected="selected"
-                                            <?php }
+                                        ?>
+                                            selected="selected"
+                                        <?php }
 
-                                            ?> value="<?php
-                                            if (isset($value->term_taxonomy_id)) {
-                                                echo $value->term_taxonomy_id;
+                                        ?> value="<?php
+                                        if (isset($value->term_taxonomy_id)) {
+                                            echo $value->term_taxonomy_id;
+                                        }
+
+                                        ?>"><?php
+                                            if (isset($value->name)) {
+                                                echo $value->name;
                                             }
 
-                                            ?>"><?php
-                                                if (isset($value->name)) {
-                                                    echo $value->name;
-                                                }
-
-                                                ?></option>
-                                        <?php
-                                    }
+                                            ?></option>
+                                    <?php
                                 }
                             }
 
                             ?>
-                            <option value="0" <?php if ($this->cityBO->parent == 0 || $this->cityBO->parent == "0") { ?>
+                            <option value="0" <?php if ($this->cityBO->country == 0 || $this->cityBO->country == "0") { ?>
                                         selected="selected"
                                     <?php } ?> ><?php echo NONE_TITLE; ?></option>    
                         </select>
                         <p class="description"><?php echo CITY_PERENT_DESC; ?></p>
                     </td>
                 </tr>
+                <tr class="current_rating-wrap">
+                    <th>
+                        <label for="current_rating"><?php echo CURRENT_RATING_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input type="number" step="1" min="0" max="5" class="screen-per-page" name="current_rating" id="current_rating" maxlength="3" value="<?php
+                        if (isset($this->cityBO->current_rating)) {
+                            echo htmlspecialchars($this->cityBO->current_rating);
+                        }
 
+                        ?>" style="min-width: 150px;">
+                    </td>
+                </tr>
+                <tr class="vote_times-wrap">
+                    <th>
+                        <label for="vote_times"><?php echo VOTE_TIMES_TITLE; ?></label>
+                    </th>
+                    <td>
+                        <input type="number" step="1" min="0" max="999" class="screen-per-page" name="vote_times" id="vote_times" maxlength="3" value="<?php
+                        if (isset($this->cityBO->vote_times)) {
+                            echo htmlspecialchars($this->cityBO->vote_times);
+                        }
+
+                        ?>" style="min-width: 150px;">
+                    </td>
+
+                </tr>
                 <tr class="city-description-wrap">
                     <th>
                         <label for="description"><?php echo DESCRIPTION_TITLE; ?></label>
@@ -294,6 +317,10 @@ if (isset($this->cityBO) && $this->cityBO != NULL) {
             }
             if (jQuery('#form-your-profile input[name="slug"]').val() == "") {
                 noticeError("<?php echo ERROR_SLUG_EMPTY; ?>");
+                return false;
+            }
+            if (jQuery('#form-your-profile select[name="country"]').val() == "0") {
+                noticeError("<?php echo ERROR_COUNTRY_EMPTY; ?>");
                 return false;
             }
             return true;

@@ -61,7 +61,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                 </td>
 
                 <th>
-                    <label for="star"><?php echo HOTEL_STAR_TITLE; ?></label>
+                    <label for="star"><?php echo STAR_TITLE; ?></label>
                 </th>
                 <td>
                     <input disabled="disabled" type="number" step="1" min="0" max="5" class="screen-per-page" name="star" id="star" maxlength="3" value="<?php
@@ -77,7 +77,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
 
             <tr class="hotel-vote-times-wrap">
                 <th>
-                    <label for="current_rating"><?php echo HOTEL_CURRENT_RATING_TITLE; ?></label>
+                    <label for="current_rating"><?php echo CURRENT_RATING_TITLE; ?></label>
                 </th>
                 <td>
                     <input disabled="disabled" type="number" step="1" min="0" max="5" class="screen-per-page" name="current_rating" id="current_rating" maxlength="3" value="<?php
@@ -89,7 +89,7 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
                 </td>
 
                 <th>
-                    <label for="vote_times"><?php echo HOTEL_VOTE_TIMES_TITLE; ?></label>
+                    <label for="vote_times"><?php echo VOTE_TIMES_TITLE; ?></label>
                 </th>
                 <td>
                     <input disabled="disabled" type="number" step="1" min="0" max="999" class="screen-per-page" name="vote_times" id="vote_times" maxlength="3" value="<?php
@@ -103,12 +103,58 @@ if (isset($this->hotelBO) && $this->hotelBO != NULL) {
 
             </tr>
 
+            <tr class="hotel-country-id-wrap">
+                <th colspan="1"><label for="country_id"><?php echo DESTINATION_COUNTRY_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></label></th>
+                <td colspan="3">
+                    <select disabled="disabled" id="country_id" name="country_id"  style="min-width: 150px;">
+                        <?php
+                        if (isset($this->countryList) && is_a($this->countryList, "SplDoublyLinkedList")) {
+                            $this->countryList->rewind();
+                            foreach ($this->countryList as $value) {
+
+                                ?>
+                                <option value="<?php
+                                if (isset($value->term_taxonomy_id)) {
+                                    echo $value->term_taxonomy_id;
+                                }
+
+                                ?>" <?php
+                                        if (isset($this->hotelBO->country_id) && $this->hotelBO->country_id == $value->term_taxonomy_id) {
+                                            echo "selected='selected'";
+                                        }
+
+                                        ?>><?php
+                                            if (isset($value->name)) {
+                                                echo $value->name;
+                                            }
+
+                                            ?></option>
+                                <?php
+                            }
+                        }
+
+                        ?>
+                        <option value="0" <?php
+                        if (isset($this->hotelBO->country_id) && $this->hotelBO->country_id == 0) {
+                            echo "selected='selected'";
+                        } elseif (!isset($this->hotelBO->country_id)) {
+                            echo "selected='selected'";
+                        }
+
+                        ?>><?php echo NONE_TITLE; ?></option>                                                                        
+                    </select>
+                </td>
+            </tr>
+
+
+
             <tr class="hotel-city-id-wrap">
                 <th colspan="1"><label for="city_id"><?php echo HOTEL_CITY_TITLE; ?> <span style="color: red;" class="description"><?php echo LABEL_REQUIRED; ?></label></th>
                 <td colspan="3">
                     <select disabled="disabled" id="city_id" name="city_id"  style="min-width: 150px;">
                         <?php
-                        if (isset($this->cityList) && is_array($this->cityList)) {
+                        if (isset($this->cityList) && is_a($this->cityList, "SplDoublyLinkedList")) {
+                            $this->cityList->rewind();
                             foreach ($this->cityList as $value) {
 
                                 ?>

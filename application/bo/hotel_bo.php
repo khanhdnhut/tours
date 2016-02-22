@@ -18,6 +18,8 @@ class HotelBO extends PostBO
     public $image_url;
     public $city_id;
     public $city_name;
+    public $country_id;
+    public $country_name;
     public $current_rating;
     public $vote_times;
     public $tag_list;

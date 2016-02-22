@@ -5,9 +5,9 @@ class TaxonomyBO extends TermBO
 {
     public $term_taxonomy_id = null;
     public $taxonomy = null;
-    public $description = null;
-    public $parent = null;
-    public $count = null;
+    public $description = "";
+    public $parent = 0;
+    public $count = 0;
 
     public function setTaxonomyInfo($termInfo)
     {
