@@ -7,10 +7,10 @@
 BO::autoloadBO("taxonomy");
 BO::autoloadBO("post");
 
-class DestinationBO extends TaxonomyBO
+class AttractionBO extends TaxonomyBO
 {
 
-    public $taxonomy = "destination";
+    public $taxonomy = "attraction";
     public $postBO;
     public $post_content_1 = "";
     public $post_content_2 = "";
@@ -18,8 +18,8 @@ class DestinationBO extends TaxonomyBO
     public $image_ids;
     public $current_rating;
     public $vote_times;
-    public $tag_list;
+    public $tag_list;    
     public $country;
     public $city;
-
+    public $destination;
 }

@@ -2,16 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/E:/xampp/htdocs/tours/application/view/destination/destination_view.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/controller/hotel_ctrl.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/controller/destination_ctrl.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/view/city/city_view.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/model/image_model.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/view/destination/destination_add_new.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/controller/city_ctrl.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/controller/country_ctrl.php</file>
-            <file>file:/E:/xampp/htdocs/tours/application/controller/user_ctrl.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

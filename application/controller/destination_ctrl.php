@@ -92,6 +92,26 @@ class DestinationCtrl extends Controller
         }
     }
 
+    public function getByCountry($country_id = NULL)
+    {
+        Model::autoloadModel('destination');
+        $model = new DestinationModel($this->db);
+        $this->view->taxonomyList = new SplDoublyLinkedList();
+//        $this->view->taxonomyList = $model->getByMetaData("destination", "country", $country_id);   
+        $model->getAllSorted($this->view->taxonomyList, $model->buildTree($model->getByMetaData("destination", "country", $country_id)), -1);
+        $this->view->renderAdmin(RENDER_SEARCH_DESTINATION_BY_COUNTRY_AJAX, TRUE);
+    }
+
+    public function getByCity($city_id = NULL)
+    {
+        Model::autoloadModel('destination');
+        $model = new DestinationModel($this->db);
+        $this->view->taxonomyList = new SplDoublyLinkedList();
+//        $this->view->taxonomyList = $model->getByMetaData("destination", "city", $city_id);        
+        $model->getAllSorted($this->view->taxonomyList, $model->buildTree($model->getByMetaData("destination", "city", $city_id)), -1);
+        $this->view->renderAdmin(RENDER_SEARCH_DESTINATION_BY_CITY_AJAX, TRUE);
+    }
+
     public function editInfo($term_taxonomy_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
@@ -245,8 +265,8 @@ class DestinationCtrl extends Controller
             $this->view->cityList = new SplDoublyLinkedList();
             if (isset($this->view->destinationBO->country) && $this->view->destinationBO->country != "0") {
                 $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->destinationBO->country)), -1);
-            }            
-            
+            }
+
             $this->view->parentList = new SplDoublyLinkedList();
             $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("destination")), -1);
 

@@ -186,6 +186,7 @@ define("ERROR_COUNTRY_EMPTY", "Country is empty");
 define("ERROR_COUNTRY_NOT_IMPOSSIBLE", "Country is not impossible");
 define("ERROR_PARENT_NOT_IMPOSSIBLE", "Parent is not impossible");
 define("ERROR_CITY_NOT_IMPOSSIBLE", "City is not impossible");
+define("ERROR_DESTINATION_NOT_IMPOSSIBLE", "Destination is not impossible");
 define("ERROR_SLUG_EXISTED", "Slug existed");
 define("ERROR_NAME_EXISTED", "Name existed");
 define("LABEL_REQUIRED", "(required)");
@@ -308,7 +309,6 @@ define("ADD_COUNTRY_SUCCESS", "Add new country successed!");
 define("ADD_NEW_COUNTRY_LABEL", "Add New Country");
 define("LABEL_UPDATE_COUNTRY", "Update Country");
 define("COUNTRY_TITLE", "country");
-define("DESTINATION_COUNTRY_TITLE", "Country");
 
 define("IMAGE_WEATHERS_TITLE", "Images for weather");
 define("OVERVIEW_TITLE", "Overview");
@@ -361,7 +361,6 @@ define("ADD_CITY_SUCCESS", "Add new city successed!");
 define("ADD_NEW_CITY_LABEL", "Add New City");
 define("LABEL_UPDATE_CITY", "Update City");
 define("CITY_TITLE", "city");
-define("DESTINATION_CITY_TITLE", "City");
 define("CITY_IMAGES_DESCRIPTION_DESC", "Images of article. <span style='color: red;'>Size: 800x356px</span> ");
 
 /*
@@ -414,7 +413,6 @@ define("ADD_HOTEL_SUCCESS", "Add new hotel successed!");
 define("ADD_NEW_HOTEL_LABEL", "Add New Hotel");
 define("LABEL_UPDATE_HOTEL", "Update Hotel");
 define("HOTEL_TITLE", "hotel");
-define("DESTINATION_HOTEL_TITLE", "Hotel");
 define("ERROR_HOTEL_TITLE_EXISTED", "Title existed");
 define("ERROR_HOTEL_TITLE_EMPTY", "Title is empty");
 define("ERROR_HOTEL_ADDRESS_EMPTY", "Address is empty");
@@ -474,6 +472,9 @@ define("TAG_TITLE", "tag");
  * Destination
  */
 
+define("DESTINATION_HOTEL_TITLE", "Hotel");
+define("DESTINATION_CITY_TITLE", "City");
+define("DESTINATION_COUNTRY_TITLE", "Country");
 define("DASHBOARD_TOURS_EDIT_DESTINATION_TITLE", "Edit Destination");
 define("DASHBOARD_DESTINATION_TITLE", "Destinations");
 define("DASHBOARD_DESTINATION_ADD_NEW_TITLE", "Add New Destination");
@@ -483,11 +484,15 @@ define("RENDER_VIEW_DESTINATION_INDEX", "destination/destination_index");
 define("RENDER_VIEW_DESTINATION_ADD_NEW", "destination/destination_add_new");
 define("RENDER_VIEW_DESTINATION_EDIT", "destination/destination_edit");
 define("RENDER_VIEW_DESTINATION_INFO", "destination/destination_info");
+define("RENDER_SEARCH_DESTINATION_BY_COUNTRY_AJAX", "destination/destination_by_country");
+define("RENDER_SEARCH_DESTINATION_BY_CITY_AJAX", "destination/destination_by_city");
 define("CONTEXT_PATH_DESTINATION_INDEX", "destination/index/");
 define("CONTEXT_PATH_DESTINATION_ADD_NEW", "destination/addNew/");
 define("CONTEXT_PATH_DESTINATION_EDIT_INFO", "destination/editInfo/");
 define("CONTEXT_PATH_DESTINATION_VIEW", "destination/view/");
 define("CONTEXT_PATH_DESTINATION_INFO", "destination/info/");
+define("CONTEXT_PATH_DESTINATION_BY_CITY_AJAX", "destination/getByCity/");
+define("CONTEXT_PATH_DESTINATION_BY_COUNTRY_AJAX", "destination/getByCountry/");
 define("SEARCH_DESTINATIONS_TITLE", "Search Destinations");
 define("DESTINATIONS_LIST_TITLE", "Destinations list");
 define("CONFIRM_DELETE_DESTINATION", "You are about to permanently delete these destination: ");
@@ -510,6 +515,95 @@ define("ADD_DESTINATION_SUCCESS", "Add new destination successed!");
 define("ADD_NEW_DESTINATION_LABEL", "Add New Destination");
 define("LABEL_UPDATE_DESTINATION", "Update Destination");
 define("DESTINATION_TITLE", "destination");
+
+
+
+/*
+ * Eat
+ */
+
+define("EAT_HOTEL_TITLE", "Hotel");
+define("EAT_CITY_TITLE", "City");
+define("EAT_DESTINATION_TITLE", "Destination");
+define("EAT_COUNTRY_TITLE", "Country");
+define("DASHBOARD_TOURS_EDIT_EAT_TITLE", "Edit Eat");
+define("DASHBOARD_EAT_TITLE", "Eats");
+define("DASHBOARD_EAT_ADD_NEW_TITLE", "Add New Eat");
+define("DASHBOARD_ALL_EAT_TITLE", "All Eats");
+define("RENDER_VIEW_EAT", "eat/eat_view");
+define("RENDER_VIEW_EAT_INDEX", "eat/eat_index");
+define("RENDER_VIEW_EAT_ADD_NEW", "eat/eat_add_new");
+define("RENDER_VIEW_EAT_EDIT", "eat/eat_edit");
+define("RENDER_VIEW_EAT_INFO", "eat/eat_info");
+define("CONTEXT_PATH_EAT_INDEX", "eat/index/");
+define("CONTEXT_PATH_EAT_ADD_NEW", "eat/addNew/");
+define("CONTEXT_PATH_EAT_EDIT_INFO", "eat/editInfo/");
+define("CONTEXT_PATH_EAT_VIEW", "eat/view/");
+define("CONTEXT_PATH_EAT_INFO", "eat/info/");
+define("SEARCH_EATS_TITLE", "Search Eats");
+define("EATS_LIST_TITLE", "Eats list");
+define("CONFIRM_DELETE_EAT", "You are about to permanently delete these eat: ");
+define("CONFIRM_ACTION_EAT", "You are about to permanently execute this action these eat. ");
+define("CONFIRM_EDIT_INFO_EAT", "You are about to permanently edit these eat: ");
+define("CONFIRM_ADD_NEW_EAT", "You are about to permanently add these eat: ");
+define("EAT_NAME_DESC", "The name is how it appears on your site.");
+define("EAT_PARENT_TITLE", "Country");
+define("EAT_PARENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("EAT_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
+define("EAT_IMAGES_DESCRIPTION_DESC", "Images of article. <span style='color: red;'>Size: 800x356px</span> ");
+define("EAT_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
+define("ERROR_UPDATE_INFO_EAT", "Update profile of eat failed!");
+define("ERROR_ADD_NEW_EAT", "Add new eat failed!");
+define("UPDATE_EAT_SUCCESS", "Update profile of eat successed!");
+define("ADD_EAT_SUCCESS", "Add new eat successed!");
+define("ADD_NEW_EAT_LABEL", "Add New Eat");
+define("LABEL_UPDATE_EAT", "Update Eat");
+define("EAT_TITLE", "eat");
+
+
+
+/*
+ * Attraction
+ */
+
+define("ATTRACTION_HOTEL_TITLE", "Hotel");
+define("ATTRACTION_CITY_TITLE", "City");
+define("ATTRACTION_DESTINATION_TITLE", "Destination");
+define("ATTRACTION_COUNTRY_TITLE", "Country");
+define("DASHBOARD_TOURS_EDIT_ATTRACTION_TITLE", "Edit Attraction");
+define("DASHBOARD_ATTRACTION_TITLE", "Attractions");
+define("DASHBOARD_ATTRACTION_ADD_NEW_TITLE", "Add New Attraction");
+define("DASHBOARD_ALL_ATTRACTION_TITLE", "All Attractions");
+define("RENDER_VIEW_ATTRACTION", "attraction/attraction_view");
+define("RENDER_VIEW_ATTRACTION_INDEX", "attraction/attraction_index");
+define("RENDER_VIEW_ATTRACTION_ADD_NEW", "attraction/attraction_add_new");
+define("RENDER_VIEW_ATTRACTION_EDIT", "attraction/attraction_edit");
+define("RENDER_VIEW_ATTRACTION_INFO", "attraction/attraction_info");
+define("CONTEXT_PATH_ATTRACTION_INDEX", "attraction/index/");
+define("CONTEXT_PATH_ATTRACTION_ADD_NEW", "attraction/addNew/");
+define("CONTEXT_PATH_ATTRACTION_EDIT_INFO", "attraction/editInfo/");
+define("CONTEXT_PATH_ATTRACTION_VIEW", "attraction/view/");
+define("CONTEXT_PATH_ATTRACTION_INFO", "attraction/info/");
+define("SEARCH_ATTRACTIONS_TITLE", "Search Attractions");
+define("ATTRACTIONS_LIST_TITLE", "Attractions list");
+define("CONFIRM_DELETE_ATTRACTION", "You are about to permanently delete these attraction: ");
+define("CONFIRM_ACTION_ATTRACTION", "You are about to permanently execute this action these attraction. ");
+define("CONFIRM_EDIT_INFO_ATTRACTION", "You are about to permanently edit these attraction: ");
+define("CONFIRM_ADD_NEW_ATTRACTION", "You are about to permanently add these attraction: ");
+define("ATTRACTION_NAME_DESC", "The name is how it appears on your site.");
+define("ATTRACTION_PARENT_TITLE", "Country");
+define("ATTRACTION_PARENT_DESC", "Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.");
+define("ATTRACTION_DESCRIPTION_DESC", "The description is not prominent by default; however, some themes may show it.");
+define("ATTRACTION_IMAGES_DESCRIPTION_DESC", "Images of article. <span style='color: red;'>Size: 800x356px</span> ");
+define("ATTRACTION_SLUG_DESC", "The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.");
+define("ERROR_UPDATE_INFO_ATTRACTION", "Update profile of attraction failed!");
+define("ERROR_ADD_NEW_ATTRACTION", "Add new attraction failed!");
+define("UPDATE_ATTRACTION_SUCCESS", "Update profile of attraction successed!");
+define("ADD_ATTRACTION_SUCCESS", "Add new attraction successed!");
+define("ADD_NEW_ATTRACTION_LABEL", "Add New Attraction");
+define("LABEL_UPDATE_ATTRACTION", "Update Attraction");
+define("ATTRACTION_TITLE", "attraction");
+
 
 
 /*

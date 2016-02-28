@@ -1,29 +1,29 @@
 <?php
 Model::autoloadModel('taxonomy');
 
-class DestinationModel extends TaxonomyModel
+class AttractionModel extends TaxonomyModel
 {
 
     public function get($taxonomy_id)
     {
-        $destinationBO = parent::get($taxonomy_id);
-        if ($destinationBO != null) {
+        $attractionBO = parent::get($taxonomy_id);
+        if ($attractionBO != null) {
 
             Model::autoloadModel("post");
             $postModel = new PostModel($this->db);
-            $postBOList = $postModel->getPostRelationshipByTaxonomyId($taxonomy_id, "destination");
+            $postBOList = $postModel->getPostRelationshipByTaxonomyId($taxonomy_id, "attraction");
             if (count($postBOList) != 0) {
                 $postBO = $postBOList[0];
 
-                $destinationBO->postBO = $postBO;
+                $attractionBO->postBO = $postBO;
 
                 if (isset($postBO->post_content)) {
                     $post_content = json_decode($postBO->post_content);
                     if (isset($post_content->post_content_1)) {
-                        $destinationBO->post_content_1 = $post_content->post_content_1;
+                        $attractionBO->post_content_1 = $post_content->post_content_1;
                     }
                     if (isset($post_content->post_content_2)) {
-                        $destinationBO->post_content_2 = $post_content->post_content_2;
+                        $attractionBO->post_content_2 = $post_content->post_content_2;
                     }
                 }
 
@@ -31,14 +31,14 @@ class DestinationModel extends TaxonomyModel
                 $tagModel = new TagModel($this->db);
                 $tagList = $tagModel->getTaxonomyRelationshipByObjectId($postBO->ID, 'tag');
                 if ($tagList != NULL && count($tagList) > 0) {
-                    $destinationBO->tag_list = $tagList;
+                    $attractionBO->tag_list = $tagList;
                 }
 
                 if (isset($postBO->image_ids)) {
                     $image_ids = json_decode($postBO->image_ids);
                     Model::autoloadModel('image');
                     $imageModel = new ImageModel($this->db);
-                    $destinationBO->images = array();
+                    $attractionBO->images = array();
                     foreach ($image_ids as $image_id) {
                         $image_object = $imageModel->get($image_id);
                         if ($image_object != NULL) {
@@ -72,24 +72,24 @@ class DestinationModel extends TaxonomyModel
                             if (!isset($image_info->large_url)) {
                                 $image_info->large_url = $image_object->guid;
                             }
-                            $destinationBO->images[] = $image_info;
+                            $attractionBO->images[] = $image_info;
                         }
                     }
                 }
             }
         }
-        return $destinationBO;
+        return $attractionBO;
     }
 
     public function validateAddNew($para)
     {
         if ($para == null || !is_object($para)) {
-            $_SESSION["fb_error"][] = ERROR_ADD_NEW_DESTINATION;
+            $_SESSION["fb_error"][] = ERROR_ADD_NEW_ATTRACTION;
             return false;
         }
 
         if (isset($para->name) && $para->name != "") {
-            if ($this->isExistName($para->name, "destination") != FALSE) {
+            if ($this->isExistName($para->name, "attraction") != FALSE) {
                 $_SESSION["fb_error"][] = ERROR_NAME_EXISTED;
                 return false;
             }
@@ -99,7 +99,7 @@ class DestinationModel extends TaxonomyModel
         }
 
         if (isset($para->slug) && $para->slug != "") {
-            if ($this->isExistSlug($para->slug, "destination")) {
+            if ($this->isExistSlug($para->slug, "attraction")) {
                 $_SESSION["fb_error"][] = ERROR_SLUG_EXISTED;
                 return false;
             }
@@ -129,6 +129,18 @@ class DestinationModel extends TaxonomyModel
                 return false;
             }
         }
+        
+        if (isset($para->destination)) {
+            if ($para->destination != "" && is_numeric($para->destination)) {
+                $para->destination = (int) $para->destination;
+                if ($para->destination < 0) {
+                    $_SESSION["fb_error"][] = ERROR_DESTINATION_NOT_IMPOSSIBLE;
+                }
+            } else {
+                $_SESSION["fb_error"][] = ERROR_DESTINATION_NOT_IMPOSSIBLE;
+                return false;
+            }
+        }
 
         if (isset($para->tag_list) && $para->tag_list != NULL && $para->tag_list != "") {
             $tag_array = explode(",", $para->tag_list);
@@ -149,38 +161,38 @@ class DestinationModel extends TaxonomyModel
     /**
      * addContent
      *
-     * Add new destination
+     * Add new attraction
      *
-     * @param stdClass $destinationBO para for add new destination
+     * @param stdClass $attractionBO para for add new attraction
      */
-    public function addContent($destinationBO)
+    public function addContent($attractionBO)
     {
         try {
             BO::autoloadBO("post");
             $postBO = new PostBO();
 
-            if (isset($destinationBO->name)) {
-                $postBO->post_title = $destinationBO->name;
+            if (isset($attractionBO->name)) {
+                $postBO->post_title = $attractionBO->name;
             }
-            if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2)) {
+            if (isset($attractionBO->post_content_1) || isset($attractionBO->post_content_2)) {
                 $post_content = new stdClass();
-                if (isset($destinationBO->post_content_1)) {
-                    $post_content->post_content_1 = $destinationBO->post_content_1;
+                if (isset($attractionBO->post_content_1)) {
+                    $post_content->post_content_1 = $attractionBO->post_content_1;
                 }
-                if (isset($destinationBO->post_content_2)) {
-                    $post_content->post_content_2 = $destinationBO->post_content_2;
+                if (isset($attractionBO->post_content_2)) {
+                    $post_content->post_content_2 = $attractionBO->post_content_2;
                 }
                 $postBO->post_content = json_encode($post_content);
             }
-            if (isset($destinationBO->name)) {
-                $postBO->post_name = Utils::createSlug($destinationBO->name);
+            if (isset($attractionBO->name)) {
+                $postBO->post_name = Utils::createSlug($attractionBO->name);
             }
 
             if (isset($para->current_rating)) {
-                $destinationBO->current_rating = $para->current_rating;
+                $attractionBO->current_rating = $para->current_rating;
             }
             if (isset($para->vote_times)) {
-                $destinationBO->vote_times = $para->vote_times;
+                $attractionBO->vote_times = $para->vote_times;
             }
             $postBO->post_author = Session::get("user_id");
             $postBO->post_date = date("Y-m-d H:i:s");
@@ -192,10 +204,10 @@ class DestinationModel extends TaxonomyModel
             $postBO->comment_status = "closed";
             $postBO->ping_status = "open";
             $postBO->guid = "";
-            $postBO->post_type = "destination";
+            $postBO->post_type = "attraction";
 
 
-            if (isset($destinationBO->images)) {
+            if (isset($attractionBO->images)) {
                 Model::autoloadModel("image");
                 $imageModel = new ImageModel($this->db);
                 $imageModel->is_create_thumb = true;
@@ -228,7 +240,7 @@ class DestinationModel extends TaxonomyModel
                 Model::autoloadModel('taxonomy');
                 $taxonomyModel = new TaxonomyModel($this->db);
 
-                if ($taxonomyModel->addRelationshipToDatabase($post_id, $destinationBO->term_taxonomy_id, 0) == NULL) {
+                if ($taxonomyModel->addRelationshipToDatabase($post_id, $attractionBO->term_taxonomy_id, 0) == NULL) {
                     if (isset($imageModel) && isset($image_array_id)) {
                         foreach ($image_array_id as $image_id) {
                             $imageModel->delete($image_id);
@@ -237,10 +249,10 @@ class DestinationModel extends TaxonomyModel
                     return FALSE;
                 }
 
-                if (isset($destinationBO->tag_array) && count($destinationBO->tag_array) > 0) {
+                if (isset($attractionBO->tag_array) && count($attractionBO->tag_array) > 0) {
                     Model::autoloadModel('tag');
                     $tagModel = new TagModel($this->db);
-                    $tag_id_array = $tagModel->addTagArray($destinationBO->tag_array);
+                    $tag_id_array = $tagModel->addTagArray($attractionBO->tag_array);
                     for ($i = 0; $i < count($tag_id_array); $i++) {
                         $taxonomyModel->addRelationshipToDatabase($post_id, $tag_id_array[$i]);
                     }
@@ -261,83 +273,89 @@ class DestinationModel extends TaxonomyModel
     {
         try {
             if ($this->validateAddNew($para)) {
-                BO::autoloadBO("destination");
-                $destinationBO = new DestinationBO();
+                BO::autoloadBO("attraction");
+                $attractionBO = new AttractionBO();
 
                 if (isset($para->name)) {
-                    $destinationBO->name = $para->name;
+                    $attractionBO->name = $para->name;
                 }
                 if (isset($para->slug)) {
-                    $destinationBO->slug = $para->slug;
+                    $attractionBO->slug = $para->slug;
                 }
                 if (isset($para->description)) {
-                    $destinationBO->description = $para->description;
+                    $attractionBO->description = $para->description;
                 }
                 if (isset($para->country) && $para->country != "0") {
-                    $destinationBO->country = $para->country;
+                    $attractionBO->country = $para->country;
                 }
                 if (isset($para->parent) && $para->parent != "0") {
-                    $destinationBO->parent = $para->parent;
+                    $attractionBO->parent = $para->parent;
                 }
                 if (isset($para->city) && $para->city != "0") {
-                    $destinationBO->city = $para->city;
+                    $attractionBO->city = $para->city;
+                }
+                if (isset($para->destination) && $para->destination != "0") {
+                    $attractionBO->destination = $para->destination;
                 }
                 if (isset($para->post_content_1)) {
-                    $destinationBO->post_content_1 = $para->post_content_1;
+                    $attractionBO->post_content_1 = $para->post_content_1;
                 }
                 if (isset($para->post_content_2)) {
-                    $destinationBO->post_content_2 = $para->post_content_2;
+                    $attractionBO->post_content_2 = $para->post_content_2;
                 }
                 if (isset($para->current_rating)) {
-                    $destinationBO->current_rating = $para->current_rating;
+                    $attractionBO->current_rating = $para->current_rating;
                 }
                 if (isset($para->vote_times)) {
-                    $destinationBO->vote_times = $para->vote_times;
+                    $attractionBO->vote_times = $para->vote_times;
                 }
                 if (isset($para->tag_list)) {
-                    $destinationBO->tag_list = $para->tag_list;
+                    $attractionBO->tag_list = $para->tag_list;
                 }
                 if (isset($para->tag_array)) {
-                    $destinationBO->tag_array = $para->tag_array;
+                    $attractionBO->tag_array = $para->tag_array;
                 }
                 if (isset($para->images)) {
-                    $destinationBO->images = $para->images;
+                    $attractionBO->images = $para->images;
                 }
-                $destinationBO->count = 0;
-                $destinationBO->term_group = 0;
+                $attractionBO->count = 0;
+                $attractionBO->term_group = 0;
 
                 $this->db->beginTransaction();
-                $destinationBO->term_taxonomy_id = parent::addToDatabase($destinationBO);
+                $attractionBO->term_taxonomy_id = parent::addToDatabase($attractionBO);
 
-                if ($destinationBO->term_taxonomy_id != NULL) {
-                    if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2)) {
-                        $this->addContent($destinationBO);
+                if ($attractionBO->term_taxonomy_id != NULL) {
+                    if (isset($attractionBO->post_content_1) || isset($attractionBO->post_content_2)) {
+                        $this->addContent($attractionBO);
                     }
                     $this->db->commit();
 
-                    $destinationBOAdded = parent::get($destinationBO->term_taxonomy_id);
+                    $attractionBOAdded = parent::get($attractionBO->term_taxonomy_id);
 
-                    if (isset($destinationBO->country) && $destinationBO->country != "") {
-                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "country", $destinationBO->country);
+                    if (isset($attractionBO->country) && $attractionBO->country != "") {
+                        $this->addMetaInfoToDatabase($attractionBOAdded->term_id, "country", $attractionBO->country);
                     }
-                    if (isset($destinationBO->city) && $destinationBO->city != "") {
-                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "city", $destinationBO->city);
+                    if (isset($attractionBO->city) && $attractionBO->city != "") {
+                        $this->addMetaInfoToDatabase($attractionBOAdded->term_id, "city", $attractionBO->city);
                     }
-                    if (isset($destinationBO->current_rating) && $destinationBO->current_rating != "") {
-                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "current_rating", $destinationBO->current_rating);
+                    if (isset($attractionBO->destination) && $attractionBO->destination != "") {
+                        $this->addMetaInfoToDatabase($attractionBOAdded->term_id, "destination", $attractionBO->destination);
                     }
-                    if (isset($destinationBO->vote_times) && $destinationBO->vote_times != "") {
-                        $this->addMetaInfoToDatabase($destinationBOAdded->term_id, "vote_times", $destinationBO->vote_times);
+                    if (isset($attractionBO->current_rating) && $attractionBO->current_rating != "") {
+                        $this->addMetaInfoToDatabase($attractionBOAdded->term_id, "current_rating", $attractionBO->current_rating);
                     }
-                    $_SESSION["fb_success"][] = ADD_DESTINATION_SUCCESS;
+                    if (isset($attractionBO->vote_times) && $attractionBO->vote_times != "") {
+                        $this->addMetaInfoToDatabase($attractionBOAdded->term_id, "vote_times", $attractionBO->vote_times);
+                    }
+                    $_SESSION["fb_success"][] = ADD_ATTRACTION_SUCCESS;
                     return TRUE;
                 } else {
                     $this->db->rollBack();
-                    $_SESSION["fb_error"][] = ADD_DESTINATION_SUCCESS;
+                    $_SESSION["fb_error"][] = ADD_ATTRACTION_SUCCESS;
                 }
             }
         } catch (Exception $e) {
-            $_SESSION["fb_error"][] = ERROR_ADD_NEW_DESTINATION;
+            $_SESSION["fb_error"][] = ERROR_ADD_NEW_ATTRACTION;
         }
         return FALSE;
     }
@@ -345,17 +363,17 @@ class DestinationModel extends TaxonomyModel
     public function validateUpdateInfo($para)
     {
         if ($para == null || !is_object($para)) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_DESTINATION;
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_ATTRACTION;
             return false;
         }
         if (!isset($para->term_taxonomy_id)) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_DESTINATION;
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_ATTRACTION;
             return false;
         } else {
             try {
                 $para->term_taxonomy_id = (int) $para->term_taxonomy_id;
             } catch (Exception $e) {
-                $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_DESTINATION;
+                $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_ATTRACTION;
                 return false;
             }
         }
@@ -385,6 +403,15 @@ class DestinationModel extends TaxonomyModel
                 $_SESSION["fb_error"][] = ERROR_CITY_NOT_IMPOSSIBLE;
             }
         }
+        if (!(isset($para->destination) && $para->destination != "" && is_numeric($para->destination))) {
+            $_SESSION["fb_error"][] = ERROR_DESTINATION_NOT_IMPOSSIBLE;
+            return false;
+        } else {
+            $para->destination = (int) $para->destination;
+            if ($para->destination < 0) {
+                $_SESSION["fb_error"][] = ERROR_DESTINATION_NOT_IMPOSSIBLE;
+            }
+        }
 
         if (isset($para->tag_list) && $para->tag_list != NULL && $para->tag_list != "") {
             $tag_array = explode(",", $para->tag_list);
@@ -397,6 +424,10 @@ class DestinationModel extends TaxonomyModel
         }
         if (isset($para->city) && $para->city != "" && !is_numeric($para->city)) {
             $_SESSION["fb_error"][] = ERROR_CITY_INVALID;
+            return false;
+        }
+        if (isset($para->destination) && $para->destination != "" && !is_numeric($para->destination)) {
+            $_SESSION["fb_error"][] = ERROR_DESTINATION_INVALID;
             return false;
         }
         if (isset($para->current_rating) && $para->current_rating != "" && !is_numeric($para->current_rating)) {
@@ -412,10 +443,10 @@ class DestinationModel extends TaxonomyModel
         return true;
     }
 
-    public function updateContent($destinationBO)
+    public function updateContent($attractionBO)
     {
-        if (isset($destinationBO->postBO)) {
-            $postBO = $destinationBO->postBO;
+        if (isset($attractionBO->postBO)) {
+            $postBO = $attractionBO->postBO;
             try {
                 $sql = "UPDATE " . TABLE_POSTS . " ";
                 $set = "SET ";
@@ -424,25 +455,25 @@ class DestinationModel extends TaxonomyModel
                 $para_array = [];
                 $para_array[":post_id"] = $postBO->ID;
 
-                if (isset($destinationBO->name)) {
-                    $postBO->post_title = $destinationBO->name;
+                if (isset($attractionBO->name)) {
+                    $postBO->post_title = $attractionBO->name;
                     $set .= " " . TB_POST_COL_POST_TITLE . " = :post_title,";
                     $para_array[":post_title"] = $postBO->post_title;
                 }
-                if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2)) {
+                if (isset($attractionBO->post_content_1) || isset($attractionBO->post_content_2)) {
                     $post_content = new stdClass();
-                    if (isset($destinationBO->post_content_1)) {
-                        $post_content->post_content_1 = $destinationBO->post_content_1;
+                    if (isset($attractionBO->post_content_1)) {
+                        $post_content->post_content_1 = $attractionBO->post_content_1;
                     }
-                    if (isset($destinationBO->post_content_2)) {
-                        $post_content->post_content_2 = $destinationBO->post_content_2;
+                    if (isset($attractionBO->post_content_2)) {
+                        $post_content->post_content_2 = $attractionBO->post_content_2;
                     }
                     $postBO->post_content = json_encode($post_content);
                     $set .= " " . TB_POST_COL_POST_CONTENT . " = :post_content,";
                     $para_array[":post_content"] = $postBO->post_content;
                 }
-                if (isset($destinationBO->name)) {
-                    $postBO->post_name = Utils::createSlug($destinationBO->name);
+                if (isset($attractionBO->name)) {
+                    $postBO->post_name = Utils::createSlug($attractionBO->name);
                     $set .= " " . TB_POST_COL_POST_NAME . " = :post_name,";
                     $para_array[":post_name"] = $postBO->post_name;
                 }
@@ -455,7 +486,7 @@ class DestinationModel extends TaxonomyModel
 
                 Model::autoloadModel("image");
                 $imageModel = new ImageModel($this->db);
-                if (isset($destinationBO->images_upload)) {
+                if (isset($attractionBO->images_upload)) {
                     $imageModel->is_create_thumb = true;
                     $imageModel->is_slider_thumb = true;
                     $imageModel->is_large = true;
@@ -469,8 +500,8 @@ class DestinationModel extends TaxonomyModel
                     }
                 }
 
-                if (isset($destinationBO->image_delete_list) && $destinationBO->image_delete_list != "" && $destinationBO->image_delete_list != NULL) {
-                    $image_delete_array = explode(",", $destinationBO->image_delete_list);
+                if (isset($attractionBO->image_delete_list) && $attractionBO->image_delete_list != "" && $attractionBO->image_delete_list != NULL) {
+                    $image_delete_array = explode(",", $attractionBO->image_delete_list);
                     if (count($image_delete_array) > 0) {
                         foreach ($image_delete_array as $image_delete_id) {
                             $image_ids = array_diff($image_ids, [$image_delete_id]);
@@ -534,102 +565,111 @@ class DestinationModel extends TaxonomyModel
     {
         try {
             if ($this->validateUpdateInfo($para)) {
-                $destinationBO = $this->get($para->term_taxonomy_id);
-                if ($destinationBO != NULL) {
+                $attractionBO = $this->get($para->term_taxonomy_id);
+                if ($attractionBO != NULL) {
                     if (isset($para->name)) {
-                        $destinationBO->name = $para->name;
+                        $attractionBO->name = $para->name;
                     }
                     if (isset($para->slug)) {
-                        $destinationBO->slug = $para->slug;
+                        $attractionBO->slug = $para->slug;
                     }
                     if (isset($para->description)) {
-                        $destinationBO->description = $para->description;
+                        $attractionBO->description = $para->description;
                     }
 
                     if (isset($para->image_delete_list)) {
-                        $destinationBO->image_delete_list = $para->image_delete_list;
+                        $attractionBO->image_delete_list = $para->image_delete_list;
                     }
 
                     if (isset($para->images)) {
-                        $destinationBO->images_upload = $para->images;
+                        $attractionBO->images_upload = $para->images;
                     }
                     if (isset($para->parent)) {
-                        $destinationBO->parent = $para->parent;
+                        $attractionBO->parent = $para->parent;
                     }
 
                     $this->db->beginTransaction();
 
-                    if ($this->update($destinationBO)) {
+                    if ($this->update($attractionBO)) {
 
                         if (isset($para->country)) {
-                            if (!isset($destinationBO->country)) {
-                                $destinationBO->country = $para->country;
-                                $this->addMetaInfoToDatabase($destinationBO->term_id, "country", $destinationBO->country);
-                            } else if ($destinationBO->country != $para->country) {
-                                $destinationBO->country = $para->country;
-                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "country", $destinationBO->country);
+                            if (!isset($attractionBO->country)) {
+                                $attractionBO->country = $para->country;
+                                $this->addMetaInfoToDatabase($attractionBO->term_id, "country", $attractionBO->country);
+                            } else if ($attractionBO->country != $para->country) {
+                                $attractionBO->country = $para->country;
+                                $this->updateMetaInfoToDatabase($attractionBO->term_id, "country", $attractionBO->country);
                             }
                         }
 
                         if (isset($para->city)) {
-                            if (!isset($destinationBO->city)) {
-                                $destinationBO->city = $para->city;
-                                $this->addMetaInfoToDatabase($destinationBO->term_id, "city", $destinationBO->city);
-                            } else if ($destinationBO->city != $para->city) {
-                                $destinationBO->city = $para->city;
-                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "city", $destinationBO->city);
+                            if (!isset($attractionBO->city)) {
+                                $attractionBO->city = $para->city;
+                                $this->addMetaInfoToDatabase($attractionBO->term_id, "city", $attractionBO->city);
+                            } else if ($attractionBO->city != $para->city) {
+                                $attractionBO->city = $para->city;
+                                $this->updateMetaInfoToDatabase($attractionBO->term_id, "city", $attractionBO->city);
+                            }
+                        }
+                        if (isset($para->destination)) {
+                            if (!isset($attractionBO->destination)) {
+                                $attractionBO->destination = $para->destination;
+                                $this->addMetaInfoToDatabase($attractionBO->term_id, "destination", $attractionBO->destination);
+                            } else if ($attractionBO->destination != $para->destination) {
+                                $attractionBO->destination = $para->destination;
+                                $this->updateMetaInfoToDatabase($attractionBO->term_id, "destination", $attractionBO->destination);
                             }
                         }
 
                         if (isset($para->current_rating)) {
-                            if (!isset($destinationBO->current_rating)) {
-                                $destinationBO->current_rating = $para->current_rating;
-                                $this->addMetaInfoToDatabase($destinationBO->term_id, "current_rating", $destinationBO->current_rating);
-                            } else if ($destinationBO->current_rating != $para->current_rating) {
-                                $destinationBO->current_rating = $para->current_rating;
-                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "current_rating", $destinationBO->current_rating);
+                            if (!isset($attractionBO->current_rating)) {
+                                $attractionBO->current_rating = $para->current_rating;
+                                $this->addMetaInfoToDatabase($attractionBO->term_id, "current_rating", $attractionBO->current_rating);
+                            } else if ($attractionBO->current_rating != $para->current_rating) {
+                                $attractionBO->current_rating = $para->current_rating;
+                                $this->updateMetaInfoToDatabase($attractionBO->term_id, "current_rating", $attractionBO->current_rating);
                             }
                         }
 
                         if (isset($para->vote_times)) {
-                            if (!isset($destinationBO->vote_times)) {
-                                $destinationBO->vote_times = $para->vote_times;
-                                $this->addMetaInfoToDatabase($destinationBO->term_id, "vote_times", $destinationBO->vote_times) == NULL;
-                            } else if ($destinationBO->vote_times != $para->vote_times) {
-                                $destinationBO->vote_times = $para->vote_times;
-                                $this->updateMetaInfoToDatabase($destinationBO->term_id, "vote_times", $destinationBO->vote_times);
+                            if (!isset($attractionBO->vote_times)) {
+                                $attractionBO->vote_times = $para->vote_times;
+                                $this->addMetaInfoToDatabase($attractionBO->term_id, "vote_times", $attractionBO->vote_times) == NULL;
+                            } else if ($attractionBO->vote_times != $para->vote_times) {
+                                $attractionBO->vote_times = $para->vote_times;
+                                $this->updateMetaInfoToDatabase($attractionBO->term_id, "vote_times", $attractionBO->vote_times);
                             }
                         }
 
-                        if (isset($destinationBO->post_content_1) || isset($destinationBO->post_content_2) || isset($para->post_content_1) || isset($para->post_content_2)) {
+                        if (isset($attractionBO->post_content_1) || isset($attractionBO->post_content_2) || isset($para->post_content_1) || isset($para->post_content_2)) {
                             if (isset($para->post_content_1)) {
-                                $destinationBO->post_content_1 = $para->post_content_1;
+                                $attractionBO->post_content_1 = $para->post_content_1;
                             }
 
                             if (isset($para->post_content_2)) {
-                                $destinationBO->post_content_2 = $para->post_content_2;
+                                $attractionBO->post_content_2 = $para->post_content_2;
                             }
-                            $this->updateContent($destinationBO);
-                            if (isset($para->tag_array) || isset($destinationBO->tag_list)) {
+                            $this->updateContent($attractionBO);
+                            if (isset($para->tag_array) || isset($attractionBO->tag_list)) {
                                 Model::autoloadModel('tag');
                                 $tagModel = new TagModel($this->db);
                                 Model::autoloadModel('taxonomy');
                                 $taxonomyModel = new TaxonomyModel($this->db);
                                 if (!isset($para->tag_array) || count($para->tag_array) == 0) {
-                                    foreach ($destinationBO->tag_list as $tag) {
-                                        $tagModel->deleteRelationship($destinationBO->postBO->ID, $tag->term_taxonomy_id);
+                                    foreach ($attractionBO->tag_list as $tag) {
+                                        $tagModel->deleteRelationship($attractionBO->postBO->ID, $tag->term_taxonomy_id);
                                     }
-                                } elseif (!isset($destinationBO->tag_list) || count($destinationBO->tag_list) == 0) {
+                                } elseif (!isset($attractionBO->tag_list) || count($attractionBO->tag_list) == 0) {
                                     if (count($para->tag_array) > 0) {
                                         $tag_id_array = $tagModel->addTagArray($para->tag_array);
                                         for ($i = 0; $i < count($tag_id_array); $i++) {
-                                            $taxonomyModel->addRelationshipToDatabase($destinationBO->postBO->ID, $tag_id_array[$i]);
+                                            $taxonomyModel->addRelationshipToDatabase($attractionBO->postBO->ID, $tag_id_array[$i]);
                                         }
                                     }
-                                } elseif (isset($para->tag_array) && isset($destinationBO->tag_list) &&
-                                    count($para->tag_array) > 0 && count($destinationBO->tag_list) > 0) {
+                                } elseif (isset($para->tag_array) && isset($attractionBO->tag_list) &&
+                                    count($para->tag_array) > 0 && count($attractionBO->tag_list) > 0) {
                                     $tags_old_array = array();
-                                    foreach ($destinationBO->tag_list as $tag_old) {
+                                    foreach ($attractionBO->tag_list as $tag_old) {
                                         $tags_old_array[] = $tag_old->name;
                                     }
 
@@ -642,19 +682,19 @@ class DestinationModel extends TaxonomyModel
                                     if (count($tags_new_array) > 0) {
                                         $tag_id_new_array = $tagModel->addTagArray($tags_new_array);
                                         for ($i = 0; $i < count($tag_id_new_array); $i++) {
-                                            $taxonomyModel->addRelationshipToDatabase($destinationBO->postBO->ID, $tag_id_new_array[$i]);
+                                            $taxonomyModel->addRelationshipToDatabase($attractionBO->postBO->ID, $tag_id_new_array[$i]);
                                         }
                                     }
 
                                     $tags_delete_array = array();
-                                    for ($i = 0; $i < count($destinationBO->tag_list); $i++) {
-                                        if (!in_array($destinationBO->tag_list[$i]->name, $para->tag_array)) {
-                                            $tags_delete_array[] = $destinationBO->tag_list[$i];
+                                    for ($i = 0; $i < count($attractionBO->tag_list); $i++) {
+                                        if (!in_array($attractionBO->tag_list[$i]->name, $para->tag_array)) {
+                                            $tags_delete_array[] = $attractionBO->tag_list[$i];
                                         }
                                     }
                                     if (count($tags_delete_array) > 0) {
                                         foreach ($tags_delete_array as $tag) {
-                                            $tagModel->deleteRelationship($destinationBO->postBO->ID, $tag->term_taxonomy_id);
+                                            $tagModel->deleteRelationship($attractionBO->postBO->ID, $tag->term_taxonomy_id);
                                         }
                                     }
                                 }
@@ -662,25 +702,25 @@ class DestinationModel extends TaxonomyModel
                         }
 
                         $this->db->commit();
-                        $_SESSION["fb_success"][] = UPDATE_DESTINATION_SUCCESS;
+                        $_SESSION["fb_success"][] = UPDATE_ATTRACTION_SUCCESS;
                         return TRUE;
                     } else {
                         $this->db->rollBack();
-                        $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_DESTINATION;
+                        $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_ATTRACTION;
                     }
                 }
             }
         } catch (Exception $e) {
-            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_DESTINATION;
+            $_SESSION["fb_error"][] = ERROR_UPDATE_INFO_ATTRACTION;
         }
         return FALSE;
     }
 
-    public function updateDestinationsPerPages($destinations_per_page)
+    public function updateAttractionsPerPages($attractions_per_page)
     {
         $user_id = Session::get("user_id");
-        $meta_key = "destinations_per_page";
-        $meta_value = $destinations_per_page;
+        $meta_key = "attractions_per_page";
+        $meta_value = $attractions_per_page;
         Model::autoloadModel('user');
         $userModel = new UserModel($this->db);
         $userModel->setMeta($user_id, $meta_key, $meta_value);
@@ -689,7 +729,7 @@ class DestinationModel extends TaxonomyModel
     public function updateColumnsShow($description_show, $slug_show, $tours_show)
     {
         $user_id = Session::get("user_id");
-        $meta_key = "manage_destinations_columns_show";
+        $meta_key = "manage_attractions_columns_show";
         $meta_value = new stdClass();
         $meta_value->description_show = $description_show;
         $meta_value->slug_show = $slug_show;
@@ -703,8 +743,8 @@ class DestinationModel extends TaxonomyModel
     public function changeAdvSetting($para)
     {
         $action = NULL;
-        if (isset($para->destinations_per_page) && is_numeric($para->destinations_per_page)) {
-            $this->updateDestinationsPerPages($para->destinations_per_page);
+        if (isset($para->attractions_per_page) && is_numeric($para->attractions_per_page)) {
+            $this->updateAttractionsPerPages($para->attractions_per_page);
         }
         $description_show = false;
         $slug_show = false;
@@ -727,8 +767,8 @@ class DestinationModel extends TaxonomyModel
 
     public function executeActionDelete($para)
     {
-        if (isset($para->destinations) && is_array($para->destinations)) {
-            foreach ($para->destinations as $term_taxonomy_id) {
+        if (isset($para->attractions) && is_array($para->attractions)) {
+            foreach ($para->attractions as $term_taxonomy_id) {
                 $this->delete($term_taxonomy_id);
             }
         }
@@ -759,29 +799,29 @@ class DestinationModel extends TaxonomyModel
 
     public function search($view, $para)
     {
-        $destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
-        $taxonomy = "destination";
+        $attractions_per_page = ATTRACTIONS_PER_PAGE_DEFAULT;
+        $taxonomy = "attraction";
 
         $userLoginBO = json_decode(Session::get("userInfo"));
         if ($userLoginBO != NULL) {
-            if (isset($userLoginBO->destinations_per_page) && is_numeric($userLoginBO->destinations_per_page)) {
-                $destinations_per_page = (int) $userLoginBO->destinations_per_page;
+            if (isset($userLoginBO->attractions_per_page) && is_numeric($userLoginBO->attractions_per_page)) {
+                $attractions_per_page = (int) $userLoginBO->attractions_per_page;
             }
         }
 
-        if (!isset($destinations_per_page)) {
+        if (!isset($attractions_per_page)) {
             if (!isset($_SESSION['options'])) {
                 $_SESSION['options'] = new stdClass();
-                $_SESSION['options']->destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
-                $destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
-            } elseif (!isset($_SESSION['options']->destinations_per_page)) {
-                $_SESSION['options']->destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
-                $destinations_per_page = DESTINATIONS_PER_PAGE_DEFAULT;
+                $_SESSION['options']->attractions_per_page = ATTRACTIONS_PER_PAGE_DEFAULT;
+                $attractions_per_page = ATTRACTIONS_PER_PAGE_DEFAULT;
+            } elseif (!isset($_SESSION['options']->attractions_per_page)) {
+                $_SESSION['options']->attractions_per_page = ATTRACTIONS_PER_PAGE_DEFAULT;
+                $attractions_per_page = ATTRACTIONS_PER_PAGE_DEFAULT;
             }
         }
 
 
-        $view->taxonomies_per_page = $destinations_per_page;
+        $view->taxonomies_per_page = $attractions_per_page;
         $view->taxonomy = $taxonomy;
         parent::search($view, $para);
     }

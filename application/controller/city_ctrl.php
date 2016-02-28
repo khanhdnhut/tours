@@ -83,7 +83,9 @@ class CityCtrl extends Controller
     {
         Model::autoloadModel('city');
         $model = new CityModel($this->db);
-        $this->view->taxonomyList = $model->getByMetaData("city", "country", $country_id);
+//        $this->view->taxonomyList = $model->getByMetaData("city", "country", $country_id);
+        $this->view->taxonomyList = new SplDoublyLinkedList();
+        $model->getAllSorted($this->view->taxonomyList, $model->buildTree($model->getByMetaData("city", "country", $country_id)), -1);
         $this->view->renderAdmin(RENDER_SEARCH_CITY_BY_COUNTRY_AJAX, TRUE);
     }
 

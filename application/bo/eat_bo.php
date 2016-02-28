@@ -4,61 +4,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+BO::autoloadBO("taxonomy");
+BO::autoloadBO("post");
 
-BO::autoloadBO('post');
-
-class EatBO extends PostBO
+class EatBO extends TaxonomyBO
 {
 
-    public $post_type = "eat";
-    public $address;
-    public $number_of_rooms;
-    public $star;
+    public $taxonomy = "eat";
+    public $postBO;
+    public $post_content_1 = "";
+    public $post_content_2 = "";
     public $images;
     public $image_ids;
-    public $city_id;
-    public $city_name;
-    public $country_id;
-    public $country_name;
     public $current_rating;
     public $vote_times;
-    public $tag_list;
-
-    function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function setEatInfo($eatInfo)
-    {
-        if (!is_null($eatInfo)) {
-            if (isset($eatInfo->address)) {
-                $this->address = $eatInfo->address;
-            }
-            if (isset($eatInfo->number_of_rooms)) {
-                $this->number_of_rooms = $eatInfo->number_of_rooms;
-            }
-            if (isset($eatInfo->star)) {
-                $this->star = $eatInfo->star;
-            }
-            if (isset($eatInfo->image_id) && $eatInfo->image_id != "" && is_numeric($eatInfo->image_id)) {
-                $this->image_id = $eatInfo->image_id;                
-            }
-            if (isset($eatInfo->image_url)) {
-                $this->image_url = $eatInfo->image_url;                
-            }
-            if (isset($eatInfo->city_id)) {
-                $this->city_id = $eatInfo->city_id;
-            }
-            if (isset($eatInfo->city_name)) {
-                $this->city_name = $eatInfo->city_name;
-            }
-            if (isset($eatInfo->current_rating)) {
-                $this->current_rating = $eatInfo->current_rating;
-            }
-            if (isset($eatInfo->current_rating)) {
-                $this->vote_times = $eatInfo->vote_times;
-            }
-        }
-    }
+    public $tag_list;    
+    public $country;
+    public $city;
+    public $destination;
 }

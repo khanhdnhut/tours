@@ -8,7 +8,7 @@
  * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
  *
  */
-class EatCtrl extends Controller
+class AttractionCtrl extends Controller
 {
 
     /**
@@ -22,8 +22,8 @@ class EatCtrl extends Controller
     public function addNew()
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('eat');
-            $model = new EatModel($this->db);
+            Model::autoloadModel('attraction');
+            $model = new AttractionModel($this->db);
             $this->para = new stdClass();
             if (isset($_POST['action']) && $_POST['action'] == "addNew") {
                 $this->para->action = $_POST['action'];
@@ -93,11 +93,11 @@ class EatCtrl extends Controller
             }
 
             $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("eat")), -1);
+            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("attraction")), -1);
             if (isset($_POST['ajax']) && !is_null($_POST['ajax'])) {
-                $this->view->renderAdmin(RENDER_VIEW_EAT_ADD_NEW, TRUE);
+                $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_ADD_NEW, TRUE);
             } else {
-                $this->view->renderAdmin(RENDER_VIEW_EAT_ADD_NEW);
+                $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_ADD_NEW);
             }
         } else {
             $this->login();
@@ -107,11 +107,11 @@ class EatCtrl extends Controller
     public function editInfo($term_taxonomy_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('eat');
-            $model = new EatModel($this->db);
+            Model::autoloadModel('attraction');
+            $model = new AttractionModel($this->db);
             $this->para = new stdClass();
-            if (isset($_POST['eat'])) {
-                $this->para->term_taxonomy_id = $_POST['eat'];
+            if (isset($_POST['attraction'])) {
+                $this->para->term_taxonomy_id = $_POST['attraction'];
             } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                 $this->para->term_taxonomy_id = $term_taxonomy_id;
             }
@@ -172,25 +172,25 @@ class EatCtrl extends Controller
                         $update_success = TRUE;
                     }
                 }
-                $this->view->eatBO = $model->get($this->para->term_taxonomy_id);
+                $this->view->attractionBO = $model->get($this->para->term_taxonomy_id);
 
                 $this->view->countryList = new SplDoublyLinkedList();
                 $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
                 $this->view->cityList = new SplDoublyLinkedList();
-                if (isset($this->view->eatBO->country) && $this->view->eatBO->country != "0") {
-                    $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->eatBO->country)), -1);
+                if (isset($this->view->attractionBO->country) && $this->view->attractionBO->country != "0") {
+                    $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->attractionBO->country)), -1);
                 }
                 if (isset($this->view->para) && isset($this->view->para->country)) {
                     $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->para->country)), -1);
                 }
 
                 $this->view->destinationList = new SplDoublyLinkedList();
-                if (isset($this->view->eatBO->country) && $this->view->eatBO->country != "0") {
-                    if (isset($this->view->eatBO->city) && $this->view->eatBO->city != "0") {
-                        $model->getAllSorted($this->view->destinationList, $model->buildTree($model->getByMetaData("destination", "city", $this->view->eatBO->city)), -1);
+                if (isset($this->view->attractionBO->country) && $this->view->attractionBO->country != "0") {
+                    if (isset($this->view->attractionBO->city) && $this->view->attractionBO->city != "0") {
+                        $model->getAllSorted($this->view->destinationList, $model->buildTree($model->getByMetaData("destination", "city", $this->view->attractionBO->city)), -1);
                     } else {
-                        $model->getAllSorted($this->view->destinationList, $model->buildTree($model->getByMetaData("destination", "country", $this->view->eatBO->country)), -1);
+                        $model->getAllSorted($this->view->destinationList, $model->buildTree($model->getByMetaData("destination", "country", $this->view->attractionBO->country)), -1);
                     }
                 }
                 if (isset($this->view->para) && isset($this->view->para->country)) {
@@ -203,15 +203,15 @@ class EatCtrl extends Controller
 
 
                 $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("eat")), -1);
+                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("attraction")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                    $this->view->renderAdmin(RENDER_VIEW_EAT_EDIT);
+                    $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_EDIT);
                 } else {
-                    $this->view->renderAdmin(RENDER_VIEW_EAT_EDIT, TRUE);
+                    $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_EDIT, TRUE);
                 }
             } else {
-                header('location: ' . URL . CONTEXT_PATH_EAT_INDEX);
+                header('location: ' . URL . CONTEXT_PATH_ATTRACTION_INDEX);
             }
         } else {
             $this->login();
@@ -221,24 +221,24 @@ class EatCtrl extends Controller
     public function info($term_taxonomy_id = NULL)
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('eat');
-            $model = new EatModel($this->db);
+            Model::autoloadModel('attraction');
+            $model = new AttractionModel($this->db);
             $this->para = new stdClass();
-            if (isset($_POST['eat'])) {
-                $this->para->term_taxonomy_id = $_POST['eat'];
+            if (isset($_POST['attraction'])) {
+                $this->para->term_taxonomy_id = $_POST['attraction'];
             } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
                 $this->para->term_taxonomy_id = $term_taxonomy_id;
             }
 
             if (isset($this->para->term_taxonomy_id)) {
-                $this->view->eatBO = $model->get($this->para->term_taxonomy_id);
+                $this->view->attractionBO = $model->get($this->para->term_taxonomy_id);
 
                 $this->view->countryList = new SplDoublyLinkedList();
                 $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
                 $this->view->cityList = new SplDoublyLinkedList();
-                if (isset($this->view->eatBO->country) && $this->view->eatBO->country != "0") {
-                    $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->eatBO->country)), -1);
+                if (isset($this->view->attractionBO->country) && $this->view->attractionBO->country != "0") {
+                    $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->attractionBO->country)), -1);
                 }
 
                 $this->view->destinationList = new SplDoublyLinkedList();
@@ -251,15 +251,15 @@ class EatCtrl extends Controller
                 }
 
                 $this->view->parentList = new SplDoublyLinkedList();
-                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("eat")), -1);
+                $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("attraction")), -1);
 
                 if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                    $this->view->renderAdmin(RENDER_VIEW_EAT_INFO);
+                    $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_INFO);
                 } else {
-                    $this->view->renderAdmin(RENDER_VIEW_EAT_INFO, TRUE);
+                    $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_INFO, TRUE);
                 }
             } else {
-                header('location: ' . URL . CONTEXT_PATH_EAT_INDEX);
+                header('location: ' . URL . CONTEXT_PATH_ATTRACTION_INDEX);
             }
         } else {
             $this->login();
@@ -268,24 +268,24 @@ class EatCtrl extends Controller
 
     public function view($term_taxonomy_id = NULL)
     {
-        Model::autoloadModel('eat');
-        $model = new EatModel($this->db);
+        Model::autoloadModel('attraction');
+        $model = new AttractionModel($this->db);
         $this->para = new stdClass();
-        if (isset($_POST['eat'])) {
-            $this->para->term_taxonomy_id = $_POST['eat'];
+        if (isset($_POST['attraction'])) {
+            $this->para->term_taxonomy_id = $_POST['attraction'];
         } elseif (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
             $this->para->term_taxonomy_id = $term_taxonomy_id;
         }
 
         if (isset($this->para->term_taxonomy_id)) {
-            $this->view->eatBO = $model->get($this->para->term_taxonomy_id);
+            $this->view->attractionBO = $model->get($this->para->term_taxonomy_id);
 
             $this->view->countryList = new SplDoublyLinkedList();
             $model->getAllSorted($this->view->countryList, $model->buildTree($model->getAll("country")), -1);
 
             $this->view->cityList = new SplDoublyLinkedList();
-            if (isset($this->view->eatBO->country) && $this->view->eatBO->country != "0") {
-                $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->eatBO->country)), -1);
+            if (isset($this->view->attractionBO->country) && $this->view->attractionBO->country != "0") {
+                $model->getAllSorted($this->view->cityList, $model->buildTree($model->getByMetaData("city", "country", $this->view->attractionBO->country)), -1);
             }
 
             $this->view->destinationList = new SplDoublyLinkedList();
@@ -298,12 +298,12 @@ class EatCtrl extends Controller
             }
 
             $this->view->parentList = new SplDoublyLinkedList();
-            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("eat")), -1);
+            $model->getAllSorted($this->view->parentList, $model->buildTree($model->getAll("attraction")), -1);
 
             if (isset($term_taxonomy_id) && !is_null($term_taxonomy_id)) {
-                $this->view->render(RENDER_VIEW_EAT);
+                $this->view->render(RENDER_VIEW_ATTRACTION);
             } else {
-                $this->view->render(RENDER_VIEW_EAT, TRUE);
+                $this->view->render(RENDER_VIEW_ATTRACTION, TRUE);
             }
         } else {
             header('location: ' . URL);
@@ -313,8 +313,8 @@ class EatCtrl extends Controller
     public function index()
     {
         if (in_array(Auth::getCapability(), array(CAPABILITY_ADMINISTRATOR))) {
-            Model::autoloadModel('eat');
-            $model = new EatModel($this->db);
+            Model::autoloadModel('attraction');
+            $model = new AttractionModel($this->db);
             $this->para = new stdClass();
 
             if (isset($_POST['type'])) {
@@ -335,8 +335,8 @@ class EatCtrl extends Controller
             if (isset($_POST['paged'])) {
                 $this->para->paged = $_POST['paged'];
             }
-            if (isset($_POST['eats'])) {
-                $this->para->eats = $_POST['eats'];
+            if (isset($_POST['attractions'])) {
+                $this->para->attractions = $_POST['attractions'];
             }
             if (isset($_POST['action'])) {
                 $this->para->action = $_POST['action'];
@@ -353,8 +353,8 @@ class EatCtrl extends Controller
             if (isset($_POST['tours_show'])) {
                 $this->para->tours_show = $_POST['tours_show'];
             }
-            if (isset($_POST['eats_per_page'])) {
-                $this->para->eats_per_page = $_POST['eats_per_page'];
+            if (isset($_POST['attractions_per_page'])) {
+                $this->para->attractions_per_page = $_POST['attractions_per_page'];
             }
             if (isset($_POST['current_rating'])) {
                 $this->para->current_rating = $_POST['current_rating'];
@@ -370,7 +370,7 @@ class EatCtrl extends Controller
                 $model->changeAdvSetting($this->para);
             }
 
-            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->eats)) {
+            if (isset($this->para->type) && in_array($this->para->type, array("action", "action2")) && isset($this->para->attractions)) {
                 $model->executeAction($this->para);
             }
 
@@ -378,9 +378,9 @@ class EatCtrl extends Controller
 
             if (count((array) $this->para) > 0) {
                 $this->view->ajax = TRUE;
-                $this->view->renderAdmin(RENDER_VIEW_EAT_INDEX, TRUE);
+                $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_INDEX, TRUE);
             } else {
-                $this->view->renderAdmin(RENDER_VIEW_EAT_INDEX);
+                $this->view->renderAdmin(RENDER_VIEW_ATTRACTION_INDEX);
             }
         } else {
             $this->login();
