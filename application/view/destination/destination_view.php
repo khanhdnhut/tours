@@ -344,7 +344,7 @@
 </div>
 
 <?php
-$module = array("findTours", "destinationsVietnam", "aboutVietnam", "destinationsVietnam");
+$module = array("findTours", "hotelsVietnam", "aboutVietnam", "destinationsVietnam");
 require VIEW_TEMPLATES_PATH . 'loadModule.php';
 
 ?>

@@ -148,7 +148,7 @@ else
     echo PUBLIC_IMG . HEADER_SHORTCUT_ICON_DEFAULT;
 
 ?>"/>
-
+        
         <link href="<?php echo PUBLIC_CSS; ?>a49076c99c6cdb6c02f556b8d568a1e4.css" type="text/css" rel="stylesheet"/>
         <script async="" src="//www.google-analytics.com/analytics.js"></script>
         <script async="" src="<?php echo PUBLIC_JS; ?>analytics.js"></script>

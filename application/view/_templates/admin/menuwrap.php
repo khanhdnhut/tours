@@ -327,7 +327,14 @@
 
                         <li id="menu-settings" class="wp-has-submenu <?php
                         if ($this->checkForActiveController($_GET['url'], 'city') ||
-                            $this->checkForActiveController($_GET['url'], 'hotel')) {
+                            $this->checkForActiveController($_GET['url'], 'restaurant') ||
+                            $this->checkForActiveController($_GET['url'], 'shopping') ||
+                            $this->checkForActiveController($_GET['url'], 'internalflight') ||
+                            $this->checkForActiveController($_GET['url'], 'internationalflight') ||
+                            $this->checkForActiveController($_GET['url'], 'activity') ||
+                            $this->checkForActiveController($_GET['url'], 'nightlife') ||
+                            $this->checkForActiveController($_GET['url'], 'hotel')
+                        ) {
                             echo "wp-has-current-submenu wp-menu-open";
                         } else {
                             echo "wp-not-current-submenu";
@@ -336,7 +343,14 @@
                         ?> menu-top menu-icon-site menu-top-last">
                             <a aria-haspopup="true" class="wp-has-submenu <?php
                             if ($this->checkForActiveController($_GET['url'], 'city') ||
-                                $this->checkForActiveController($_GET['url'], 'hotel')) {
+                                $this->checkForActiveController($_GET['url'], 'restaurant') ||
+                                $this->checkForActiveController($_GET['url'], 'shopping') ||
+                                $this->checkForActiveController($_GET['url'], 'internalflight') ||
+                                $this->checkForActiveController($_GET['url'], 'internationalflight') ||
+                                $this->checkForActiveController($_GET['url'], 'activity') ||
+                                $this->checkForActiveController($_GET['url'], 'nightlife') ||
+                                $this->checkForActiveController($_GET['url'], 'hotel')
+                            ) {
                                 echo "wp-has-current-submenu wp-menu-open";
                             } else {
                                 echo "wp-not-current-submenu";
@@ -398,6 +412,140 @@
                                     }
 
                                     ?>" href="<?php echo URL . CONTEXT_PATH_HOTEL_ADD_NEW; ?>"><?php echo DASHBOARD_HOTEL_ADD_NEW_TITLE; ?></a></li>   
+
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_RESTAURANT_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_RESTAURANT_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_RESTAURANT_INDEX; ?>"><?php echo DASHBOARD_ALL_RESTAURANT_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_RESTAURANT_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_RESTAURANT_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_RESTAURANT_ADD_NEW; ?>"><?php echo DASHBOARD_RESTAURANT_ADD_NEW_TITLE; ?></a></li>
+
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_SHOPPING_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_SHOPPING_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_SHOPPING_INDEX; ?>"><?php echo DASHBOARD_ALL_SHOPPING_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_SHOPPING_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_SHOPPING_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_SHOPPING_ADD_NEW; ?>"><?php echo DASHBOARD_SHOPPING_ADD_NEW_TITLE; ?></a></li>  
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNALFLIGHT_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNALFLIGHT_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_INTERNALFLIGHT_INDEX; ?>"><?php echo DASHBOARD_ALL_INTERNALFLIGHT_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNALFLIGHT_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNALFLIGHT_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_INTERNALFLIGHT_ADD_NEW; ?>"><?php echo DASHBOARD_INTERNALFLIGHT_ADD_NEW_TITLE; ?></a></li>  
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNATIONALFLIGHT_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNATIONALFLIGHT_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_INTERNATIONALFLIGHT_INDEX; ?>"><?php echo DASHBOARD_ALL_INTERNATIONALFLIGHT_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNATIONALFLIGHT_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_INTERNATIONALFLIGHT_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_INTERNATIONALFLIGHT_ADD_NEW; ?>"><?php echo DASHBOARD_INTERNATIONALFLIGHT_ADD_NEW_TITLE; ?></a></li>
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_ACTIVITY_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_ACTIVITY_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_ACTIVITY_INDEX; ?>"><?php echo DASHBOARD_ALL_ACTIVITY_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_ACTIVITY_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_ACTIVITY_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_ACTIVITY_ADD_NEW; ?>"><?php echo DASHBOARD_ACTIVITY_ADD_NEW_TITLE; ?></a></li>  
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NIGHTLIFE_INDEX)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NIGHTLIFE_INDEX)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_NIGHTLIFE_INDEX; ?>"><?php echo DASHBOARD_ALL_NIGHTLIFE_TITLE; ?></a></li>                                
+                                <li class="wp-first-item <?php
+                                if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NIGHTLIFE_ADD_NEW)) {
+                                    echo "current";
+                                }
+
+                                ?>"><a class="wp-first-item <?php
+                                    if ($this->checkForActiveControllerAndAction($_GET['url'], CONTEXT_PATH_NIGHTLIFE_ADD_NEW)) {
+                                        echo "current";
+                                    }
+
+                                    ?>" href="<?php echo URL . CONTEXT_PATH_NIGHTLIFE_ADD_NEW; ?>"><?php echo DASHBOARD_NIGHTLIFE_ADD_NEW_TITLE; ?></a></li>  
 
                             </ul>
                         </li>

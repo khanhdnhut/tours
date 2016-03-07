@@ -1,3 +1,4 @@
+<script src="<?php echo PUBLIC_JS; ?>includes/ckeditor/ckeditor.js"></script>
 <style>
     .form-table th {
         font-weight: 100;   
@@ -224,7 +225,6 @@
 
     <p class="submit"><input type="submit" value="<?php echo ADD_NEW_HOTEL_LABEL; ?>" class="button button-primary" id="submit" name="submit"></p>
 </form>
-<script src="<?php echo PUBLIC_JS; ?>includes/tinymce/tinymce.min.js?ver=4.4" type="text/javascript"></script>
 <script>
                         window.scrollTo(0, 0);
                         function getDoc(frame) {
